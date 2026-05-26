@@ -1,16 +1,19 @@
 #include "Engine.h"
-#include <iostream>
+
+#include "Log/Log.h"
+#include <format>
 
 using namespace RPE;
 
 Engine::Engine()
 {
-    std::cout << "Initializing RedPorshe Engine	version: " << version() << std::endl;
+    Log::getInstance().log(LogVerbosity::Dysplay, 
+                           std::format( "Initializing RedPorshe Engine, version: {}", version()));
 }
 
 Engine::~Engine()
 {
-    std::cout << "RedPorshe Engine destroyed!" << std::endl;
+     Log::getInstance().log(LogVerbosity::Dysplay, "RedPorshe Engine destroyed!");
 }
 
 void Engine::Run() {}

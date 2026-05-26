@@ -15,10 +15,13 @@ configure_file(EngineConfig.h.template ${CMAKE_CURRENT_SOURCE_DIR}/Source/Engine
 set(ENGINE_SOURCES
 Source/Core/Engine.cpp
 Source/Core/Engine.h
+Source/Core/Utility.h
 .clang-format
 Source/pch.cpp
 Source/pch.h
 Source/EngineConfig.h
+Source/Log/Log.h
+Source/Log/Log.cpp 
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})
@@ -28,7 +31,7 @@ target_link_libraries(${PROJECT_NAME}  ${PROJECT_NAME}lib)
 
 # add libs
 find_package(spdlog REQUIRED)
-target_link_libraries(${PROJECT_NAME}lib spdlog::spdlog)
+target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog)
 
 #FOLders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
