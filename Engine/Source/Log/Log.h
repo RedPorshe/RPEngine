@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <memory>
+
 #include "Core/Utility.h"
 
 namespace RPE
@@ -28,6 +30,9 @@ public:
 private:
     Log();
     ~Log();
+
+    class Impl;
+    std::unique_ptr<Impl> m_pImpl;
 
 };
 }  // namespace RPE
