@@ -26,6 +26,10 @@ target_include_directories(${PROJECT_NAME}lib
 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Source)
 target_link_libraries(${PROJECT_NAME}  ${PROJECT_NAME}lib)
 
+# add libs
+find_package(spdlog REQUIRED)
+target_link_libraries(${PROJECT_NAME}lib spdlog::spdlog)
+
 #FOLders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_target_properties(${PROJECT_NAME}lib PROPERTIES FOLDER "Engine")
