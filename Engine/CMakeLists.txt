@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 # common options
 project(RedPorsheEngine VERSION 1.0.0)
-add_executable(${PROJECT_NAME} Source/Main.cpp)
+add_executable(${PROJECT_NAME} Source/main.cpp)
 
 #version
 configure_file(EngineConfig.h.template ${CMAKE_CURRENT_SOURCE_DIR}/Source/EngineConfig.h)
