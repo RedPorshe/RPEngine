@@ -3,7 +3,6 @@
 
 using namespace RPE;
 
-
 TEST(LogConceptsTest1, LogCategoryNameShouldBeValid)
 {
     LogCategory category1("TestCategory");
