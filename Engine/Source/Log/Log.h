@@ -80,18 +80,17 @@ concept ValidVerbosityLevel = V == LogVerbosity::NoLogging   //
     const RPE::LogCategory logName(#logName); \
     }
 
-#define RP_LOG_IMPL(categoryName, verbosity, showLocation, formatStr, ...)                                                         \
+#define RP_LOG_IMPL(categoryName, verbosity, showLocation, formatStr, ...)                                                              \
     do                                                                                                                                  \
     {                                                                                                                                   \
-        if constexpr (RPE::LogVerbosity::verbosity >= RPE::c_minVerbosity &&                                                       \
-                      RPE::LogVerbosity::verbosity <= RPE::c_maxVerbosity)                                                         \
+        if constexpr (RPE::LogVerbosity::verbosity >= RPE::c_minVerbosity && RPE::LogVerbosity::verbosity <= RPE::c_maxVerbosity)       \
         {                                                                                                                               \
-            static_assert(RPE::ValidVerbosityLevel<RPE::LogVerbosity::verbosity>,                                               \
+            static_assert(RPE::ValidVerbosityLevel<RPE::LogVerbosity::verbosity>,                                                       \
                 "Verbosity must be one of: NoLogging, Display, Warning, Error, Log, Fatal");                                            \
             static_assert(RPE::ValidLogCategory<decltype(categoryName)>, "Category must be of type LogCategory");                       \
             static_assert(RPE::LoggableMessage<decltype(formatStr)>, "Message must be convertible to std::string or std::string_view"); \
             RPE::Log::getInstance().log(                                                                                                \
-                categoryName, RPE::LogVerbosity::verbosity, std::format(formatStr __VA_OPT__(, ) __VA_ARGS__), showLocation);                  \
+                categoryName, RPE::LogVerbosity::verbosity, std::format(formatStr __VA_OPT__(, ) __VA_ARGS__), showLocation);           \
         }                                                                                                                               \
     } while (0)
 

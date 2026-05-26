@@ -12,11 +12,7 @@ Engine::Engine()
     RP_LOG(EngineLog, Warning, "Adsada");
     RP_LOG(EngineLog, Log, "Adsada");
     RP_LOG_DEBUG(EngineLog, Warning, "Adsada");
-   
 }
-Engine::~Engine()
-{
-   
-}
+Engine::~Engine() {}
 
 void Engine::Run() {}

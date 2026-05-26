@@ -112,12 +112,10 @@ private:
 Log::Log() : m_pImpl(std::make_unique<Impl>()) {}
 Log::~Log() = default;
 
-
-
 void Log::log(const LogCategory& category,  //
     LogVerbosity verbosity,                 //
     const std::string& message,             //
-    bool showLocation,              //
+    bool showLocation,                      //
     const std::source_location location) const
 {
     const std::string fmtMsg = showLocation
