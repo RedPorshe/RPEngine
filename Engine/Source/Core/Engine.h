@@ -3,7 +3,7 @@
 #include <string_view>
 
 namespace RPE
-	{
+{
 class Engine final
 {
 public:
@@ -12,4 +12,4 @@ public:
     void Run();
     static constexpr std::string_view version() noexcept { return ENGINE_VERSION_STRING; }
 };
-	}
+}  // namespace RPE

@@ -3,14 +3,14 @@
 
 using namespace RPE;
 
-Engine::Engine() 
-	{
+Engine::Engine()
+{
     std::cout << "Initializing RedPorshe Engine	version: " << version() << std::endl;
-	}
+}
 
-Engine::~Engine() 
-	{
+Engine::~Engine()
+{
     std::cout << "RedPorshe Engine destroyed!" << std::endl;
-	}
+}
 
 void Engine::Run() {}

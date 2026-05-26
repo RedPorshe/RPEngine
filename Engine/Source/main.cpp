@@ -3,6 +3,6 @@
 int main()
 {
     const RPE::Engine engine;
-   
+
     return EXIT_SUCCESS;
 }
