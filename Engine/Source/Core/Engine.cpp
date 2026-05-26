@@ -4,23 +4,19 @@
 #include <format>
 
 using namespace RPE;
+DEFINE_LOG_CATEGORY_STATIC(EngineLog);
 
 Engine::Engine()
 {
-    Log::getInstance().log(LogVerbosity::Dysplay, 
-                           std::format( "Initializing RedPorshe Engine, version: {}", version()));
-    Log::getInstance().log(LogVerbosity::Warning, 
-                           std::format( "Initializing RedPorshe Engine, version: {}", version()));
-    Log::getInstance().log(LogVerbosity::Error, 
-                           std::format( "Initializing RedPorshe Engine, version: {}", version()));
-    Log::getInstance().log(LogVerbosity::Fatal, 
-                           std::format( "Initializing RedPorshe Engine, version: {}", version()));
-
+    RP_LOG(EngineLog, Display, "Initializing Engine, version: {}", version());
+    RP_LOG(EngineLog, Warning, "Adsada");
+    RP_LOG(EngineLog, Log, "Adsada");
+    RP_LOG_DEBUG(EngineLog, Warning, "Adsada");
+   
 }
-
 Engine::~Engine()
 {
-     Log::getInstance().log(LogVerbosity::Dysplay, "RedPorshe Engine destroyed!");
+   
 }
 
 void Engine::Run() {}
