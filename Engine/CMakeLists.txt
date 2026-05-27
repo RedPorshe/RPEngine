@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.31.6)
 
 #cpp options
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 
 # common options
@@ -22,6 +22,10 @@ Source/pch.h
 Source/EngineConfig.h
 Source/Log/Log.h
 Source/Log/Log.cpp 
+Source/Window/GLFW/GLFWWindowManager.h 
+Source/Window/GLFW/GLFWWindowManager.cpp 
+Source/Window/GLFW/GLFWWindow.h 
+Source/Window/GLFW/GLFWWindow.cpp  
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})
@@ -44,10 +48,11 @@ add_executable(${PROJECT_NAME}TestRunner ${TEST_SOURCES})
 
 # add libs
 find_package(spdlog REQUIRED)
+find_package(glfw3)
 target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog)
 
 find_package(GTest REQUIRED)
-target_link_libraries(${PROJECT_NAME}TestRunner ${PROJECT_NAME}lib gtest::gtest)
+target_link_libraries(${PROJECT_NAME}TestRunner ${PROJECT_NAME}lib gtest::gtest glfw)
 
 #FOLders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

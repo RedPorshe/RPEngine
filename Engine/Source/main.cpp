@@ -2,7 +2,8 @@
 #include <stdlib.h>
 int main()
 {
-    const RPE::Engine engine;
+    RPE::Engine engine;
+    engine.run();
 
     return EXIT_SUCCESS;
 }
