@@ -20,27 +20,8 @@ Engine::Engine()
     }
     if (auto window = m_WindowManager->getWindowById(windowResult.value()))
     {
-        window->setTitle("Test ");
+        window->setTitle("Tests of ");
     }
-    WindowSettings set;
-    set.height = 400;
-    set.width = 400;
-    set.posy = 100;
-    set.posx = 100;
-    set.title = "asdaaa";
-    m_WindowManager->createWindow(set);
-    set.title = "asd4234321a";
-    m_WindowManager->createWindow(set);
-    set.title = "asdasda";
-    m_WindowManager->createWindow(set);
-    set.title = "asdas342da";
-    m_WindowManager->createWindow(set);
-    set.title = "asda423sda";
-    m_WindowManager->createWindow(set);
-    set.title = "as432dasda";
-    m_WindowManager->createWindow(set);
-    set.title = "as432dasdsda";
-    m_WindowManager->createWindow(set);
 
     m_initialized = true;
 }
