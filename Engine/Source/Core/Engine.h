@@ -5,18 +5,17 @@
 
 namespace RPE
 {
-class GLFWWindowManager;
 
 class Engine final
 {
 public:
-    Engine();
+    Engine(std::unique_ptr<class IWindowManager> WindowManager);
     ~Engine();
     void run();
     static constexpr std::string_view version() noexcept { return ENGINE_VERSION_STRING; }
 
 private:
-    std::unique_ptr<GLFWWindowManager> m_WindowManager;
+   const std::unique_ptr<class IWindowManager> m_WindowManager;
     bool m_initialized{false};
 };
 }  // namespace RPE

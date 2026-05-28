@@ -3,7 +3,7 @@
 #include <string>
 #include <functional>
 
-namespace LifeExe
+namespace RPE
 {
 
 struct WindowId
@@ -40,14 +40,14 @@ public:
     virtual bool shouldClose() const = 0;
 };
 
-}  // namespace LifeExe
+}  // namespace RPE
 
 namespace std
 {
 template <>
-struct hash<LifeExe::WindowId>
+struct hash<RPE::WindowId>
 {
-    size_t operator()(const LifeExe::WindowId& id) const noexcept  //
+    size_t operator()(const RPE::WindowId& id) const noexcept  //
     {
         return std::hash<unsigned int>{}(id.value);
     }

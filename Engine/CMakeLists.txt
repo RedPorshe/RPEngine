@@ -26,10 +26,13 @@ Source/Window/GLFW/GLFWWindowManager.h
 Source/Window/GLFW/GLFWWindowManager.cpp 
 Source/Window/GLFW/GLFWWindow.h 
 Source/Window/GLFW/GLFWWindow.cpp  
+Source/Window/WinAPI/Win32WindowManager.h 
+Source/Window/WinAPI/Win32WindowManager.cpp 
+Source/Window/WinAPI/Win32Window.h 
+Source/Window/WinAPI/Win32Window.cpp  
 Source/Window/IWindowManager.h 
-Source/Window/IWindowManager.cpp 
 Source/Window/IWindow.h 
-Source/Window/IWindow.cpp  
+ 
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})

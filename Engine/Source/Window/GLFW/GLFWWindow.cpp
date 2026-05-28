@@ -16,7 +16,7 @@ GLFWWindow::GLFWWindow(const WindowSettings& sSettings)
         RP_LOG(LogGLFWWindow, Error, "GLFW window create error");
         return;
     }
-    glfwSetWindowPos(m_window, sSettings.posx, sSettings.posy);
+    glfwSetWindowPos(m_window, sSettings.x, sSettings.y);
 }
 
 GLFWWindow::~GLFWWindow()

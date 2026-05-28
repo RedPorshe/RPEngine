@@ -3,23 +3,18 @@
 #include <functional>
 #include "Window/IWindow.h"
 
-struct GLFWwindow;
-
 namespace RPE
 {
 
-class GLFWWindow final : public IWindow
+class Win32Window final : public IWindow
 {
 public:
-    GLFWWindow(const WindowSettings& sSettings);
-    ~GLFWWindow() override;
+    Win32Window(const WindowSettings& settings);
+    ~Win32Window() override;
+
     void setTitle(const std::string& title) override;
     bool isValid() const override;
     bool shouldClose() const override;
-    void shutdown();
-
-private:
-    GLFWwindow* m_window{nullptr};
 };
-}  // namespace RPE
 
+}  // namespace LifeExe

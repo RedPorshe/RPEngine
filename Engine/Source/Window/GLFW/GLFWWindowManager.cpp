@@ -1,5 +1,6 @@
 #include "GLFWWindowManager.h"
 #include "GLFWWindow.h"
+
 #include "Log/Log.h"
 #include <GLFW/glfw3.h>
 
@@ -67,7 +68,7 @@ std::expected<WindowId, WindowCreationerror> GLFWWindowManager::createWindow(con
     return id;
 }
 
-std::shared_ptr<GLFWWindow> GLFWWindowManager::getWindowById(WindowId id) const
+std::shared_ptr<IWindow> GLFWWindowManager::getWindowById(WindowId id) const
 {
     const auto it = m_Windows.find(id);
     return it != m_Windows.end() ? it->second : nullptr;
@@ -86,8 +87,7 @@ void GLFWWindowManager::cleanupClosedWindows()
         if (it->second->shouldClose())
         {
             RP_LOG(LogGLFWWindowManager, Display, "Remove closed window with id: {}", it->first.value);
-            it = m_Windows.erase(it);
-            m_windowIdCounter--;
+            it = m_Windows.erase(it);           
             continue;
         }
         ++it;

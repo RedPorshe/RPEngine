@@ -1,16 +1,17 @@
 #include "Engine.h"
 #include "Log/Log.h"
-#include "Window/GLFW/GLFWWindowManager.h"
+#include "Window/IWindowManager.h"
 
 #include <format>
 
 using namespace RPE;
 DEFINE_LOG_CATEGORY_STATIC(EngineLog);
 
-Engine::Engine()
+Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager) //
+    : m_WindowManager(std::move(WindowManager))
 {
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
-    m_WindowManager = std::make_unique<GLFWWindowManager>();
+
     const auto windowResult = m_WindowManager->createWindow(WindowSettings{});
 
     if (!windowResult)

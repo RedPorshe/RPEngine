@@ -1,35 +1,28 @@
 #pragma once
-#include "GLFWWindow.h"
+#include "Window/IWindow.h"
+#include "Window/IWindowManager.h"
 #include <memory>
 #include <unordered_map>
 #include <expected>
 
 namespace RPE
 {
-class GLFWWindow;
 
-enum class WindowCreationerror
-{
-    ManagerIsNotInitialized,
-    CreationFailed,
-    InvalidWindow
-};
-
-class GLFWWindowManager final
+class GLFWWindowManager final : public IWindowManager
 {
 public:
     GLFWWindowManager();
-    ~GLFWWindowManager();
+    ~GLFWWindowManager() override;
     bool Isinitialized() const;
-    void update();
-    std::expected<WindowId, WindowCreationerror> createWindow(const WindowSettings& settings);
-    std::shared_ptr<GLFWWindow> getWindowById(WindowId id) const;
+    void update() override;
+    std::expected<WindowId, WindowCreationerror> createWindow(const WindowSettings& settings) override;
+    std::shared_ptr<IWindow> getWindowById(WindowId id) const override;
 
-    bool areAllWindowsClosed() const;
+    bool areAllWindowsClosed() const override;
 
 private:
     bool m_initialized{false};
-    std::unordered_map<WindowId, std::shared_ptr<GLFWWindow>> m_Windows;
+    std::unordered_map<WindowId, std::shared_ptr<IWindow>> m_Windows;
     WindowId m_windowIdCounter{1};
     void cleanupClosedWindows();
 };
