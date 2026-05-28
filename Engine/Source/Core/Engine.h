@@ -15,7 +15,7 @@ public:
     static constexpr std::string_view version() noexcept { return ENGINE_VERSION_STRING; }
 
 private:
-   const std::unique_ptr<class IWindowManager> m_WindowManager;
+    const std::unique_ptr<class IWindowManager> m_WindowManager;
     bool m_initialized{false};
 };
 }  // namespace RPE

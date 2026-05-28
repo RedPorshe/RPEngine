@@ -10,10 +10,10 @@ Win32Window::Win32Window(const WindowSettings& settings)
     RP_LOG(LogWin32Window, Error, "Win32 API window is not implemented!");
 }
 
-Win32Window::~Win32Window() 
-    {
+Win32Window::~Win32Window()
+{
     RP_LOG(LogWin32Window, Display, "Deleting win32 window");
-    }
+}
 
 void Win32Window::setTitle(const std::string& title) {}
 

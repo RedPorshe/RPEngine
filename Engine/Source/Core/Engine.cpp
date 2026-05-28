@@ -7,7 +7,7 @@
 using namespace RPE;
 DEFINE_LOG_CATEGORY_STATIC(EngineLog);
 
-Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager) //
+Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
     : m_WindowManager(std::move(WindowManager))
 {
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());

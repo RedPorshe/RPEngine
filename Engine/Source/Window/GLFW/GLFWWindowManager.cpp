@@ -87,7 +87,7 @@ void GLFWWindowManager::cleanupClosedWindows()
         if (it->second->shouldClose())
         {
             RP_LOG(LogGLFWWindowManager, Display, "Remove closed window with id: {}", it->first.value);
-            it = m_Windows.erase(it);           
+            it = m_Windows.erase(it);
             continue;
         }
         ++it;

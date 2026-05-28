@@ -21,4 +21,4 @@ public:
     std::shared_ptr<IWindow> getWindowById(WindowId id) const override;
 };
 
-}  // namespace LifeExe
+}  // namespace RPE

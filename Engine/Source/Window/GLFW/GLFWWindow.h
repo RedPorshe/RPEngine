@@ -22,4 +22,3 @@ private:
     GLFWwindow* m_window{nullptr};
 };
 }  // namespace RPE
-

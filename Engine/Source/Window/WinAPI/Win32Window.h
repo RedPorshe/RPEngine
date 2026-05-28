@@ -17,4 +17,4 @@ public:
     bool shouldClose() const override;
 };
 
-}  // namespace LifeExe
+}  // namespace RPE
