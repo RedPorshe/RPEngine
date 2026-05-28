@@ -32,7 +32,8 @@ Source/Window/WinAPI/Win32Window.h
 Source/Window/WinAPI/Win32Window.cpp  
 Source/Window/IWindowManager.h 
 Source/Window/IWindow.h 
- 
+Source/Event/Event.h 
+Source/Event/InputEvent.h
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})

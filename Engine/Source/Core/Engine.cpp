@@ -11,8 +11,13 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
     : m_WindowManager(std::move(WindowManager))
 {
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
-
-    const auto windowResult = m_WindowManager->createWindow(WindowSettings{});
+    WindowSettings wset;
+    wset.width = 1024;
+    wset.height = 768;
+    wset.title = "Lost";
+    wset.x = 200;
+    wset.y = 200;
+    const auto windowResult = m_WindowManager->createWindow(wset);
 
     if (!windowResult)
     {
