@@ -28,7 +28,7 @@ public:
             }
             RP_LOG(LogEvent, Display, "Dispatch event: {}", eventStr);
         };
-        (printEvent(args),...);
+        (printEvent(args), ...);
     }
 };
 }  // namespace RPE

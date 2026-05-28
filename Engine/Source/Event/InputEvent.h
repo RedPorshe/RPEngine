@@ -17,12 +17,12 @@ enum class EventType
     KeyPress
 };
 
-using EventData = int; // temp
+using EventData = int;  // temp
 
 struct InputEvent
-    {
+{
     EventType type;
-        EventData data;
-    };
+    EventData data;
+};
 
 }  // namespace RPE

@@ -14,7 +14,7 @@ namespace RPE
 class GLFWWindow final : public IWindow, public NonCopyable
 {
 public:
-    GLFWWindow(WindowId inID,const WindowSettings& sSettings);
+    GLFWWindow(WindowId inID, const WindowSettings& sSettings);
     ~GLFWWindow() override;
     void setTitle(const std::string& title) override;
     bool isValid() const override;
