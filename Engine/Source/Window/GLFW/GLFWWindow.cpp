@@ -29,7 +29,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             if (!thisWindow) return;
             RP_LOG(LogGLFWWindow, Display, "Window with id = {} closed!", thisWindow->m_id.value);
             InputEvent event;
-            event.type = EventType::WindowClose;           
+            event.type = EventType::WindowClose;
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -38,10 +38,10 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         {
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
             if (!thisWindow) return;
-          //  RP_LOG(LogGLFWWindow, Display, "Resize  window with id {} to  {}x{} ", thisWindow->m_id.value, width, height);
+            //  RP_LOG(LogGLFWWindow, Display, "Resize  window with id {} to  {}x{} ", thisWindow->m_id.value, width, height);
             InputEvent event;
             event.type = EventType::WindowResize;
-                   
+
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -50,9 +50,9 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         {
             auto* win = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
             if (!win) return;
-          //  RP_LOG(LogGLFWWindow, Display, " key ={}, scancode ={}", key, scancode);
+            //  RP_LOG(LogGLFWWindow, Display, " key ={}, scancode ={}", key, scancode);
             InputEvent event;
-            event.type = EventType::KeyPress;            
+            event.type = EventType::KeyPress;
             win->m_windowEvent.invoke(event);
         });
 
@@ -63,7 +63,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             if (!thisWindow) return;
             InputEvent event;
             event.type = EventType::MouseMove;
-            
+
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -73,14 +73,13 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
             if (!thisWindow) return;
 
-             double xpos, ypos;
+            double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
 
-           // RP_LOG(LogGLFWWindow, Display, "mouse button: {}, action: {}, pos: ({}, {})", button, action, xpos, ypos);
+            // RP_LOG(LogGLFWWindow, Display, "mouse button: {}, action: {}, pos: ({}, {})", button, action, xpos, ypos);
 
             InputEvent event;
             event.type = EventType::MouseButton;
-          
 
             thisWindow->m_windowEvent.invoke(event);
         });
@@ -90,10 +89,10 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         {
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
             if (!thisWindow) return;
-           // RP_LOG(LogGLFWWindow, Display, "mouse xoffset:{} yoffset: {}", xoffset, yoffset);
+            // RP_LOG(LogGLFWWindow, Display, "mouse xoffset:{} yoffset: {}", xoffset, yoffset);
             InputEvent event;
             event.type = EventType::MouseScroll;
-         
+
             thisWindow->m_windowEvent.invoke(event);
         });
 }
