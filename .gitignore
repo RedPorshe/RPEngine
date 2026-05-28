@@ -2,3 +2,4 @@ build/
 EngineConfig.h
 settings.json
 CMakeUserPresets.json
+.gitattributes
