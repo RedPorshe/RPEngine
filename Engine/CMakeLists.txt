@@ -46,7 +46,6 @@ endif()
 
 # tests 
 set(TEST_SOURCES
-Tests/LogConceptsTest.cpp 
 Tests/LogConceptTests.cpp 
 Tests/WindowTests.cpp 
 )
