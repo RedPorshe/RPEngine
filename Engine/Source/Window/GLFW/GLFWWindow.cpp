@@ -41,7 +41,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
           //  RP_LOG(LogGLFWWindow, Display, "Resize  window with id {} to  {}x{} ", thisWindow->m_id.value, width, height);
             InputEvent event;
             event.type = EventType::WindowResize;
-            event.data = WindowResizeData{width, height};           
+                   
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -52,11 +52,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             if (!win) return;
           //  RP_LOG(LogGLFWWindow, Display, " key ={}, scancode ={}", key, scancode);
             InputEvent event;
-            event.type = EventType::KeyPress;
-            event.data.key = key;
-            event.data.scancode = scancode;
-            event.data.action = action;
-            event.data.mods = mods;
+            event.type = EventType::KeyPress;            
             win->m_windowEvent.invoke(event);
         });
 
@@ -67,9 +63,8 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             if (!thisWindow) return;
             InputEvent event;
             event.type = EventType::MouseMove;
-            event.data.x = xpos;
-            event.data.y = ypos;
-         //   thisWindow->m_windowEvent.invoke(event);
+            
+            thisWindow->m_windowEvent.invoke(event);
         });
 
     glfwSetMouseButtonCallback(m_window,
@@ -85,11 +80,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
 
             InputEvent event;
             event.type = EventType::MouseButton;
-            event.data.button = button;
-            event.data.action = action;
-            event.data.mods = mods;
-            event.data.x = xpos;
-            event.data.y = ypos;
+          
 
             thisWindow->m_windowEvent.invoke(event);
         });
@@ -102,8 +93,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
            // RP_LOG(LogGLFWWindow, Display, "mouse xoffset:{} yoffset: {}", xoffset, yoffset);
             InputEvent event;
             event.type = EventType::MouseScroll;
-            event.data.xoffset = xoffset;
-            event.data.yoffset = yoffset;
+         
             thisWindow->m_windowEvent.invoke(event);
         });
 }

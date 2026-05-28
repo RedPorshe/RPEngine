@@ -27,10 +27,9 @@ public:
                 }
                 case EventType::WindowResize:
                 {
-                    if (auto* data = std::get_if<WindowResizeData>(event.data))
-                    {
-                        eventStr = std::format("Window Resize {}x{}", data->width, data->height);
-                    }
+
+                    eventStr = "Window Resize";
+
                     break;
                 }
                 case EventType::MouseMove:
