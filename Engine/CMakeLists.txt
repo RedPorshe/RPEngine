@@ -26,6 +26,10 @@ Source/Window/GLFW/GLFWWindowManager.h
 Source/Window/GLFW/GLFWWindowManager.cpp 
 Source/Window/GLFW/GLFWWindow.h 
 Source/Window/GLFW/GLFWWindow.cpp  
+Source/Window/IWindowManager.h 
+Source/Window/IWindowManager.cpp 
+Source/Window/IWindow.h 
+Source/Window/IWindow.cpp  
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})
@@ -49,7 +53,7 @@ add_executable(${PROJECT_NAME}TestRunner ${TEST_SOURCES})
 # add libs
 find_package(spdlog REQUIRED)
 find_package(glfw3)
-target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog)
+target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog glfw)
 
 find_package(GTest REQUIRED)
 target_link_libraries(${PROJECT_NAME}TestRunner ${PROJECT_NAME}lib gtest::gtest glfw)
