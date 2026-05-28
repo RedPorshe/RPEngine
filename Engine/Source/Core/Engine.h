@@ -1,12 +1,13 @@
 #pragma once
 #include "EngineConfig.h"
+#include "Utility.h"
 #include <memory>
 #include <string_view>
 
 namespace RPE
 {
 
-class Engine final
+class Engine final : public NonCopyable
 {
 public:
     Engine(std::unique_ptr<class IWindowManager> WindowManager);

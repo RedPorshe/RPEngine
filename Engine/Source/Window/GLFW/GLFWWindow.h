@@ -2,13 +2,14 @@
 #include <string>
 #include <functional>
 #include "Window/IWindow.h"
+#include "Core/Utility.h"
 
 struct GLFWwindow;
 
 namespace RPE
 {
 
-class GLFWWindow final : public IWindow
+class GLFWWindow final : public IWindow, public NonCopyable
 {
 public:
     GLFWWindow(const WindowSettings& sSettings);
