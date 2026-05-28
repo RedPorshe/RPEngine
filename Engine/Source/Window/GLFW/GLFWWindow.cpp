@@ -26,10 +26,10 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         [](GLFWwindow* window)
         {
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
+            if (!thisWindow) return;
             RP_LOG(LogGLFWWindow, Display, "Window with id = {} closed!", thisWindow->m_id.value);
             InputEvent event;
-            event.type = EventType::WindowClose;
-            event.data = 100;
+            event.type = EventType::WindowClose;           
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -37,9 +37,11 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         [](GLFWwindow* window, int width, int height)
         {
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
-            RP_LOG(LogGLFWWindow, Display, "Resize  window with id {} to  {}x{} ", thisWindow->m_id.value, width, height);
+            if (!thisWindow) return;
+          //  RP_LOG(LogGLFWWindow, Display, "Resize  window with id {} to  {}x{} ", thisWindow->m_id.value, width, height);
             InputEvent event;
             event.type = EventType::WindowResize;
+            event.data = WindowResizeData{width, height};           
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -47,9 +49,14 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
             auto* win = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
-            RP_LOG(LogGLFWWindow, Display, " key ={}, scancode ={}", key, scancode);
+            if (!win) return;
+          //  RP_LOG(LogGLFWWindow, Display, " key ={}, scancode ={}", key, scancode);
             InputEvent event;
             event.type = EventType::KeyPress;
+            event.data.key = key;
+            event.data.scancode = scancode;
+            event.data.action = action;
+            event.data.mods = mods;
             win->m_windowEvent.invoke(event);
         });
 
@@ -57,19 +64,33 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         [](GLFWwindow* window, double xpos, double ypos)
         {
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
-            // RP_LOG(LogGLFWWindow, Display, "Window with id = {} closed!", thisWindow->m_id.value);
+            if (!thisWindow) return;
             InputEvent event;
             event.type = EventType::MouseMove;
-            thisWindow->m_windowEvent.invoke(event);
+            event.data.x = xpos;
+            event.data.y = ypos;
+         //   thisWindow->m_windowEvent.invoke(event);
         });
 
     glfwSetMouseButtonCallback(m_window,
         [](GLFWwindow* window, int button, int action, int mods)
         {
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
-            RP_LOG(LogGLFWWindow, Display, "mouse button :{} ation: {}", button, action);
+            if (!thisWindow) return;
+
+             double xpos, ypos;
+            glfwGetCursorPos(window, &xpos, &ypos);
+
+           // RP_LOG(LogGLFWWindow, Display, "mouse button: {}, action: {}, pos: ({}, {})", button, action, xpos, ypos);
+
             InputEvent event;
             event.type = EventType::MouseButton;
+            event.data.button = button;
+            event.data.action = action;
+            event.data.mods = mods;
+            event.data.x = xpos;
+            event.data.y = ypos;
+
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -77,9 +98,12 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         [](GLFWwindow* window, double xoffset, double yoffset)
         {
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
-            RP_LOG(LogGLFWWindow, Display, "mouse xoffset:{} yoffset: {}", xoffset, yoffset);
+            if (!thisWindow) return;
+           // RP_LOG(LogGLFWWindow, Display, "mouse xoffset:{} yoffset: {}", xoffset, yoffset);
             InputEvent event;
             event.type = EventType::MouseScroll;
+            event.data.xoffset = xoffset;
+            event.data.yoffset = yoffset;
             thisWindow->m_windowEvent.invoke(event);
         });
 }
@@ -112,6 +136,7 @@ void GLFWWindow::shutdown()
 {
     if (m_window)
     {
+        glfwSetWindowUserPointer(m_window, nullptr);
         glfwDestroyWindow(m_window);
         RP_LOG(LogGLFWWindow, Display, "GLFW window destroyed");
         m_window = nullptr;

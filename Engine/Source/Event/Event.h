@@ -2,6 +2,7 @@
 #include <string>
 #include "Log/Log.h"
 #include "InputEvent.h"
+#include <vector>
 
 DEFINE_LOG_CATEGORY_STATIC(LogEvent);
 
@@ -19,12 +20,39 @@ public:
             std::string eventStr{};
             switch (event.type)
             {
-                case EventType::WindowClose: eventStr = "Window Close"; break;
-                case EventType::WindowResize: eventStr = "Window Resize"; break;
-                case EventType::MouseMove: eventStr = "Mouse Move"; break;
-                case EventType::MouseButton: eventStr = "Mouse Button"; break;
-                case EventType::MouseScroll: eventStr = "Mouse Scroll"; break;
-                case EventType::KeyPress: eventStr = "Key Press"; break;
+                case EventType::WindowClose:
+                {
+                    eventStr = "Window Close";
+                    break;
+                }
+                case EventType::WindowResize:
+                {
+                    if (auto* data = std::get_if<WindowResizeData>(event.data))
+                    {
+                        eventStr = std::format("Window Resize {}x{}", data->width, data->height);
+                    }
+                    break;
+                }
+                case EventType::MouseMove:
+                {
+                    eventStr = "Mouse Move";
+                    break;
+                }
+                case EventType::MouseButton:
+                {
+                    eventStr = "Mouse Button";
+                    break;
+                }
+                case EventType::MouseScroll:
+                {
+                    eventStr = "Mouse Scroll";
+                    break;
+                }
+                case EventType::KeyPress:
+                {
+                    eventStr = "Key Press";
+                    break;
+                }
             }
             RP_LOG(LogEvent, Display, "Dispatch event: {}", eventStr);
         };
