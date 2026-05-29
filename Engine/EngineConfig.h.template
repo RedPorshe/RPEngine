@@ -4,4 +4,4 @@
 #define Engine_VERSION_MINOR @RedPorsheEngine_VERSION_MINOR@
 #define Engine_VERSION_PATCH @RedPorsheEngine_VERSION_PATCH@
 #define ENGINE_VERSION_STRING "@RedPorsheEngine_VERSION@"
-#define ENGINE_NAME "RedPorshe Engine"
+#define ENGINE_NAME "Kuzbass Engine"

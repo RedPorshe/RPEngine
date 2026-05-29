@@ -10,7 +10,7 @@ InputManager::InputManager() {}
 
 InputManager::~InputManager() {}
 
-void InputManager::proccessInput(const InputEvent& event)
+void InputManager::processInput(const InputEvent& event)
 {
     const char* typeStr = "Unknown";
     switch (event.type)

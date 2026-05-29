@@ -29,17 +29,12 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
         RP_LOG(EngineLog, Error, "Failed to create Window for {}", ENGINE_NAME);
         return;
     }
-    if (auto window = m_WindowManager->getWindowById(windowResult.value()))
-    {
-        window->setTitle("Tests of ");
-    }
 
     if (auto GLFWWndowManager = dynamic_cast<GLFWWindowManager*>(m_WindowManager.get()))
     {
         auto wind = m_WindowManager->getWindowById(windowResult.value());
         if (auto glfwwin = dynamic_cast<GLFWWindow*>(wind.get()))
         {
-            RP_LOG(EngineLog, Display, "Ready to subcribe!!!!!!!!!!!!!!!!!!!!!!!!");
             glfwwin->onEvent().subscribe([this](const InputEvent& event) { onInputEvent(event); });
         }
     }
@@ -66,5 +61,16 @@ void Engine::run()
 void Engine::onInputEvent(const InputEvent& event)
 {
     if (!m_inputManager) return;
-    m_inputManager->proccessInput(event);
+    m_inputManager->processInput(event);
+    if (std::holds_alternative<MouseMoveData>(event.data))
+    {
+        const auto& mouseData = std::get<MouseMoveData>(event.data);
+        std::string tempTitle = {};
+        tempTitle = std::format("mouse pos x{},y{}", mouseData.x, mouseData.y);
+
+        if (auto window = m_WindowManager->getWindowById(WindowId{1}))
+        {
+            window->setTitle(tempTitle);
+        }
+    }
 }

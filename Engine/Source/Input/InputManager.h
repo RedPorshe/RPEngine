@@ -10,6 +10,6 @@ class InputManager : public NonCopyable
 public:
     InputManager();
     virtual ~InputManager();
-    void proccessInput(const InputEvent& event);
+    void processInput(const InputEvent& event);
 };
 }  // namespace RPE
