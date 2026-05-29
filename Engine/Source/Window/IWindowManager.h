@@ -2,6 +2,7 @@
 #include "Window/IWindow.h"
 #include <memory>
 #include <expected>
+#include <functional>
 
 namespace RPE
 {
@@ -11,6 +12,8 @@ enum class WindowCreationerror
     CreationFailed,
     InvalidWindow
 };
+
+struct InputEvent;
 
 class IWindowManager
 {

@@ -19,7 +19,38 @@ enum class EventType
     KeyPress
 };
 
-using EventData = int;
+struct MouseMoveData
+{
+    double x, y;
+};
+
+struct MouseButtonData
+{
+    int button;
+    int action;
+    int mods;
+    double x, y;
+};
+
+struct ScrollData
+{
+    double xoffset, yoffset;
+};
+
+struct KeyData
+{
+    int key;
+    int scancode;
+    int action;
+    int mods;
+};
+
+struct ResizeData
+{
+    int width, height;
+};
+
+using EventData = std::variant<std::monostate, int, MouseMoveData, MouseButtonData, ScrollData, KeyData, ResizeData>;
 
 struct InputEvent
 {

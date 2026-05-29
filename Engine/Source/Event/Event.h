@@ -2,6 +2,7 @@
 #include <string>
 #include "Log/Log.h"
 #include "InputEvent.h"
+#include <functional>
 #include <vector>
 
 DEFINE_LOG_CATEGORY_STATIC(LogEvent);
@@ -13,49 +14,19 @@ template <typename... Args>
 class Event
 {
 public:
+    using Callback = std::function<void(Args...)>;
+
+    void subscribe(Callback callback) { m_callbacks.push_back(callback); }
+
     void invoke(Args... args)
     {
-        auto printEvent = [](const InputEvent& event)
+        for (const auto& callback : m_callbacks)
         {
-            std::string eventStr{};
-            switch (event.type)
-            {
-                case EventType::WindowClose:
-                {
-                    eventStr = "Window Close";
-                    break;
-                }
-                case EventType::WindowResize:
-                {
-
-                    eventStr = "Window Resize";
-
-                    break;
-                }
-                case EventType::MouseMove:
-                {
-                    eventStr = "Mouse Move";
-                    break;
-                }
-                case EventType::MouseButton:
-                {
-                    eventStr = "Mouse Button";
-                    break;
-                }
-                case EventType::MouseScroll:
-                {
-                    eventStr = "Mouse Scroll";
-                    break;
-                }
-                case EventType::KeyPress:
-                {
-                    eventStr = "Key Press";
-                    break;
-                }
-            }
-            RP_LOG(LogEvent, Display, "Dispatch event: {}", eventStr);
-        };
-        (printEvent(args), ...);
+            if (callback) callback(args...);
+        }
     }
+
+private:
+    std::vector<Callback> m_callbacks;
 };
 }  // namespace RPE

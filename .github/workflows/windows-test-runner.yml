@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         target:
-          - RedPorsheEngineTestRunner
+          - KuzbassEngineTests
 
     env:
       TEST_REPORT_PATH: ${{github.workspace}}/build/bin/${{matrix.target}}-report.xml

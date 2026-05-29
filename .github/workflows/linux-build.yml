@@ -7,8 +7,7 @@ on:
     branches: ["main"]
 
 env:
-  TARGETS: RedPorsheEngine
-
+  TARGETS: KuzbassEngine
 jobs:
   build:
     runs-on: ubuntu-latest

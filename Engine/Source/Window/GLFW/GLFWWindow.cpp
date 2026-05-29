@@ -30,6 +30,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             RP_LOG(LogGLFWWindow, Display, "Window with id = {} closed!", thisWindow->m_id.value);
             InputEvent event;
             event.type = EventType::WindowClose;
+
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -41,6 +42,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             //  RP_LOG(LogGLFWWindow, Display, "Resize  window with id {} to  {}x{} ", thisWindow->m_id.value, width, height);
             InputEvent event;
             event.type = EventType::WindowResize;
+            event.data = ResizeData(width, height);
 
             thisWindow->m_windowEvent.invoke(event);
         });
@@ -53,6 +55,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             //  RP_LOG(LogGLFWWindow, Display, " key ={}, scancode ={}", key, scancode);
             InputEvent event;
             event.type = EventType::KeyPress;
+            event.data = KeyData(key, scancode, action, mods);
             win->m_windowEvent.invoke(event);
         });
 
@@ -63,7 +66,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             if (!thisWindow) return;
             InputEvent event;
             event.type = EventType::MouseMove;
-
+            event.data = MouseMoveData(xpos, ypos);
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -80,7 +83,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
 
             InputEvent event;
             event.type = EventType::MouseButton;
-
+            event.data = MouseButtonData(button, action, mods, xpos, ypos);
             thisWindow->m_windowEvent.invoke(event);
         });
 
@@ -92,7 +95,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             // RP_LOG(LogGLFWWindow, Display, "mouse xoffset:{} yoffset: {}", xoffset, yoffset);
             InputEvent event;
             event.type = EventType::MouseScroll;
-
+            event.data = ScrollData(xoffset, yoffset);
             thisWindow->m_windowEvent.invoke(event);
         });
 }
@@ -127,7 +130,12 @@ void GLFWWindow::shutdown()
     {
         glfwSetWindowUserPointer(m_window, nullptr);
         glfwDestroyWindow(m_window);
-        RP_LOG(LogGLFWWindow, Display, "GLFW window destroyed");
+        RP_LOG(LogGLFWWindow, Display, "GLFW window with id:{} destroyed", m_id.value);
         m_window = nullptr;
     }
+}
+
+Event<const InputEvent&>& RPE::GLFWWindow::onEvent()
+{
+    return m_windowEvent;
 }

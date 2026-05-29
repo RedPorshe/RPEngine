@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 
 
 # common options
-project(RedPorsheEngine VERSION 1.0.0)
+project(KuzbassEngine VERSION 1.0.0)
 add_executable(${PROJECT_NAME} Source/main.cpp)
 
 #version
@@ -34,6 +34,8 @@ Source/Window/IWindowManager.h
 Source/Window/IWindow.h 
 Source/Event/Event.h 
 Source/Event/InputEvent.h
+Source/Input/InputManager.h 
+Source/Input/InputManager.cpp 
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})
@@ -50,7 +52,7 @@ set(TEST_SOURCES
 Tests/LogConceptTests.cpp 
 Tests/WindowTests.cpp 
 )
-add_executable(${PROJECT_NAME}TestRunner ${TEST_SOURCES})
+add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 
 
 # add libs
@@ -59,7 +61,7 @@ find_package(glfw3)
 target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog glfw)
 
 find_package(GTest REQUIRED)
-target_link_libraries(${PROJECT_NAME}TestRunner ${PROJECT_NAME}lib gtest::gtest glfw)
+target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest glfw)
 
 #FOLders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

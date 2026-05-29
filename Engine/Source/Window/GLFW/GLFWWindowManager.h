@@ -5,6 +5,7 @@
 #include <memory>
 #include <unordered_map>
 #include <expected>
+#include <functional>
 
 namespace RPE
 {

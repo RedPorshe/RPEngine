@@ -20,6 +20,7 @@ public:
     bool isValid() const override;
     bool shouldClose() const override;
     void shutdown();
+    Event<const InputEvent&>& onEvent();
 
 private:
     GLFWwindow* m_window{nullptr};

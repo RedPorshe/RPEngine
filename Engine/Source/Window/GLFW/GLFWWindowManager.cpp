@@ -1,5 +1,6 @@
 #include "GLFWWindowManager.h"
 #include "GLFWWindow.h"
+#include "Event/InputEvent.h"
 
 #include "Log/Log.h"
 #include <GLFW/glfw3.h>

@@ -17,6 +17,8 @@ public:
 
 private:
     const std::unique_ptr<class IWindowManager> m_WindowManager;
+    const std::shared_ptr<class InputManager> m_inputManager;
     bool m_initialized{false};
+    void onInputEvent(const struct InputEvent& event);
 };
 }  // namespace RPE

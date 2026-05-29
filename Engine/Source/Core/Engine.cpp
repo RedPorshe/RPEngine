@@ -1,6 +1,11 @@
 #include "Engine.h"
 #include "Log/Log.h"
 #include "Window/IWindowManager.h"
+#include "Window/IWindow.h"
+#include "Window/GLFW/GLFWWindowManager.h"
+#include "Window/GLFW/GLFWWindow.h"
+#include "Event/InputEvent.h"
+#include "Input/InputManager.h"
 
 #include <format>
 
@@ -8,7 +13,7 @@ using namespace RPE;
 DEFINE_LOG_CATEGORY_STATIC(EngineLog);
 
 Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
-    : m_WindowManager(std::move(WindowManager))
+    : m_WindowManager(std::move(WindowManager)), m_inputManager(std::make_shared<InputManager>())
 {
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
     WindowSettings wset;
@@ -29,6 +34,16 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
         window->setTitle("Tests of ");
     }
 
+    if (auto GLFWWndowManager = dynamic_cast<GLFWWindowManager*>(m_WindowManager.get()))
+    {
+        auto wind = m_WindowManager->getWindowById(windowResult.value());
+        if (auto glfwwin = dynamic_cast<GLFWWindow*>(wind.get()))
+        {
+            RP_LOG(EngineLog, Display, "Ready to subcribe!!!!!!!!!!!!!!!!!!!!!!!!");
+            glfwwin->onEvent().subscribe([this](const InputEvent& event) { onInputEvent(event); });
+        }
+    }
+
     m_initialized = true;
 }
 Engine::~Engine() = default;
@@ -46,4 +61,10 @@ void Engine::run()
         m_WindowManager->update();
     }
     RP_LOG(EngineLog, Display, "{} stoped", ENGINE_NAME);
+}
+
+void Engine::onInputEvent(const InputEvent& event)
+{
+    if (!m_inputManager) return;
+    m_inputManager->proccessInput(event);
 }
