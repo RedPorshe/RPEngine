@@ -4,10 +4,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogLinuxWindow);
 
 using namespace RPE;
 
-LinuxWindow::LinuxWindow(const WindowSettings& settings) 
-    {
+LinuxWindow::LinuxWindow(const WindowSettings& settings)
+{
     RP_LOG(LogLinuxWindow, Error, "Linux window is not implemented!");
-    }
+}
 
 LinuxWindow::~LinuxWindow() {}
 

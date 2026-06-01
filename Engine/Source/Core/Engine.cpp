@@ -29,7 +29,6 @@ using namespace RPE;
 // temp include
 #include "GameFramework/PlayerController.h"
 
-
 Engine* Engine::s_instance = nullptr;
 
 DEFINE_LOG_CATEGORY_STATIC(EngineLog);

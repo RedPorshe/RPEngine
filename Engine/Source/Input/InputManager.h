@@ -56,6 +56,6 @@ protected:
     ExitCallback m_exitCallback;
     std::unordered_map<Key, bool> m_currentKeys;
     std::unordered_map<Key, bool> m_previousKeys;
-   std::shared_ptr<IController> m_activeController = nullptr;
+    std::shared_ptr<IController> m_activeController = nullptr;
 };
 }  // namespace RPE

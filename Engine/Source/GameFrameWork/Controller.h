@@ -14,6 +14,5 @@ public:
     virtual void onMouseScroll(double xoffset, double yoffset) = 0;
     virtual std::string name() const = 0;
     virtual void setName(const std::string& newName) = 0;
-  
 };
-}  // namespace RPE 
+}  // namespace RPE

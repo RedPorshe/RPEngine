@@ -3,7 +3,7 @@
 #include "Utility.h"
 #include <memory>
 #include <string_view>
-#include <stdexcept> 
+#include <stdexcept>
 #include <atomic>
 
 namespace RPE
@@ -38,7 +38,5 @@ private:
     std::atomic<bool> m_requestExit{false};
     static Engine* s_instance;
 };
-
-
 
 }  // namespace RPE

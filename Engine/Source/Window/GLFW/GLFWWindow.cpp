@@ -79,8 +79,6 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
 
-           
-
             InputEvent event;
             event.type = EventType::MouseButton;
             event.data = MouseButtonData(button, action, mods, xpos, ypos);
