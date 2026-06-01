@@ -57,7 +57,7 @@ Source/Input/InputManager.h
 Source/Input/InputManager.cpp 
 Source/Input/KeyCodes.h
 # Game framework
-Source/GameFramework/Controller.h
+#Source/GameFramework/Controller.h
 Source/GameFramework/Controller.cpp
 Source/GameFramework/PlayerController.h
 Source/GameFramework/PlayerController.cpp
