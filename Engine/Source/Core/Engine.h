@@ -3,6 +3,8 @@
 #include "Utility.h"
 #include <memory>
 #include <string_view>
+#include <stdexcept> 
+#include <atomic>
 
 namespace RPE
 {
@@ -14,11 +16,29 @@ public:
     ~Engine();
     void run();
     static constexpr std::string_view version() noexcept { return ENGINE_VERSION_STRING; }
+    bool isInitialized() const noexcept { return m_initialized; }
+    void requestExit();
+    static Engine& Get()
+    {
+        if (!s_instance)
+        {
+            throw std::runtime_error("Engine instance is not initialized.");
+        }
+        return *s_instance;
+    }
+    std::shared_ptr<class InputManager> getInputManager() const { return m_inputManager; }
 
 private:
     const std::unique_ptr<class IWindowManager> m_WindowManager;
     const std::shared_ptr<class InputManager> m_inputManager;
     bool m_initialized{false};
     void onInputEvent(const struct InputEvent& event);
+    void updateGameLogic(float deltaTime);
+    void setupWindowEvents(struct WindowId windowId);
+    std::atomic<bool> m_requestExit{false};
+    static Engine* s_instance;
 };
+
+
+
 }  // namespace RPE

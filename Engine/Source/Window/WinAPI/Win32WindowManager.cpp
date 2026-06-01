@@ -1,4 +1,5 @@
 #include "Win32WindowManager.h"
+#include "Win32WindowManager.h"
 #include "Win32Window.h"
 #include "Log/Log.h"
 
@@ -32,4 +33,9 @@ std::expected<WindowId, WindowCreationerror> Win32WindowManager::createWindow(co
 std::shared_ptr<IWindow> Win32WindowManager::getWindowById(WindowId id) const
 {
     return nullptr;
+}
+
+bool RPE::Win32WindowManager::Isinitialized() const
+{
+    return true;
 }

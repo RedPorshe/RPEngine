@@ -13,29 +13,53 @@ add_executable(${PROJECT_NAME} Source/main.cpp)
 configure_file(EngineConfig.h.template ${CMAKE_CURRENT_SOURCE_DIR}/Source/EngineConfig.h)
 
 set(ENGINE_SOURCES
+# Engine
 Source/Core/Engine.cpp
 Source/Core/Engine.h
+# utility_source
 Source/Core/Utility.h
 .clang-format
 Source/pch.cpp
 Source/pch.h
 Source/EngineConfig.h
+# logger
 Source/Log/Log.h
 Source/Log/Log.cpp 
+# windows and managers
+# GLFW 
 Source/Window/GLFW/GLFWWindowManager.h 
 Source/Window/GLFW/GLFWWindowManager.cpp 
 Source/Window/GLFW/GLFWWindow.h 
 Source/Window/GLFW/GLFWWindow.cpp  
+ # winapi
 Source/Window/WinAPI/Win32WindowManager.h 
 Source/Window/WinAPI/Win32WindowManager.cpp 
 Source/Window/WinAPI/Win32Window.h 
 Source/Window/WinAPI/Win32Window.cpp  
+# linux window manager
+Source/Window/Linux/LinuxWindowManager.h
+Source/Window/Linux/LinuxWindowManager.cpp
+Source/Window/Linux/LinuxWindow.h
+Source/Window/Linux/LinuxWindow.cpp
+# macos window manager
+Source/Window/MacOS/MacOSWindowManager.h    
+Source/Window/MacOS/MacOSWindowManager.cpp
+Source/Window/MacOS/MacOSWindow.h
+Source/Window/MacOS/MacOSWindow.cpp
+# interfaces
 Source/Window/IWindowManager.h 
 Source/Window/IWindow.h 
+# events
 Source/Event/Event.h 
 Source/Event/InputEvent.h
+# input manager
 Source/Input/InputManager.h 
 Source/Input/InputManager.cpp 
+Source/Input/KeyCodes.h
+# Game framework
+Source/GameFramework/Controller.h
+Source/GameFramework/PlayerController.h
+Source/GameFramework/PlayerController.cpp
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})

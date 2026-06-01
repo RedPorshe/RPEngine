@@ -79,7 +79,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
 
-            // RP_LOG(LogGLFWWindow, Display, "mouse button: {}, action: {}, pos: ({}, {})", button, action, xpos, ypos);
+           
 
             InputEvent event;
             event.type = EventType::MouseButton;

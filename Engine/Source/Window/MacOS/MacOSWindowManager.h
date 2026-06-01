@@ -8,11 +8,11 @@
 namespace RPE
 {
 
-class Win32WindowManager final : public IWindowManager
+class MacOSWindowManager final : public IWindowManager
 {
 public:
-    Win32WindowManager();
-    ~Win32WindowManager() override;
+    MacOSWindowManager();
+    ~MacOSWindowManager() override;
 
     void update() override;
     bool areAllWindowsClosed() const override;
