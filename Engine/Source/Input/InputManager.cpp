@@ -1,7 +1,7 @@
 #include "InputManager.h"
 #include "Log/Log.h"
 #include "Event/InputEvent.h"
-#include "GameFramework/Controller.h"
+#include "GameFramework/Controller/PlayerController.h"
 #include <GLFW/glfw3.h>
 
 DEFINE_LOG_CATEGORY_STATIC(InputManagerLog)
@@ -98,7 +98,14 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<KeyData>(event.data))
             {
                 const auto& keydata = std::get<KeyData>(event.data);
-                handleKeyEvent(keydata.key, keydata.scancode, keydata.action, keydata.mods);
+                if (m_activeController)
+                {
+                    m_activeController->onKeyPress(keydata.key, keydata.scancode, keydata.action, keydata.mods);
+                }
+                else
+                {
+                    handleKeyEvent(keydata.key, keydata.scancode, keydata.action, keydata.mods);
+                }
             }
             break;
         }
@@ -107,7 +114,14 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<MouseMoveData>(event.data))
             {
                 const auto& data = std::get<MouseMoveData>(event.data);
-                handleMouseMoveEvent(data.x, data.y);
+                if (m_activeController)
+                {
+                    m_activeController->onMouseMove(data.x, data.y);
+                }
+                else
+                {
+                    handleMouseMoveEvent(data.x, data.y);
+                }
             }
             break;
         }
@@ -116,7 +130,14 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<MouseButtonData>(event.data))
             {
                 const auto& data = std::get<MouseButtonData>(event.data);
-                handleMouseButtonEvent(data.button, data.action, data.mods, data.x, data.y);
+                if (m_activeController)
+                {
+                    m_activeController->onMouseButton(data.button, data.action, data.mods, data.x, data.y);
+                }
+                else
+                {
+                    handleMouseButtonEvent(data.button, data.action, data.mods, data.x, data.y);
+                }
             }
             break;
         }
@@ -125,7 +146,14 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<ScrollData>(event.data))
             {
                 const auto& data = std::get<ScrollData>(event.data);
-                handleMouseScrollEvent(data.xoffset, data.yoffset);
+                if (m_activeController)
+                {
+                    m_activeController->onMouseScroll(data.xoffset, data.yoffset);
+                }
+                else
+                {
+                    handleMouseScrollEvent(data.xoffset, data.yoffset);
+                }
             }
             break;
         }

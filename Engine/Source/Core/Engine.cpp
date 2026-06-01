@@ -27,8 +27,9 @@
 
 using namespace RPE;
 // temp include
-#include "GameFramework/PlayerController.h"
-
+#include "GameFramework/Controller/PlayerController.h"
+#include "GameFramework/GameObjects/Components/InputComponent.h"
+#include "GameFramework/GameObjects/WorldObject/WorldObject.h"
 Engine* Engine::s_instance = nullptr;
 
 DEFINE_LOG_CATEGORY_STATIC(EngineLog);
@@ -67,6 +68,8 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
     //*****
     auto playerController = std::make_shared<PlayerController>();
     playerController->setName("Main Player Controller");
+    auto playerObject = new WorldObject();
+    playerController->setControlledObject(playerObject);
     m_inputManager->setActiveController(playerController);
     /******/
     m_initialized = true;
