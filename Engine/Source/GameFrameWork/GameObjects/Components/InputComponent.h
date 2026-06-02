@@ -1,6 +1,7 @@
 #pragma once
 #include "Input/KeyCodes.h"
 #include <functional>
+#include <string>
 
 namespace RPE
 {
