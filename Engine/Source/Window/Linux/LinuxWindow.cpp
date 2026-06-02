@@ -1,4 +1,5 @@
 #include "LinuxWindow.h"
+#include "Log/Log.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogLinuxWindow);
 
