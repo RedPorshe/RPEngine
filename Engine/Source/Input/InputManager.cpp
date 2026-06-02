@@ -9,7 +9,7 @@ DEFINE_LOG_CATEGORY_STATIC(InputManagerLog)
 using namespace RPE;
 
 InputManager::InputManager()
-{    
+{
     m_firstMouse = true;
     m_mouseDeltaX = 0.0;
     m_mouseDeltaY = 0.0;
