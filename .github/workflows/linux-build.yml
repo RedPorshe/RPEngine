@@ -20,6 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: List source files
+        run: |
+         ls -la Engine/Source/GameFramework/
+         ls -la Engine/Source/GameFramework/Controller/ || echo "Controller folder not found"
+         ls -la Engine/Source/GameFramework/GameObjects/ || echo "GameObjects folder not found"
+      
       - name: Install Conan
         run: pip install conan
 
