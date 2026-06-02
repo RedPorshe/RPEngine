@@ -1,0 +1,1 @@
+call Automation/build.bat generate Debug
