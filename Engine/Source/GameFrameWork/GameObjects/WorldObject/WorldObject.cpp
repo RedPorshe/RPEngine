@@ -1,6 +1,7 @@
 #include "WorldObject.h"
 #include "Input/KeyCodes.h"
 #include "GameFrameWork/GameObjects/Components/InputComponent.h"
+#include "Log/Log.h"
 
 using namespace RPE;
 

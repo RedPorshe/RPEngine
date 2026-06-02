@@ -1,4 +1,7 @@
 #include "InputComponent.h"
+#include "Log/Log.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogInputComponent)
 
 using namespace RPE;
 
