@@ -56,15 +56,15 @@ Source/Event/InputEvent.h
 Source/Input/InputManager.h
 Source/Input/InputManager.cpp 
 Source/Input/KeyCodes.h
-Source/GameFramework/Controller/Controller.h
-Source/GameFramework/Controller/Controller.cpp
-Source/GameFramework/Controller/PlayerController.h
-Source/GameFramework/Controller/PlayerController.cpp
+Source/GameFrameWork/Controller/Controller.h
+Source/GameFrameWork/Controller/Controller.cpp
+Source/GameFrameWork/Controller/PlayerController.h
+Source/GameFrameWork/Controller/PlayerController.cpp
 # World 
-Source/GameFramework/GameObjects/WorldObject/WorldObject.h 
-Source/GameFramework/GameObjects/WorldObject/WorldObject.cpp
-Source/GameFramework/GameObjects/Components/InputComponent.h 
-Source/GameFramework/GameObjects/Components/InputComponent.cpp
+Source/GameFrameWork/GameObjects/WorldObject/WorldObject.h 
+Source/GameFrameWork/GameObjects/WorldObject/WorldObject.cpp
+Source/GameFrameWork/GameObjects/Components/InputComponent.h 
+Source/GameFrameWork/GameObjects/Components/InputComponent.cpp
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})
