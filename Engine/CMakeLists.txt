@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.31.6)
 set(CMAKE_CXX_STANDARD 23)
 
 
+
 # common options
 project(KuzbassEngine VERSION 1.0.0)
 add_executable(${PROJECT_NAME} Source/main.cpp)
@@ -56,15 +57,15 @@ Source/Event/InputEvent.h
 Source/Input/InputManager.h
 Source/Input/InputManager.cpp 
 Source/Input/KeyCodes.h
-Source/GameFrameWork/Controller/Controller.h
-Source/GameFrameWork/Controller/Controller.cpp
-Source/GameFrameWork/Controller/PlayerController.h
-Source/GameFrameWork/Controller/PlayerController.cpp
+Source/GameFramework/Controller/Controller.h
+Source/GameFramework/Controller/Controller.cpp
+Source/GameFramework/Controller/PlayerController.h
+Source/GameFramework/Controller/PlayerController.cpp
 # World 
-Source/GameFrameWork/GameObjects/WorldObject/WorldObject.h 
-Source/GameFrameWork/GameObjects/WorldObject/WorldObject.cpp
-Source/GameFrameWork/GameObjects/Components/InputComponent.h 
-Source/GameFrameWork/GameObjects/Components/InputComponent.cpp
+Source/GameFramework/GameObjects/WorldObject/WorldObject.h 
+Source/GameFramework/GameObjects/WorldObject/WorldObject.cpp
+Source/GameFramework/GameObjects/Components/InputComponent.h 
+Source/GameFramework/GameObjects/Components/InputComponent.cpp
 )
 
 add_library(${PROJECT_NAME}lib  ${ENGINE_SOURCES})

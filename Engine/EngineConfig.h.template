@@ -1,7 +1,7 @@
 #pragma once
 
-#define Engine_VERSION_MAJOR @RedPorsheEngine_VERSION_MAJOR@
-#define Engine_VERSION_MINOR @RedPorsheEngine_VERSION_MINOR@
-#define Engine_VERSION_PATCH @RedPorsheEngine_VERSION_PATCH@
-#define ENGINE_VERSION_STRING "@RedPorsheEngine_VERSION@"
-#define ENGINE_NAME "Kuzbass Engine"
+#define Engine_VERSION_MAJOR @KuzbassEngine_VERSION_MAJOR@
+#define Engine_VERSION_MINOR @KuzbassEngine_VERSION_MINOR@
+#define Engine_VERSION_PATCH @KuzbassEngine_VERSION_PATCH@
+#define ENGINE_VERSION_STRING "@KuzbassEngine_VERSION@"
+#define ENGINE_NAME "@PROJECT_NAME@"
