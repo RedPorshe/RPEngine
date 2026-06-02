@@ -81,6 +81,8 @@ set(TEST_SOURCES
 Tests/LogConceptTests.cpp 
 Tests/WindowTests.cpp 
 Tests/EventTests.cpp 
+Tests/EventChaining.cpp
+Tests/EventSubscriptionLifetime.cpp
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 
