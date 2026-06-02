@@ -15,6 +15,7 @@ public:
     void setTitle(const std::string& title) override;
     bool isValid() const override;
     bool shouldClose() const override;
+    void* getWindowHandle() const override;
 };
 
 }  // namespace RPE

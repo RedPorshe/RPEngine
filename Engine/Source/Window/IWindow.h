@@ -38,6 +38,7 @@ public:
     virtual void setTitle(const std::string& title) = 0;
     virtual bool isValid() const = 0;
     virtual bool shouldClose() const = 0;
+    virtual void* getWindowHandle() const = 0;
 };
 
 }  // namespace RPE

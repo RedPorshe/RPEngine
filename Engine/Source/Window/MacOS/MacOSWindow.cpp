@@ -26,3 +26,8 @@ bool MacOSWindow::shouldClose() const
 {
     return true;
 }
+
+void* RPE::MacOSWindow::getWindowHandle() const
+{
+    return nullptr;
+}

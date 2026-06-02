@@ -26,6 +26,17 @@ Source/EngineConfig.h
 # logger
 Source/Log/Log.h
 Source/Log/Log.cpp 
+# render 
+Source/Render/RHI/Renderer.h 
+Source/Render/RHI/Renderer.cpp 
+# vulkan 
+Source/Render/vulkan/vkRender.h 
+Source/Render/vulkan/vkRender.cpp 
+Source/Render/vulkan/vkContext.h  
+Source/Render/vulkan/vkContext.cpp 
+Source/Render/vulkan/Managers/IVkManager.h   
+Source/Render/vulkan/Managers/InstanceManager.h   
+Source/Render/vulkan/Managers/InstanceManager.cpp    
 # windows and managers
 # GLFW 
 Source/Window/GLFW/GLFWWindowManager.h 
@@ -91,9 +102,10 @@ add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 # add libs
 find_package(spdlog REQUIRED)
 find_package(glfw3)
-target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog glfw)
-
 find_package(GTest REQUIRED)
+find_package(Vulkan REQUIRED)
+
+target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog glfw Vulkan::Vulkan)
 target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest glfw)
 
 #FOLders

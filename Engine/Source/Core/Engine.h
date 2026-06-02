@@ -12,7 +12,7 @@ namespace RPE
 class Engine final : public NonCopyable
 {
 public:
-    Engine(std::unique_ptr<class IWindowManager> WindowManager);
+    Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_ptr<class RHI> renderer);
     ~Engine();
     void run();
     static constexpr std::string_view version() noexcept { return ENGINE_VERSION_STRING; }
@@ -31,6 +31,7 @@ public:
 private:
     const std::unique_ptr<class IWindowManager> m_WindowManager;
     const std::shared_ptr<class InputManager> m_inputManager;
+    const std::unique_ptr<class RHI> m_renderer;
     bool m_initialized{false};
     void onInputEvent(const struct InputEvent& event);
     void updateGameLogic(float deltaTime);

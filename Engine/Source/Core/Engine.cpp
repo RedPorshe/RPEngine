@@ -3,6 +3,8 @@
 #include "Window/IWindowManager.h"
 #include "Window/IWindow.h"
 
+#include "Render/RHI/Renderer.h"
+
 #include "Event/InputEvent.h"
 #include "Input/InputManager.h"
 
@@ -26,16 +28,13 @@
 #include <thread>
 
 using namespace RPE;
-// temp include
-#include "GameFramework/Controller/PlayerController.h"
-#include "GameFramework/GameObjects/Components/InputComponent.h"
-#include "GameFramework/GameObjects/WorldObject/WorldObject.h"
+
 Engine* Engine::s_instance = nullptr;
 
 DEFINE_LOG_CATEGORY_STATIC(EngineLog);
 
-Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
-    : m_WindowManager(std::move(WindowManager)), m_inputManager(std::make_shared<InputManager>())
+Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_ptr<class RHI> renderer)  //
+    : m_WindowManager(std::move(WindowManager)), m_inputManager(std::make_shared<InputManager>()), m_renderer(std::move(renderer))
 {
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
     WindowSettings wset;
@@ -45,6 +44,19 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
     wset.x = 200;
     wset.y = 200;
     const auto windowResult = m_WindowManager->createWindow(wset);
+    if (m_renderer)
+    {
+        if (!m_renderer->preInit(wset, ENGINE_NAME))
+        {
+            RP_LOG(EngineLog, Error, "Failed to preInit {}", m_renderer->getName());
+            m_renderer->shutdown();
+            return;
+        }
+    }
+    else
+    {
+        RP_LOG(EngineLog, Fatal, "Renderer is not created!!!");
+    }
 
     if (!windowResult)
     {
@@ -63,15 +75,16 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager)  //
         {
             RP_LOG(EngineLog, Error, "Created window is not valid for {}", ENGINE_NAME);
             m_initialized = false;
+            return;
+        }
+        if (!m_renderer->init(window.get()))
+        {
+            RP_LOG(EngineLog, Error, "Failed to Init renderer");
+            m_renderer->shutdown();
+            return;
         }
     }
-    //*****
-    auto playerController = std::make_shared<PlayerController>();
-    playerController->setName("Main Player Controller");
-    auto playerObject = new WorldObject();
-    playerController->setControlledObject(playerObject);
-    m_inputManager->setActiveController(playerController);
-    /******/
+    m_renderer->setEnginePtr(this);
     m_initialized = true;
     s_instance = this;
 }
@@ -99,7 +112,27 @@ void Engine::run()
         deltaTime = std::min(deltaTime, 0.033f);
         m_WindowManager->update();
         updateGameLogic(deltaTime);
-        // then m_renderer->render();
+        static int failcount = 0;
+        constexpr int MAXFAILCOUNT = 3;
+        if (m_renderer)
+        {
+            m_renderer->update();
+            if (!m_renderer->render())
+            {
+
+                if (failcount >= MAXFAILCOUNT)
+                {
+                    RP_LOG(EngineLog, Error, "Exit after {} failes", failcount);
+                    requestExit();
+                    break;
+                }
+                if (failcount < MAXFAILCOUNT) failcount++;
+            }
+            else
+            {
+                failcount = 0;
+            }
+        }
         m_inputManager->update();
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
@@ -114,6 +147,14 @@ void RPE::Engine::requestExit()
 
 void Engine::onInputEvent(const InputEvent& event)
 {
+    if (m_renderer)
+    {
+        if (std::holds_alternative<ResizeData>(event.data))
+        {
+            const auto data = std::get<ResizeData>(event.data);
+            m_renderer->onResize(data.width, data.height);
+        }
+    }
     if (!m_inputManager) return;
     m_inputManager->processInput(event);
 }

@@ -21,6 +21,7 @@ public:
     bool shouldClose() const override;
     void shutdown();
     Event<const InputEvent&>& onEvent();
+    void* getWindowHandle() const override;
 
 private:
     GLFWwindow* m_window{nullptr};

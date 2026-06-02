@@ -137,3 +137,8 @@ Event<const InputEvent&>& RPE::GLFWWindow::onEvent()
 {
     return m_windowEvent;
 }
+
+void* RPE::GLFWWindow::getWindowHandle() const
+{
+    return m_window;
+}

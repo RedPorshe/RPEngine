@@ -15,6 +15,12 @@ DEFINE_LOG_CATEGORY_STATIC(MainLog);
 #include "Window/GLFW/GLFWWindowManager.h"
 #endif  // RPE_USE_NATIVE_WINDOW
 
+#ifdef RPE_USE_VULKAN
+#include "Render/vulkan/vkRender.h"
+#else
+#include "Render/vulkan/vkRender.h"  //stub
+#endif
+
 void logInitializationError(const std::string& managerName)
 {
     RP_LOG(MainLog, Error, "Failed to initialize the {} window manager.", managerName);
@@ -62,7 +68,7 @@ void TestWindowManagerInitialization()
 #elif defined(__APPLE__)
 
     {
-        RP_LOG(MainLog, Display, "Testing macOS window manager initialization...");)
+        RP_LOG(MainLog, Display, "Testing macOS window manager initialization...");
         auto windowManager = std::make_unique<RPE::MacOSWindowManager>();
         if (!windowManager->Isinitialized())
         {
@@ -94,9 +100,11 @@ void TestWindowManagerInitialization()
 
 int main()
 {
+#ifndef SKIP_WINDOW_TESTS
     RP_LOG(MainLog, Display, "Starting Window managers tests");
     TestWindowManagerInitialization();
     RP_LOG(MainLog, Display, "Finished Window managers tests");
+#endif  // !SKIP_WINDOW_TESTS
 
     std::unique_ptr<RPE::IWindowManager> WindowManager;
 
@@ -114,14 +122,27 @@ int main()
     WindowManager = std::make_unique<RPE::GLFWWindowManager>();
 
 #endif  // RPE_USE_NATIVE_WINDOW
+    std::unique_ptr<RPE::RHI> Renderer;
+
+#ifdef RPE_USE_VULKAN
+    Renderer = std::make_unique<RPE::VkRenderer>();
+#else
+    Renderer = std::make_unique<RPE::VkRenderer>();
+    // stub
+#endif
 
     if (!WindowManager)
     {
         RP_LOG(MainLog, Error, "Failed to create the window manager.");
         return EXIT_FAILURE;
     }
+    if (!Renderer)
+    {
+        RP_LOG(MainLog, Error, "Failed to create Renderer...");
+        return EXIT_FAILURE;
+    }
 
-    RPE::Engine engine{std::move(WindowManager)};
+    RPE::Engine engine{std::move(WindowManager), std::move(Renderer)};
     if (!engine.isInitialized())
     {
         RP_LOG(MainLog, Error, "Failed to initialize the engine.");

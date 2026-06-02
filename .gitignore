@@ -1,3 +1,5 @@
+build_debug/
+build_release/
 build/
 EngineConfig.h
 settings.json

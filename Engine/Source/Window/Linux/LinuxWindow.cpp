@@ -23,3 +23,8 @@ bool LinuxWindow::shouldClose() const
 {
     return true;
 }
+
+void* RPE::LinuxWindow::getWindowHandle() const
+{
+    return nullptr;
+}

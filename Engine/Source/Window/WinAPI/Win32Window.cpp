@@ -26,3 +26,8 @@ bool Win32Window::shouldClose() const
 {
     return true;
 }
+
+void* RPE::Win32Window::getWindowHandle() const
+{
+    return nullptr;
+}
