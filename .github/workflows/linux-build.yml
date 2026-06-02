@@ -22,7 +22,7 @@ jobs:
 
       - name: List source files
         run: |
-         ls -la Engine/Source/GameFramework/
+         ls -la Engine/Source/
          ls -la Source/GameFramework/Controller/ || echo "Controller folder not found"
          ls -la Source/GameFramework/GameObjects/ || echo "GameObjects folder not found"
       
