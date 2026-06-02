@@ -80,6 +80,7 @@ endif()
 set(TEST_SOURCES
 Tests/LogConceptTests.cpp 
 Tests/WindowTests.cpp 
+Tests/EventTests.cpp 
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 
