@@ -53,10 +53,9 @@ Source/Window/IWindow.h
 Source/Event/Event.h 
 Source/Event/InputEvent.h
 # input manager
-Source/Input/InputManager.h 
+Source/Input/InputManager.h
 Source/Input/InputManager.cpp 
 Source/Input/KeyCodes.h
-## Game framework
 Source/GameFramework/Controller/Controller.h
 Source/GameFramework/Controller/Controller.cpp
 Source/GameFramework/Controller/PlayerController.h
