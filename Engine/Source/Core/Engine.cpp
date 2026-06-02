@@ -27,9 +27,9 @@
 
 using namespace RPE;
 // temp include
-#include "GameFramework/Controller/PlayerController.h"
-#include "GameFramework/GameObjects/Components/InputComponent.h"
-#include "GameFramework/GameObjects/WorldObject/WorldObject.h"
+#include "GameFrameWork/Controller/PlayerController.h"
+#include "GameFrameWork/GameObjects/Components/InputComponent.h"
+#include "GameFrameWork/GameObjects/WorldObject/WorldObject.h"
 Engine* Engine::s_instance = nullptr;
 
 DEFINE_LOG_CATEGORY_STATIC(EngineLog);
