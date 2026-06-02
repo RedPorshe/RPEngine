@@ -22,23 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Vulkan SDK
-        run: |
-          curl -L -o VulkanSDK.exe "https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-sdk.exe"
-          ./VulkanSDK.exe /S
-          echo "Vulkan SDK installed"
-
-      - name: Verify Vulkan installation
-        run: |
-          # Ищем установленную версию
-          $vulkanPath = Get-ChildItem "C:\VulkanSDK\" -Directory | Select-Object -Last 1
-          Write-Host "Vulkan SDK path: $vulkanPath"
-          if ($vulkanPath) {
-            echo "VULKAN_SDK_PATH=$vulkanPath" | Out-File -FilePath $env:GITHUB_ENV -Append
-          }
-          # Проверяем наличие vulkan.h
-          Get-ChildItem "C:\VulkanSDK\" -Recurse -Filter "vulkan.h" -ErrorAction SilentlyContinue
-
+   
       - name: Install Conan
         run: pip install conan
 

@@ -103,7 +103,7 @@ add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 find_package(spdlog REQUIRED)
 find_package(glfw3)
 find_package(GTest REQUIRED)
-find_package(Vulkan REQUIRED)
+find_package(Vulkan QUIET)
 
 target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog glfw Vulkan::Vulkan)
 target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest glfw)
