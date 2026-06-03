@@ -101,7 +101,7 @@ add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 
 # add libs
 find_package(spdlog REQUIRED)
-find_package(glfw3)
+find_package(glfw3 REQUIRED)
 find_package(GTest REQUIRED)
 find_package(VulkanHeaders REQUIRED)
 find_package(VulkanLoader REQUIRED)
