@@ -118,6 +118,7 @@ target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest glfw)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_target_properties(${PROJECT_NAME}lib PROPERTIES FOLDER "Engine")
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Engine")
+set_target_properties(${PROJECT_NAME}Tests PROPERTIES FOLDER "Tests")
 
 set(CMAKE_SUPPRESS_REGENERATION TRUE)
 
