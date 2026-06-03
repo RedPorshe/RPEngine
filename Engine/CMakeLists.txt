@@ -103,16 +103,16 @@ add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 find_package(spdlog REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(GTest REQUIRED)
-find_package(VulkanHeaders REQUIRED)
-find_package(VulkanLoader REQUIRED)
 
-target_link_libraries(${PROJECT_NAME}lib 
-PUBLIC 
-spdlog::spdlog
- glfw 
- vulkan-headers::vulkan-headers
- Vulkan::Loader
- )
+
+find_package(Vulkan REQUIRED)
+if(Vulkan_FOUND)
+message(STATUS "Vulkan found: ${Vulkan_VERSION}")
+else()
+message(WARNING "Vulkan not found! Using stub renderer.")
+endif()
+
+target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog  glfw  Vulkan::Vulkan)
 
 target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest glfw)
 
