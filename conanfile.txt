@@ -2,7 +2,11 @@
 spdlog/1.17.0
 gtest/1.17.0
 glfw/3.4
+vulkan-headers/1.4.350.0
 
 [generators]
 CMakeDeps
 CMakeToolchain
+
+[layout]
+cmake_layout
