@@ -104,8 +104,16 @@ find_package(spdlog REQUIRED)
 find_package(glfw3)
 find_package(GTest REQUIRED)
 find_package(VulkanHeaders REQUIRED)
+find_package(VulkanLoader REQUIRED)
 
-target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog glfw vulkan-headers::vulkan-headers)
+target_link_libraries(${PROJECT_NAME}lib 
+PUBLIC 
+spdlog::spdlog
+ glfw 
+ vulkan-headers::vulkan-headers
+ Vulkan::Loader
+ )
+
 target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest glfw)
 
 #FOLders
