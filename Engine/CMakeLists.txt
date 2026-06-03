@@ -105,14 +105,8 @@ find_package(glfw3 REQUIRED)
 find_package(GTest REQUIRED)
 
 
-find_package(Vulkan REQUIRED)
-if(Vulkan_FOUND)
-message(STATUS "Vulkan found: ${Vulkan_VERSION}")
-else()
-message(WARNING "Vulkan not found! Using stub renderer.")
-endif()
 
-target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog  glfw  Vulkan::Vulkan)
+target_link_libraries(${PROJECT_NAME}lib PUBLIC spdlog::spdlog  glfw)
 
 target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest glfw)
 
