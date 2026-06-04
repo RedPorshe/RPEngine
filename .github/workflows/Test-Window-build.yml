@@ -1,4 +1,4 @@
-name: Tes Windows build
+name: Test Windows build
 
 on:
   push:
@@ -22,7 +22,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Conan
-        run: pip install conan
+        run: |
+         pip install --upgrade pip
+         pip install conan
 
       - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@v1.2
@@ -34,7 +36,7 @@ jobs:
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=${{matrix.configuration}} `
             -DVulkan_ROOT="$env:VULKAN_SDK"
-            
+
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{matrix.configuration}} -v --target ${{env.TARGETS}}
 
