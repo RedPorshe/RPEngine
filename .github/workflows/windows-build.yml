@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 env:
-  TARGETS: LifeExeEngine
+  TARGETS: KuzbassEngine
 
 jobs:
   build:
