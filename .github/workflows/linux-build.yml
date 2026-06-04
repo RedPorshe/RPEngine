@@ -47,13 +47,7 @@ jobs:
     
       - name: Install dependencies with Conan
         run: |
-          conan install . --build=missing \
-          -s os=Linux \
-          -s arch=x86_64 \
-          -s compiler=gcc \
-          -s compiler.version=11 \
-          -s compiler.libcxx=libstdc++ \
-          -s compiler.cppstd=20 \
+          conan install . --build=missing \         
           -s build_type=${{matrix.configuration}}
 
       - name: Configure CMake
