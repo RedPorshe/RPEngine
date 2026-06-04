@@ -52,7 +52,7 @@ jobs:
           -s arch=x86_64 \
           -s compiler=gcc \
           -s compiler.version=11 \
-          -s compiler.libcxx=libstdc++11 \
+          -s compiler.libcxx=libstdc++ \
           -s compiler.cppstd=20 \
           -s build_type=${{matrix.configuration}}
 
