@@ -49,7 +49,6 @@ jobs:
     
       - name: Install dependencies with Conan
         run: |
-          # Приводим configuration к нижнему регистру для пресета
           BUILD_CONFIG=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
           conan install . --build=missing \
             -s build_type=${{matrix.configuration}} \
@@ -58,18 +57,20 @@ jobs:
     
       - name: Configure CMake
         run: |
-          # Приводим configuration к нижнему регистру для пресета
           BUILD_CONFIG=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
           cmake --preset conan-${BUILD_CONFIG}
     
       - name: Build
         run: |
-          cmake --build build --config ${{matrix.configuration}} -v --target ${{env.TARGETS}}
+          BUILD_CONFIG=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
+          cd build/${BUILD_CONFIG}
+          cmake --build . --config ${{matrix.configuration}} -v --target ${{env.TARGETS}}
     
       - name: Archive Artifacts
         run: |
           mkdir -p artifacts
-          find build -name "${{env.TARGETS}}" -type f -exec cp {} artifacts/ \;
+          BUILD_CONFIG=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
+          find build/${BUILD_CONFIG} -name "${{env.TARGETS}}" -type f -exec cp {} artifacts/ \;
           zip -r artifacts-${{matrix.configuration}}.zip artifacts/
     
       - name: Upload Artifacts
