@@ -5,5 +5,8 @@ compiler=msvc
 compiler.cppstd=20
 compiler.runtime=dynamic
 compiler.runtime_type=Release
-compiler.version=195
+compiler.version=194 
 os=Windows
+
+[conf]
+tools.cmake.cmaketoolchain:generator=Visual Studio 17 2022 
