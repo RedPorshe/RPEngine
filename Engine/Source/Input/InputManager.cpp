@@ -1,7 +1,7 @@
 #include "InputManager.h"
 #include "Log/Log.h"
 #include "Event/InputEvent.h"
-#include "GameFramework/Controller/PlayerController.h"
+#include "GameFrameWork/Controller/PlayerController.h"
 #include <GLFW/glfw3.h>
 
 DEFINE_LOG_CATEGORY_STATIC(InputManagerLog)

@@ -1,7 +1,7 @@
 #include "PlayerController.h"
 #include "Input/KeyCodes.h"
-#include "GameFramework/GameObjects/Components/InputComponent.h"
-#include "GameFramework/GameObjects/WorldObject/WorldObject.h"
+#include "GameFrameWork/GameObjects/Components/InputComponent.h"
+#include "GameFrameWork/GameObjects/WorldObject/WorldObject.h"
 #include "Log/Log.h"
 
 using namespace RPE;
