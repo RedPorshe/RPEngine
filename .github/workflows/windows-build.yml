@@ -28,8 +28,8 @@ jobs:
       - name: Prepare Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.1
         with:
-          vulkan-query-version: latest
-          vulkan-components: Vulkan-Headers, Vulkan-Loader Glslang SPIRV-Cross SPIRV-Tools SPIRV-Reflect SPIRV-Headers
+          vulkan-query-version: 1.4.350.0
+          vulkan-components: Vulkan-Headers, Vulkan-Loader Glslang 
           vulkan-use-cache: true
 
       - name: Configure CMake
