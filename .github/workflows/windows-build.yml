@@ -27,11 +27,6 @@ jobs:
           pip install conan
           conan --version
     
-      - name: Setup Vulkan SDK
-        uses: humbletim/setup-vulkan-sdk@v1.2.0
-        with:
-          vulkan-version: 1.3.243.0
-    
       - name: Configure Conan profile
         run: |
           conan profile detect --force
