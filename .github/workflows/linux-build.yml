@@ -65,12 +65,11 @@ jobs:
           cd build/${{matrix.configuration}}
           cmake --build . --config ${{matrix.configuration}} -v --target ${{env.TARGETS}}
 
-          
+
       - name: Archive Artifacts
         run: |
           mkdir -p artifacts
-          BUILD_CONFIG=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
-          find build/${BUILD_CONFIG} -name "${{env.TARGETS}}" -type f -exec cp {} artifacts/ \;
+          cp build/${{matrix.configuration}}/${{env.TARGETS}} artifacts/ || true
           zip -r artifacts-${{matrix.configuration}}.zip artifacts/
     
       - name: Upload Artifacts
