@@ -106,13 +106,14 @@ find_package(GTest REQUIRED)
 find_package(Vulkan REQUIRED)
 
 
+
 target_link_libraries(${PROJECT_NAME}lib PUBLIC 
-    spdlog::spdlog  
+ spdlog::spdlog  
     glfw
     Vulkan::Vulkan
 )
 
-target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest glfw)
+target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest )
 
 #FOLders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

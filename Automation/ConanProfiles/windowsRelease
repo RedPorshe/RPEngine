@@ -9,4 +9,5 @@ compiler.version=195
 os=Windows
 
 [conf]
-tools.cmake.cmaketoolchain:generator=Ninja
+tools.cmake.cmaketoolchain:generator=Visual Studio 18 2026
+tools.microsoft.msbuild:vs_version=18

@@ -1,1 +1,0 @@
-call Automation/build.bat generate Release
