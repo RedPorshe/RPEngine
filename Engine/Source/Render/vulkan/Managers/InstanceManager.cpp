@@ -55,7 +55,12 @@ bool RPE::InstanceManager::createInstance(const WindowSettings& settings, const 
     appinfo.engineVersion = VK_MAKE_VERSION(Engine_VERSION_MAJOR, Engine_VERSION_MINOR, Engine_VERSION_PATCH);
     appinfo.pApplicationName = settings.title.c_str();
     appinfo.applicationVersion = VK_MAKE_VERSION(Engine_VERSION_MAJOR, Engine_VERSION_MINOR, Engine_VERSION_PATCH);
+
+#ifdef VK_API_VERSION_1_4
     appinfo.apiVersion = VK_API_VERSION_1_4;
+#else
+    appinfo.apiVersion = VK_API_VERSION_1_3;
+#endif
 
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
