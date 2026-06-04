@@ -12,7 +12,7 @@ env:
 
 jobs:
   build:
-    runs-on: windows-2025-vs2026  # Изменено с  на windows-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         configuration:
@@ -35,11 +35,13 @@ jobs:
       - name: Configure Conan profile
         run: |
           conan profile detect --force
-          conan profile update settings.compiler=msvc default
-          conan profile update settings.compiler.version=193 default
-          conan profile update settings.compiler.cppstd=20 default
-          conan profile update settings.compiler.runtime=dynamic default
-          conan profile update settings.build_type=${{matrix.configuration}} default
+          # На Windows используем PowerShell для редактирования
+          $profilePath = "$env:USERPROFILE\.conan2\profiles\default"
+          (Get-Content $profilePath) -replace 'compiler.cppstd=.*', 'compiler.cppstd=20' | Set-Content $profilePath
+          (Get-Content $profilePath) -replace 'compiler=gcc', 'compiler=msvc' | Set-Content $profilePath
+          (Get-Content $profilePath) -replace 'compiler.version=.*', 'compiler.version=193' | Set-Content $profilePath
+          Add-Content -Path $profilePath -Value "compiler.runtime=dynamic"
+          Get-Content $profilePath
     
       - name: Install dependencies with Conan
         run: |
@@ -47,7 +49,7 @@ jobs:
     
       - name: Configure CMake
         run: |
-          cmake --preset conan-default -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
+          cmake --preset conan-default
     
       - name: Build Engine
         run: |
@@ -60,7 +62,7 @@ jobs:
       - name: Run Tests (Debug only)
         if: matrix.configuration == 'Debug'
         run: |
-          build/bin/Debug/${{env.TEST_TARGET}}.exe --gtest_output=xml:test-results.xml
+          build\bin\${{matrix.configuration}}\${{env.TEST_TARGET}}.exe --gtest_output=xml:test-results.xml
     
       - name: Upload Test Results (Debug)
         if: matrix.configuration == 'Debug'
@@ -81,7 +83,7 @@ jobs:
     
       - name: Archive Artifacts
         run: |
-          Compress-Archive -Path build/bin/* -DestinationPath artifacts-${{matrix.configuration}}.zip
+          Compress-Archive -Path build\bin\* -DestinationPath artifacts-${{matrix.configuration}}.zip
     
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4

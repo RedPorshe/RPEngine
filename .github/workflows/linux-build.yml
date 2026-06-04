@@ -47,8 +47,12 @@ jobs:
     
       - name: Install dependencies with Conan
         run: |
-          conan install . --build=missing -s build_type=${{matrix.configuration}}
-    
+          conan install . --build=missing \
+          -s compiler=gcc \
+          -s compiler.version=11 \
+          -s compiler.libcxx=libstdc++11 \
+          -s compiler.cppstd=20 \
+          -s build_type=${{matrix.configuration}}
       - name: Configure CMake
         run: |
           cmake --preset conan-default
