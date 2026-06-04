@@ -25,7 +25,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libgl-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
-          # Для Vulkan (если нужно)
+          # Vulkan dependencies
           sudo apt-get install -y libvulkan-dev vulkan-validationlayers mesa-vulkan-drivers
     
       - name: Install Conan
@@ -36,10 +36,14 @@ jobs:
       - name: Configure Conan profile
         run: |
           conan profile detect --force
-          conan profile update settings.compiler=gcc default
-          conan profile update settings.compiler.version=11 default
-          conan profile update settings.compiler.libcxx=libstdc++11 default
-          conan profile update settings.build_type=${{matrix.configuration}} default
+          # Редактируем профиль через sed
+          sed -i 's/compiler.cppstd=gnu17/compiler.cppstd=20/' /home/runner/.conan2/profiles/default
+          sed -i 's/build_type=Release/build_type=${{matrix.configuration}}/' /home/runner/.conan2/profiles/default
+          # Меняем версию компилятора на 11
+          sed -i 's/compiler.version=13/compiler.version=11/' /home/runner/.conan2/profiles/default
+          # Меняем libcxx если нужно
+          sed -i 's/compiler.libcxx=libstdc++/compiler.libcxx=libstdc++11/' /home/runner/.conan2/profiles/default
+          cat /home/runner/.conan2/profiles/default
     
       - name: Install dependencies with Conan
         run: |
@@ -47,7 +51,7 @@ jobs:
     
       - name: Configure CMake
         run: |
-          cmake --preset conan-default -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
+          cmake --preset conan-default
     
       - name: Build
         run: |
