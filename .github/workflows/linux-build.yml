@@ -49,6 +49,8 @@ jobs:
     
       - name: Install dependencies with Conan
         run: |
+          # Приводим configuration к нижнему регистру для пресета
+          BUILD_CONFIG=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
           conan install . --build=missing \
             -s build_type=${{matrix.configuration}} \
             -c tools.system.package_manager:mode=install \
@@ -56,7 +58,9 @@ jobs:
     
       - name: Configure CMake
         run: |
-          cmake --preset conan-${{matrix.configuration}}
+          # Приводим configuration к нижнему регистру для пресета
+          BUILD_CONFIG=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
+          cmake --preset conan-${BUILD_CONFIG}
     
       - name: Build
         run: |
