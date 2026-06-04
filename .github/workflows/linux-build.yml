@@ -49,8 +49,7 @@ jobs:
         run: |
           conan install . --build=missing \
           -s compiler=gcc \
-          -s compiler.version=11 \
-          -s compiler.libcxx=libstdc++11 \
+          -s compiler.version=11 \ 
           -s compiler.cppstd=20 \
           -s build_type=${{matrix.configuration}}
       - name: Configure CMake
