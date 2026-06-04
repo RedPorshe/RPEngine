@@ -24,7 +24,6 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          # Установка всех необходимых X11 библиотек для GLFW и xorg/system
           sudo apt-get install -y \
             libgl-dev \
             libx11-dev \
@@ -32,46 +31,6 @@ jobs:
             libxinerama-dev \
             libxcursor-dev \
             libxi-dev \
-            libx11-xcb-dev \
-            libfontenc-dev \
-            libice-dev \
-            libsm-dev \
-            libxau-dev \
-            libxaw7-dev \
-            libxcomposite-dev \
-            libxdamage-dev \
-            libxkbfile-dev \
-            libxmu-dev \
-            libxmuu-dev \
-            libxpm-dev \
-            libxres-dev \
-            libxss-dev \
-            libxt-dev \
-            libxtst-dev \
-            libxv-dev \
-            libxxf86vm-dev \
-            libxcb-glx0-dev \
-            libxcb-render0-dev \
-            libxcb-render-util0-dev \
-            libxcb-xkb-dev \
-            libxcb-icccm4-dev \
-            libxcb-image0-dev \
-            libxcb-keysyms1-dev \
-            libxcb-randr0-dev \
-            libxcb-shape0-dev \
-            libxcb-sync-dev \
-            libxcb-xfixes0-dev \
-            libxcb-xinerama0-dev \
-            libxcb-dri3-dev \
-            uuid-dev \
-            libxcb-cursor-dev \
-            libxcb-dri2-0-dev \
-            libxcb-present-dev \
-            libxcb-composite0-dev \
-            libxcb-ewmh-dev \
-            libxcb-res0-dev
-          # Vulkan dependencies
-          sudo apt-get install -y \
             libvulkan-dev \
             vulkan-validationlayers \
             mesa-vulkan-drivers
@@ -84,10 +43,8 @@ jobs:
       - name: Create Conan profile
         run: |
           conan profile detect --force
-          # Редактируем профиль для наших настроек
           sed -i 's/compiler.cppstd=gnu17/compiler.cppstd=20/' /home/runner/.conan2/profiles/default
           sed -i 's/compiler.version=13/compiler.version=11/' /home/runner/.conan2/profiles/default
-          cat /home/runner/.conan2/profiles/default
     
       - name: Install dependencies with Conan
         run: |
@@ -98,7 +55,7 @@ jobs:
     
       - name: Configure CMake
         run: |
-          cmake --preset conan-default
+          cmake --preset conan-${{matrix.configuration}}
     
       - name: Build
         run: |
