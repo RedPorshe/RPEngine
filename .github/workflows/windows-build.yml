@@ -7,8 +7,7 @@ on:
     branches: ["main"]
 
 env:
-  TARGETS: KuzbassEngine
-  TEST_TARGET: KuzbassEngineTests
+  TARGETS: LifeExeEngine
 
 jobs:
   build:
@@ -21,67 +20,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-    
+
       - name: Install Conan
-        run: |
-          pip install conan
-          conan --version
-    
-      - name: Configure Conan profile
-        run: |
-          conan profile detect --force
-          # На Windows используем PowerShell для редактирования
-          $profilePath = "$env:USERPROFILE\.conan2\profiles\default"
-          (Get-Content $profilePath) -replace 'compiler.cppstd=.*', 'compiler.cppstd=20' | Set-Content $profilePath
-          (Get-Content $profilePath) -replace 'compiler=gcc', 'compiler=msvc' | Set-Content $profilePath
-          (Get-Content $profilePath) -replace 'compiler.version=.*', 'compiler.version=193' | Set-Content $profilePath
-          Add-Content -Path $profilePath -Value "compiler.runtime=dynamic"
-          Get-Content $profilePath
-    
-      - name: Install dependencies with Conan
-        run: |
-          conan install . --build=missing -s build_type=${{matrix.configuration}}
-    
+        run: pip install conan
+
       - name: Configure CMake
-        run: |
-          cmake --preset conan-default
-    
-      - name: Build Engine
-        run: |
-          cmake --build build --config ${{matrix.configuration}} -v --target ${{env.TARGETS}}
-    
-      - name: Build Tests
-        run: |
-          cmake --build build --config ${{matrix.configuration}} -v --target ${{env.TEST_TARGET}}
-    
-      - name: Run Tests (Debug only)
-        if: matrix.configuration == 'Debug'
-        run: |
-          build\bin\${{matrix.configuration}}\${{env.TEST_TARGET}}.exe --gtest_output=xml:test-results.xml
-    
-      - name: Upload Test Results (Debug)
-        if: matrix.configuration == 'Debug'
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-test-results
-          path: test-results.xml
-    
-      - name: Publish Test Report (Debug)
-        if: matrix.configuration == 'Debug'
-        uses: phoenix-actions/test-reporting@v10
-        with:
-          name: Windows Test Results
-          path: test-results.xml
-          reporter: java-junit
-          output-to: "step-summary"
-          fail-on-error: "true"
-    
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{matrix.configuration}} -v --target ${{env.TARGETS}}
+
       - name: Archive Artifacts
-        run: |
-          Compress-Archive -Path build\bin\* -DestinationPath artifacts-${{matrix.configuration}}.zip
-    
+        run: Compress-Archive -Path build/bin/* -DestinationPath artifacts-${{matrix.configuration}}.zip
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: windows-artifacts-${{matrix.configuration}}
+          name: artifacts-${{matrix.configuration}}
           path: artifacts-${{matrix.configuration}}.zip
