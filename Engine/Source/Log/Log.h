@@ -24,7 +24,7 @@ enum class LogVerbosity : uint8_t
 struct LogCategory
 {
     explicit LogCategory(const std::string& name) : m_name(name) {}
-    std::string name() const { return m_name; }
+    const std::string& name() const { return m_name; }
 
 private:
     const std::string m_name;
