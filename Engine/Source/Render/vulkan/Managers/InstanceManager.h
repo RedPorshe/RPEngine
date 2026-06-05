@@ -17,9 +17,12 @@ public:
     void shutdown() override;
     std::string getName() override;
     VkInstance getInstance() const;
+    VkSurfaceKHR getSurface() const;
 
 private:
     bool createInstance(const WindowSettings& settings, const std::string& EngineName);
+    bool createSurface();
     VkInstance instance{VK_NULL_HANDLE};
+    VkSurfaceKHR surface{VK_NULL_HANDLE};
 };
 }  // namespace RPE

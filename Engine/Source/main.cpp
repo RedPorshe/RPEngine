@@ -18,7 +18,7 @@ DEFINE_LOG_CATEGORY_STATIC(MainLog);
 #ifdef RPE_USE_VULKAN
 #include "Render/vulkan/vkRender.h"
 #else
-#include "Render/vulkan/vkRender.h"  //stub
+#include "Render/vulkan/vkRender.h"  //stub #include "Render/DX3D/dxRender.h"
 #endif
 
 void logInitializationError(const std::string& managerName)
@@ -31,79 +31,54 @@ void logInitializationSuccess(const std::string& managerName)
     RP_LOG(MainLog, Display, "Successfully initialized the {} window manager.", managerName);
 }
 
+
+template <typename WindowManagerT>
+void testWindowManager(const std::string& name)
+{
+    auto windowManager = std::make_unique<WindowManagerT>();
+    if (!windowManager->Isinitialized())
+        logInitializationError(name);
+    else
+        logInitializationSuccess(name);
+}
+
+
 void TestWindowManagerInitialization()
 {
-
 #ifdef RPE_USE_NATIVE_WINDOW
     RP_LOG(MainLog, Display, "Testing native window manager initialization...");
 #ifdef _WIN32
     {
         RP_LOG(MainLog, Display, "Testing Win32 window manager initialization...");
-        auto windowManager = std::make_unique<RPE::Win32WindowManager>();
-        if (!windowManager->Isinitialized())
-        {
-            logInitializationError("Win32");
-        }
-        else
-        {
-            logInitializationSuccess("Win32");
-        }
-        windowManager.reset();
+        testWindowManager<RPE::Win32WindowManager>("Win32");       
     }
 #elif defined(__linux__)
 
     {
         RP_LOG(MainLog, Display, "Testing Linux window manager initialization...");
-        auto windowManager = std::make_unique<RPE::LinuxWindowManager>();
-        if (!windowManager->Isinitialized())
-        {
-            logInitializationError("Linux");
-        }
-        else
-        {
-            logInitializationSuccess("Linux");
-        }
-        windowManager.reset();
+        testWindowManager<RPE::LinuxWindowManager>("Linux");       
     }
 #elif defined(__APPLE__)
 
     {
         RP_LOG(MainLog, Display, "Testing macOS window manager initialization...");
-        auto windowManager = std::make_unique<RPE::MacOSWindowManager>();
-        if (!windowManager->Isinitialized())
-        {
-            logInitializationError("macOS");
-        }
-        else
-        {
-            logInitializationSuccess("macOS");
-        }
-        windowManager.reset();
+        testWindowManager<RPE::MacOSWindowManager>("macOS");        
     }
 #endif
 #else
     RP_LOG(MainLog, Display, "Testing GLFW window manager initialization...");
     {
-        auto windowManager = std::make_unique<RPE::GLFWWindowManager>();
-        if (!windowManager->Isinitialized())
-        {
-            logInitializationError("GLFW");
-        }
-        else
-        {
-            logInitializationSuccess("GLFW");
-        }
-        windowManager.reset();
+        testWindowManager<RPE::GLFWWindowManager>("GLFW");       
     }
 #endif
 }
 
 int main()
 {
-#ifndef SKIP_WINDOW_TESTS
-    RP_LOG(MainLog, Display, "Starting Window managers tests");
+#ifdef SKIP_WINDOW_TESTS
+    RP_LOG(MainLog, Display, "==============Starting Window managers tests======");
     TestWindowManagerInitialization();
-    RP_LOG(MainLog, Display, "Finished Window managers tests");
+    RP_LOG(MainLog, Display, "===========Finished Window managers tests==========");
 #endif  // !SKIP_WINDOW_TESTS
 
     std::unique_ptr<RPE::IWindowManager> WindowManager;

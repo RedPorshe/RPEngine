@@ -34,8 +34,10 @@ Engine* Engine::s_instance = nullptr;
 DEFINE_LOG_CATEGORY_STATIC(EngineLog);
 
 Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_ptr<class RHI> renderer)  //
-    : m_WindowManager(std::move(WindowManager)), m_inputManager(std::make_shared<InputManager>()), m_renderer(std::move(renderer))
+    : m_WindowManager(std::move(WindowManager)), m_inputManager(std::make_shared<InputManager>()), m_renderer(std::move(renderer)),
+      mainWindowId(WindowId{0})
 {
+    s_instance = this;
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
     WindowSettings wset;
     wset.width = 1024;
@@ -65,6 +67,7 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
         return;
     }
     setupWindowEvents(windowResult.value());
+    mainWindowId = WindowId{windowResult.value()};
     if (m_inputManager)
     {
         m_inputManager->setExitCallback([this]() { requestExit(); });
@@ -86,7 +89,7 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
     }
     m_renderer->setEnginePtr(this);
     m_initialized = true;
-    s_instance = this;
+    
 }
 
 Engine::~Engine()
@@ -109,7 +112,7 @@ void Engine::run()
         auto currentTime = std::chrono::high_resolution_clock::now();
         float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
         lastTime = currentTime;
-        deltaTime = std::min(deltaTime, 0.033f);
+        deltaTime = (std::min)(deltaTime, 0.033f);
         m_WindowManager->update();
         updateGameLogic(deltaTime);
         static int failcount = 0;
@@ -143,6 +146,11 @@ void Engine::run()
 void RPE::Engine::requestExit()
 {
     m_requestExit = true;
+}
+
+IWindow* Engine::getMainWindow() const
+{
+    return m_WindowManager->getWindowById(mainWindowId).get();
 }
 
 void Engine::onInputEvent(const InputEvent& event)

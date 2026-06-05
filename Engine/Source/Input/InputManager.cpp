@@ -129,7 +129,8 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<MouseButtonData>(event.data))
             {
                 const auto& data = std::get<MouseButtonData>(event.data);
-                if (m_activeController)
+                RP_LOG(InputManagerLog, Display, "Button: {}, Action: {}, Pos: {},{}", data.button, data.action, data.x, data.y);
+                if (!m_activeController)
                 {
                     m_activeController->onMouseButton(data.button, data.action, data.mods, data.x, data.y);
                 }
@@ -293,6 +294,7 @@ std::string InputManager::getKeyName(Key key) const
         case Key::Pause: return "Pause";
         case Key::Menu: return "Menu";
         case Key::KPEqual: return "Num =";
+
         default: return "Unknown";
     }
 }
@@ -359,6 +361,7 @@ void RPE::InputManager::handleMouseMoveEvent(double x, double y)
     {
         m_activeController->onMouseMove(x, y);
     }
+    RP_LOG(InputManagerLog, Display, " mouse pos x{},y{}", x, y);
 }
 
 void InputManager::handleMouseButtonEvent(int button, int action, int mods, double x, double y)
@@ -371,6 +374,7 @@ void InputManager::handleMouseButtonEvent(int button, int action, int mods, doub
         if (m_activeController)
         {
             m_activeController->onMouseButton(button, action, mods, x, y);
+            RP_LOG(InputManagerLog, Display, "mouse button {}, with action {} and mods {}  mouse pos x{},y{}", button, action, mods, x, y);
         }
     }
 }
@@ -382,6 +386,7 @@ void InputManager::handleMouseScrollEvent(double xoffset, double yoffset)
     if (m_activeController)
     {
         m_activeController->onMouseScroll(xoffset, yoffset);
+        RP_LOG(InputManagerLog, Display, "mouse offset x{} y {}", xoffset, yoffset);
     }
 }
 

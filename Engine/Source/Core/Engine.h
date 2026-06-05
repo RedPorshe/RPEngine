@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineConfig.h"
+#include "Window/IWindow.h"
 #include "Utility.h"
 #include <memory>
 #include <string_view>
@@ -27,12 +28,15 @@ public:
         return *s_instance;
     }
     std::shared_ptr<class InputManager> getInputManager() const { return m_inputManager; }
+    class IWindow* getMainWindow() const;
 
 private:
     const std::unique_ptr<class IWindowManager> m_WindowManager;
     const std::shared_ptr<class InputManager> m_inputManager;
     const std::unique_ptr<class RHI> m_renderer;
     bool m_initialized{false};
+    class IWindow* m_MainWindow = nullptr;
+    struct WindowId mainWindowId;
     void onInputEvent(const struct InputEvent& event);
     void updateGameLogic(float deltaTime);
     void setupWindowEvents(struct WindowId windowId);

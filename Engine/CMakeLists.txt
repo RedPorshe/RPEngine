@@ -5,8 +5,9 @@ cmake_minimum_required(VERSION 3.31.6)
 set(CMAKE_CXX_STANDARD 23)
 
 #build options
-option(RPE_USE_NATIVE_WINDOW "Use native window API instead of GLFW" OFF)
+option(RPE_USE_NATIVE_WINDOW "Use native window API instead of GLFW" ON)
 option(RPE_USE_VULKAN "Use Vulkan renderer" ON)
+option(SKIP_WINDOW_TESTS "Skip window managers tests on startup" ON)
 
 # common options
 project(KuzbassEngine VERSION 1.0.0)
@@ -91,6 +92,10 @@ set(ENGINE_SOURCES_NATIVE_MACOS
     Source/Window/MacOS/MacOSWindow.h
     Source/Window/MacOS/MacOSWindow.cpp
 )
+
+if(SKIP_WINDOW_TESTS)
+ add_definitions(-DSKIP_WINDOW_TESTS)
+endif()
 
 if(RPE_USE_NATIVE_WINDOW)
     set(ENGINE_SOURCES ${ENGINE_SOURCES_BASE})

@@ -18,6 +18,10 @@ GLFWWindowManager::GLFWWindowManager()
         RP_LOG(LogGLFWWindowManager, Error, "Failed to initialize GLFW!");
         return;
     }
+
+    #ifdef RPE_USE_VULKAN
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    #endif
     m_initialized = true;
     RP_LOG(LogGLFWWindowManager, Display, "Initialize GLFW Success!");
 }
