@@ -151,7 +151,16 @@ bool RPE::SwapchainManager::RecreateSwapchain()
     }
 
     RP_LOG(LogSwapchainManager, Display, "Swap chain recreated successfully");
+    InputEvent event;
+    event.type = EventType::WindowResize;
+    event.data = ResizeData{static_cast<int>(m_extent.width), static_cast<int>(m_extent.height)};
+    RecreateEvent.invoke(event);
     return true;
+}
+
+Event<InputEvent> RPE::SwapchainManager::onRecreate()
+{
+    return RecreateEvent;
 }
 
 bool SwapchainManager::createSwapchain()

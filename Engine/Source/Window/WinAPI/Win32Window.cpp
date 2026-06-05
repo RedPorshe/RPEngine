@@ -61,11 +61,6 @@ Win32Window::~Win32Window()
     RP_LOG(LogWin32Window, Display, "Deleting win32 window");
 }
 
-void Win32Window::setTitle(const std::string& title)
-{
-    SetWindowTextA(m_window, title.c_str());
-}
-
 bool Win32Window::isValid() const
 {
     return m_window != nullptr;
@@ -89,10 +84,10 @@ Event<const InputEvent&>& Win32Window::onEvent()
 bool Win32Window::RegisterWindowClass()
 {
     HINSTANCE hInstance = GetModuleHandle(nullptr);
-    const wchar_t* className = L"KuzbassEngineWindow";  // ← широкие символы
+    const char* className = "KuzbassEngineWindow";  // ← широкие символы
 
-    WNDCLASSEXW wc = {};
-    wc.cbSize = sizeof(WNDCLASSEXW);
+    WNDCLASSEX wc = {};
+    wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
@@ -100,7 +95,7 @@ bool Win32Window::RegisterWindowClass()
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wc.lpszClassName = className;
 
-    if (!RegisterClassExW(&wc))
+    if (!RegisterClassEx(&wc))
     {
         DWORD error = GetLastError();
         RP_LOG(LogWin32Window, Error, "RegisterClassEx failed with error: {}", error);
@@ -114,14 +109,9 @@ bool Win32Window::RegisterWindowClass()
 bool Win32Window::CreateWindowHandle()
 {
     HINSTANCE hInstance = GetModuleHandle(nullptr);
-    const wchar_t* className = L"KuzbassEngineWindow";
+    const char* className = "KuzbassEngineWindow";
 
-    // Конвертируем заголовок в wide string
-    int wideSize = MultiByteToWideChar(CP_UTF8, 0, m_settings.title.c_str(), -1, nullptr, 0);
-    std::wstring wideTitle(wideSize, L'\0');
-    MultiByteToWideChar(CP_UTF8, 0, m_settings.title.c_str(), -1, &wideTitle[0], wideSize);
-
-    m_window = CreateWindowExW(0, className, wideTitle.c_str(), WS_OVERLAPPEDWINDOW, m_settings.x, m_settings.y, m_settings.width,
+    m_window = CreateWindowEx(0, className, m_settings.title.c_str(), WS_OVERLAPPEDWINDOW, m_settings.x, m_settings.y, m_settings.width,
         m_settings.height, nullptr, nullptr, hInstance, this);
 
     if (m_window)
@@ -129,6 +119,7 @@ bool Win32Window::CreateWindowHandle()
         ShowWindow(m_window, SW_SHOW);
         UpdateWindow(m_window);
         RP_LOG(LogWin32Window, Display, "Win32 window created successfully");
+        setTitle(ENGINE_NAME);
         return true;
     }
     else
@@ -137,6 +128,13 @@ bool Win32Window::CreateWindowHandle()
         RP_LOG(LogWin32Window, Error, "CreateWindowEx failed with error: {}", error);
         return false;
     }
+}
+
+void Win32Window::setTitle(const std::string& title)
+{
+    std::string finalTitle = title + "   ||   " + ENGINE_NAME + " " + ENGINE_VERSION_STRING;
+
+    SetWindowText(m_window, finalTitle.c_str());
 }
 
 LRESULT Win32Window::handleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)

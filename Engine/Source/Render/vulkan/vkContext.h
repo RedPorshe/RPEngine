@@ -35,6 +35,12 @@ public:
     const class InstanceManager* getInstanceManager() const;
     class DeviceManager* getDeviceManager();
     const class DeviceManager* getDeviceManager() const;
+    class SwapchainManager* getSwapchainManager();
+    const class SwapchainManager* getSwapchainManager() const;
+    class RenderPassManager* getRenderpassManager();
+    const class RenderPassManager* getRenderpassManager() const;
+    class FrameBufferManager* getFrameBufferManager();
+    const class FrameBufferManager* getFrameBufferManager() const;
     template <typename T>
     T* findManager()
     {

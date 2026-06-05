@@ -4,6 +4,8 @@
 #include "Managers/InstanceManager.h"
 #include "Managers/DeviceManager.h"
 #include "Managers/SwapchainManager.h"
+#include "Managers/RenderpassManager.h"
+#include "Managers/FrameBufferManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(vkContextLog)
 using namespace RPE;
@@ -13,6 +15,8 @@ VulkanContext::VulkanContext()
     registerManager(std::make_unique<InstanceManager>());
     registerManager(std::make_unique<DeviceManager>());
     registerManager(std::make_unique<SwapchainManager>());
+    registerManager(std::make_unique<RenderPassManager>());
+    registerManager(std::make_unique<FrameBufferManager>());
 }
 
 VulkanContext::~VulkanContext()
@@ -118,7 +122,7 @@ bool VulkanContext::initManagers()
     return true;
 }
 
-InstanceManager* RPE::VulkanContext::getInstanceManager()
+InstanceManager* VulkanContext::getInstanceManager()
 {
     return findManager<InstanceManager>();
 }
@@ -128,12 +132,42 @@ const InstanceManager* VulkanContext::getInstanceManager() const
     return findManager<InstanceManager>();
 }
 
-DeviceManager* RPE::VulkanContext::getDeviceManager()
+DeviceManager* VulkanContext::getDeviceManager()
 {
     return findManager<DeviceManager>();
 }
 
-const DeviceManager* RPE::VulkanContext::getDeviceManager() const
+const DeviceManager* VulkanContext::getDeviceManager() const
 {
     return findManager<DeviceManager>();
+}
+
+SwapchainManager* VulkanContext::getSwapchainManager()
+{
+    return findManager<SwapchainManager>();
+}
+
+const SwapchainManager* VulkanContext::getSwapchainManager() const
+{
+    return findManager<SwapchainManager>();
+}
+
+RenderPassManager* VulkanContext::getRenderpassManager()
+{
+    return findManager<RenderPassManager>();
+}
+
+const RenderPassManager* VulkanContext::getRenderpassManager() const
+{
+    return findManager<RenderPassManager>();
+}
+
+FrameBufferManager* RPE::VulkanContext::getFrameBufferManager()
+{
+    return findManager<FrameBufferManager>();
+}
+
+const FrameBufferManager* RPE::VulkanContext::getFrameBufferManager() const
+{
+    return findManager<FrameBufferManager>();
 }

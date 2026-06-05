@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.31.6)
 set(CMAKE_CXX_STANDARD 23)
 
 #build options
-option(RPE_USE_NATIVE_WINDOW "Use native window API instead of GLFW" ON)
+option(RPE_USE_NATIVE_WINDOW "Use native window API instead of GLFW" OFF)
 option(RPE_USE_VULKAN "Use Vulkan renderer" ON)
 option(SKIP_WINDOW_TESTS "Skip window managers tests on startup" ON)
 
@@ -43,7 +43,11 @@ set(ENGINE_SOURCES_BASE
     Source/Render/vulkan/Managers/DeviceManager.h   
     Source/Render/vulkan/Managers/DeviceManager.cpp  
     Source/Render/vulkan/Managers/SwapchainManager.h   
-    Source/Render/vulkan/Managers/SwapchainManager.cpp       
+    Source/Render/vulkan/Managers/SwapchainManager.cpp  
+    Source/Render/vulkan/Managers/RenderpassManager.h   
+    Source/Render/vulkan/Managers/RenderpassManager.cpp    
+    Source/Render/vulkan/Managers/FrameBufferManager.h   
+    Source/Render/vulkan/Managers/FrameBufferManager.cpp       
     # interfaces
     Source/Window/IWindowManager.h 
     Source/Window/IWindow.h 
