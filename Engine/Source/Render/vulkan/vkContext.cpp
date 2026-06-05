@@ -2,6 +2,8 @@
 #include "Log/Log.h"
 #include "Managers/IVkManager.h"
 #include "Managers/InstanceManager.h"
+#include "Managers/DeviceManager.h"
+#include "Managers/SwapchainManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(vkContextLog)
 using namespace RPE;
@@ -9,6 +11,8 @@ using namespace RPE;
 VulkanContext::VulkanContext()
 {
     registerManager(std::make_unique<InstanceManager>());
+    registerManager(std::make_unique<DeviceManager>());
+    registerManager(std::make_unique<SwapchainManager>());
 }
 
 VulkanContext::~VulkanContext()
@@ -42,6 +46,7 @@ void VulkanContext::shutdown()
     RP_LOG(vkContextLog, Display, "Shutdown start");
     for (auto it = m_managers.rbegin(); it != m_managers.rend(); ++it)
     {
+        RP_LOG(vkContextLog, Display, " {} shuting down", it->get()->getName());
         (*it)->shutdown();
     }
 
@@ -84,6 +89,7 @@ bool VulkanContext::preInitManagers(const WindowSettings& settings, const std::s
     RP_LOG(vkContextLog, Display, " preinitializing managers (creating)");
     for (auto& manager : m_managers)
     {
+        RP_LOG(vkContextLog, Display, "{}   preInitializing", manager->getName());
         if (!manager->preInit(settings, engineName))
         {
             RP_LOG(vkContextLog, Error, "Failed to preInit manager: {}", manager->getName());
@@ -96,15 +102,38 @@ bool VulkanContext::preInitManagers(const WindowSettings& settings, const std::s
 bool VulkanContext::initManagers()
 {
     RP_LOG(vkContextLog, Display, "Context Init managers");
+    int managerscount = 0;
     for (auto& manager : m_managers)
     {
+        RP_LOG(vkContextLog, Display, "{}  initializing", manager->getName());
         if (!manager->init())
         {
             RP_LOG(vkContextLog, Error, "Failed to init manager: {}", manager->getName());
             return false;
         }
+        ++managerscount;
     }
-
+    RP_LOG(vkContextLog, Display, "{} managers initialized", managerscount);
     m_initialized = true;
     return true;
+}
+
+InstanceManager* RPE::VulkanContext::getInstanceManager()
+{
+    return findManager<InstanceManager>();
+}
+
+const InstanceManager* VulkanContext::getInstanceManager() const
+{
+    return findManager<InstanceManager>();
+}
+
+DeviceManager* RPE::VulkanContext::getDeviceManager()
+{
+    return findManager<DeviceManager>();
+}
+
+const DeviceManager* RPE::VulkanContext::getDeviceManager() const
+{
+    return findManager<DeviceManager>();
 }

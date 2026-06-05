@@ -15,8 +15,10 @@ public:
     virtual void onResize(int width, int height) {}
     virtual std::string getName() = 0;
     void setVkContextPtr(class VulkanContext* ctx) { m_contextPtr = ctx; }
+    bool isInitialized() const { return m_isInitialized; }
 
-private:
+protected:
     class VulkanContext* m_contextPtr{nullptr};
+    bool m_isInitialized{false};
 };
 }  // namespace RPE

@@ -39,7 +39,11 @@ set(ENGINE_SOURCES_BASE
     Source/Render/vulkan/vkContext.cpp 
     Source/Render/vulkan/Managers/IVkManager.h   
     Source/Render/vulkan/Managers/InstanceManager.h   
-    Source/Render/vulkan/Managers/InstanceManager.cpp    
+    Source/Render/vulkan/Managers/InstanceManager.cpp  
+    Source/Render/vulkan/Managers/DeviceManager.h   
+    Source/Render/vulkan/Managers/DeviceManager.cpp  
+    Source/Render/vulkan/Managers/SwapchainManager.h   
+    Source/Render/vulkan/Managers/SwapchainManager.cpp       
     # interfaces
     Source/Window/IWindowManager.h 
     Source/Window/IWindow.h 

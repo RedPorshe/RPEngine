@@ -89,7 +89,6 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
     }
     m_renderer->setEnginePtr(this);
     m_initialized = true;
-    
 }
 
 Engine::~Engine()

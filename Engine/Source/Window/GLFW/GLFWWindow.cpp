@@ -10,7 +10,6 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
 {
     // init
 
-
     const std::string TitlePostfix = ENGINE_NAME;
     const std::string finalTitle = sSettings.title + "  ||  " + TitlePostfix;
     m_window = glfwCreateWindow(sSettings.width, sSettings.height, finalTitle.c_str(), nullptr, nullptr);

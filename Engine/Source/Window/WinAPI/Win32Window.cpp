@@ -23,7 +23,7 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
         pWindow = reinterpret_cast<Win32Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
     }
 
-    if (pWindow &&pWindow->isValid())
+    if (pWindow && pWindow->isValid())
     {
         return pWindow->handleMessage(uMsg, wParam, lParam);
     }
@@ -141,7 +141,6 @@ bool Win32Window::CreateWindowHandle()
 
 LRESULT Win32Window::handleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-   
     switch (uMsg)
     {
         case WM_DESTROY:
@@ -175,19 +174,49 @@ LRESULT Win32Window::handleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
             return 0;
 
-             case WM_KEYDOWN:
+            // ========== КЛАВИАТУРА ==========
+        case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
         {
             int key = static_cast<int>(wParam);
             int scancode = (lParam >> 16) & 0xFF;
-            int action = 1;  // Press
+            int extended = (lParam >> 24) & 1;
+
+            // Различаем левый и правый Shift
+            if (key == VK_SHIFT)
+            {
+                if (scancode == 54)
+                    key = VK_RSHIFT;
+                else if (scancode == 42)
+                    key = VK_LSHIFT;
+            }
+
+            // Различаем левый и правый Control
+            if (key == VK_CONTROL)
+            {
+                if (extended)
+                    key = VK_RCONTROL;
+                else
+                    key = VK_LCONTROL;
+            }
+
+            // Различаем левый и правый Alt
+            if (key == VK_MENU)
+            {
+                if (extended)
+                    key = VK_RMENU;
+                else
+                    key = VK_LMENU;
+            }
+
+            int action = 1;
             int mods = 0;
 
-            // Проверка модификаторов
-            if (GetKeyState(VK_CONTROL) & 0x8000) mods |= 1;                                    // Ctrl
-            if (GetKeyState(VK_SHIFT) & 0x8000) mods |= 2;                                      // Shift
-            if (GetKeyState(VK_MENU) & 0x8000) mods |= 4;                                       // Alt
-            if ((GetKeyState(VK_LWIN) & 0x8000) || (GetKeyState(VK_RWIN) & 0x8000)) mods |= 8;  // Win
+            // Правильное определение модификаторов в GLFW формате
+            if (GetAsyncKeyState(VK_CONTROL) & 0x8000) mods |= 2;                                         // GLFW_MOD_CONTROL = 2
+            if (GetAsyncKeyState(VK_SHIFT) & 0x8000) mods |= 1;                                           // GLFW_MOD_SHIFT = 1
+            if (GetAsyncKeyState(VK_MENU) & 0x8000) mods |= 4;                                            // GLFW_MOD_ALT = 4
+            if ((GetAsyncKeyState(VK_LWIN) & 0x8000) || (GetAsyncKeyState(VK_RWIN) & 0x8000)) mods |= 8;  // GLFW_MOD_SUPER = 8
 
             InputEvent event;
             event.type = EventType::KeyPress;
@@ -201,13 +230,38 @@ LRESULT Win32Window::handleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             int key = static_cast<int>(wParam);
             int scancode = (lParam >> 16) & 0xFF;
-            int action = 0;  // Release
+            int extended = (lParam >> 24) & 1;
+
+            if (key == VK_SHIFT)
+            {
+                if (scancode == 54)
+                    key = VK_RSHIFT;
+                else if (scancode == 42)
+                    key = VK_LSHIFT;
+            }
+            if (key == VK_CONTROL)
+            {
+                if (extended)
+                    key = VK_RCONTROL;
+                else
+                    key = VK_LCONTROL;
+            }
+            if (key == VK_MENU)
+            {
+                if (extended)
+                    key = VK_RMENU;
+                else
+                    key = VK_LMENU;
+            }
+
+            int action = 0;
             int mods = 0;
 
-            if (GetKeyState(VK_CONTROL) & 0x8000) mods |= 1;
-            if (GetKeyState(VK_SHIFT) & 0x8000) mods |= 2;
-            if (GetKeyState(VK_MENU) & 0x8000) mods |= 4;
-            if ((GetKeyState(VK_LWIN) & 0x8000) || (GetKeyState(VK_RWIN) & 0x8000)) mods |= 8;
+            // Правильное определение модификаторов в GLFW формате
+            if (GetAsyncKeyState(VK_CONTROL) & 0x8000) mods |= 2;                                         // GLFW_MOD_CONTROL = 2
+            if (GetAsyncKeyState(VK_SHIFT) & 0x8000) mods |= 1;                                           // GLFW_MOD_SHIFT = 1
+            if (GetAsyncKeyState(VK_MENU) & 0x8000) mods |= 4;                                            // GLFW_MOD_ALT = 4
+            if ((GetAsyncKeyState(VK_LWIN) & 0x8000) || (GetAsyncKeyState(VK_RWIN) & 0x8000)) mods |= 8;  // GLFW_MOD_SUPER = 8
 
             InputEvent event;
             event.type = EventType::KeyPress;
@@ -216,7 +270,7 @@ LRESULT Win32Window::handleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
             return 0;
 
-        // Мышь
+        // ========== МЫШЬ ==========
         case WM_MOUSEMOVE:
         {
             int x = LOWORD(lParam);
@@ -227,9 +281,8 @@ LRESULT Win32Window::handleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
             m_windowEvent.invoke(event);
         }
             return 0;
- 
 
-       // Нажатия кнопок
+        // Нажатия кнопок
         case WM_LBUTTONDOWN:
         case WM_RBUTTONDOWN:
         case WM_MBUTTONDOWN:
@@ -246,10 +299,9 @@ LRESULT Win32Window::handleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             int action = 1;  // Press
             int mods = 0;
-            if (GetKeyState(VK_CONTROL) & 0x8000) mods |= 1;
-            if (GetKeyState(VK_SHIFT) & 0x8000) mods |= 2;
+            if (GetKeyState(VK_CONTROL) & 0x8000) mods |= 2;  // GLFW_MOD_CONTROL
+            if (GetKeyState(VK_SHIFT) & 0x8000) mods |= 1;    // GLFW_MOD_SHIFT
             if (GetKeyState(VK_MENU) & 0x8000) mods |= 4;
-
             POINT pt;
             GetCursorPos(&pt);
             ScreenToClient(m_window, &pt);
@@ -278,8 +330,8 @@ LRESULT Win32Window::handleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             int action = 0;  // Release
             int mods = 0;
-            if (GetKeyState(VK_CONTROL) & 0x8000) mods |= 1;
-            if (GetKeyState(VK_SHIFT) & 0x8000) mods |= 2;
+            if (GetKeyState(VK_CONTROL) & 0x8000) mods |= 2;  // GLFW_MOD_CONTROL
+            if (GetKeyState(VK_SHIFT) & 0x8000) mods |= 1;    // GLFW_MOD_SHIFT
             if (GetKeyState(VK_MENU) & 0x8000) mods |= 4;
 
             POINT pt;

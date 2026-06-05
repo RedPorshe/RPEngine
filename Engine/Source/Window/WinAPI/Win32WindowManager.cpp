@@ -9,38 +9,36 @@ DEFINE_LOG_CATEGORY_STATIC(LogWin32WindowManager);
 Win32WindowManager::Win32WindowManager()
 {
     RP_LOG(LogWin32WindowManager, Display, "Win32 API window manager Created!");
-  
+
 #ifdef RPE_USE_VULKAN
-    
+
 #endif
     m_initialized = true;
 }
 
-Win32WindowManager::~Win32WindowManager() 
-    {
+Win32WindowManager::~Win32WindowManager()
+{
     m_Windows.clear();
     if (m_initialized)
     {
-
     }
     m_initialized = false;
     RP_LOG(LogWin32WindowManager, Display, "Win32 Window Manager shutdown complete!");
-    }
+}
 
-void Win32WindowManager::update() 
-    {
+void Win32WindowManager::update()
+{
     if (!Isinitialized()) return;
 
-     MSG msg;
+    MSG msg;
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-    
-    cleanupClosedWindows();
 
-    }
+    cleanupClosedWindows();
+}
 
 bool Win32WindowManager::areAllWindowsClosed() const
 {
@@ -79,8 +77,8 @@ bool RPE::Win32WindowManager::Isinitialized() const
     return m_initialized;
 }
 
-void Win32WindowManager::cleanupClosedWindows() 
-    {
+void Win32WindowManager::cleanupClosedWindows()
+{
     auto it = m_Windows.begin();
     while (it != m_Windows.end())
     {
@@ -92,4 +90,4 @@ void Win32WindowManager::cleanupClosedWindows()
         }
         ++it;
     }
-    }
+}

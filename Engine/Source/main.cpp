@@ -31,7 +31,6 @@ void logInitializationSuccess(const std::string& managerName)
     RP_LOG(MainLog, Display, "Successfully initialized the {} window manager.", managerName);
 }
 
-
 template <typename WindowManagerT>
 void testWindowManager(const std::string& name)
 {
@@ -42,7 +41,6 @@ void testWindowManager(const std::string& name)
         logInitializationSuccess(name);
 }
 
-
 void TestWindowManagerInitialization()
 {
 #ifdef RPE_USE_NATIVE_WINDOW
@@ -50,25 +48,25 @@ void TestWindowManagerInitialization()
 #ifdef _WIN32
     {
         RP_LOG(MainLog, Display, "Testing Win32 window manager initialization...");
-        testWindowManager<RPE::Win32WindowManager>("Win32");       
+        testWindowManager<RPE::Win32WindowManager>("Win32");
     }
 #elif defined(__linux__)
 
     {
         RP_LOG(MainLog, Display, "Testing Linux window manager initialization...");
-        testWindowManager<RPE::LinuxWindowManager>("Linux");       
+        testWindowManager<RPE::LinuxWindowManager>("Linux");
     }
 #elif defined(__APPLE__)
 
     {
         RP_LOG(MainLog, Display, "Testing macOS window manager initialization...");
-        testWindowManager<RPE::MacOSWindowManager>("macOS");        
+        testWindowManager<RPE::MacOSWindowManager>("macOS");
     }
 #endif
 #else
     RP_LOG(MainLog, Display, "Testing GLFW window manager initialization...");
     {
-        testWindowManager<RPE::GLFWWindowManager>("GLFW");       
+        testWindowManager<RPE::GLFWWindowManager>("GLFW");
     }
 #endif
 }

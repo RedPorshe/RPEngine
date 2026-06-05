@@ -19,9 +19,9 @@ GLFWWindowManager::GLFWWindowManager()
         return;
     }
 
-    #ifdef RPE_USE_VULKAN
+#ifdef RPE_USE_VULKAN
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    #endif
+#endif
     m_initialized = true;
     RP_LOG(LogGLFWWindowManager, Display, "Initialize GLFW Success!");
 }

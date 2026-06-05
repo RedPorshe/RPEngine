@@ -35,7 +35,6 @@ void InputManager::update()
 bool InputManager::isKeyPressed(Key key) const
 {
     auto it = m_currentKeys.find(key);
-
     return it != m_currentKeys.end() ? it->second : false;
 }
 
@@ -130,7 +129,7 @@ void InputManager::processInput(const InputEvent& event)
             {
                 const auto& data = std::get<MouseButtonData>(event.data);
                 RP_LOG(InputManagerLog, Display, "Button: {}, Action: {}, Pos: {},{}", data.button, data.action, data.x, data.y);
-                if (!m_activeController)
+                if (m_activeController)
                 {
                     m_activeController->onMouseButton(data.button, data.action, data.mods, data.x, data.y);
                 }
@@ -301,24 +300,40 @@ std::string InputManager::getKeyName(Key key) const
 
 void InputManager::handleKeyEvent(int key, int scancode, int action, int mods)
 {
-    Key rpKey = toRPKey(key);
-    bool isPressed = (action == GLFW_PRESS || action == GLFW_REPEAT);
+    Key rpKey;
+    bool isPressed;
+#ifdef RPE_USE_NATIVE_WINDOW
+#ifdef _WIN32
+    rpKey = Win32ToRPKey(key);
+    isPressed = (action == 1);
+    m_currentKeys[rpKey] = isPressed;
+    if (isPressed && action == 1)
+    {
+        // Для Win32 моды передаются в GLFW формате из Win32Window
+        // (Ctrl=2, Shift=1, Alt=4, Super=8)
+        int glfwMods = mods;
+#elif defined(__linux__)
+    // TODO: need func
+#elif defined(__APPLE__)
+    // TODO: need func
+#endif  // WIN32
+#else
+    rpKey = toRPKey(key);
+    isPressed = (action == GLFW_PRESS || action == GLFW_REPEAT);
     m_currentKeys[rpKey] = isPressed;
     if (isPressed && action == GLFW_PRESS)
     {
-        std::string displayName = getKeyName(rpKey);
-        KeyMod keyMods = getKeyMods(mods);
+        int glfwMods = mods;
+#endif  // RPE_USE_NATIVE_WINDOW
 
-        bool isModifierKey =
-            (rpKey == Key::LeftShift || rpKey == Key::RightShift || rpKey == Key::LeftControl || rpKey == Key::RightControl ||
-                rpKey == Key::LeftAlt || rpKey == Key::RightAlt || rpKey == Key::LeftSuper || rpKey == Key::RightSuper);
+        std::string displayName = getKeyName(rpKey);
+        KeyMod keyMods = getKeyMods(glfwMods);
 
         std::string modStr;
-        if (keyMods & KeyMod::Shift && rpKey != Key::LeftShift && rpKey != Key::RightShift) modStr += "Shift+";
-        if (keyMods & KeyMod::Control && rpKey != Key::LeftControl && rpKey != Key::RightControl) modStr += "Ctrl+";
-        if (keyMods & KeyMod::Alt && rpKey != Key::LeftAlt && rpKey != Key::RightAlt) modStr += "Alt+";
-        if (keyMods & KeyMod::Super && rpKey != Key::LeftSuper && rpKey != Key::RightSuper) modStr += "Super+";
-        ;
+        if ((keyMods & KeyMod::Shift) && rpKey != Key::LeftShift && rpKey != Key::RightShift) modStr += "Shift+";
+        if ((keyMods & KeyMod::Control) && rpKey != Key::LeftControl && rpKey != Key::RightControl) modStr += "Ctrl+";
+        if ((keyMods & KeyMod::Alt) && rpKey != Key::LeftAlt && rpKey != Key::RightAlt) modStr += "Alt+";
+        if ((keyMods & KeyMod::Super) && rpKey != Key::LeftSuper && rpKey != Key::RightSuper) modStr += "Super+";
 
         if (!modStr.empty())
         {
@@ -336,12 +351,12 @@ void InputManager::handleKeyEvent(int key, int scancode, int action, int mods)
 
         if (m_activeController)
         {
-            m_activeController->onKeyPress(key, scancode, action, mods);
+            m_activeController->onKeyPress(key, scancode, action, glfwMods);
         }
     }
 }
 
-void RPE::InputManager::handleMouseMoveEvent(double x, double y)
+void InputManager::handleMouseMoveEvent(double x, double y)
 {
     if (m_firstMouse)
     {
@@ -361,32 +376,38 @@ void RPE::InputManager::handleMouseMoveEvent(double x, double y)
     {
         m_activeController->onMouseMove(x, y);
     }
-    RP_LOG(InputManagerLog, Display, " mouse pos x{},y{}", x, y);
 }
 
 void InputManager::handleMouseButtonEvent(int button, int action, int mods, double x, double y)
 {
-    bool isPressed = (action == GLFW_PRESS);
+    bool isPressed = false;
+#ifdef RPE_USE_NATIVE_WINDOW
+#ifdef _WIN32
+    isPressed = (action == 1);
+    int glfwMods = mods;  // Моды уже в GLFW формате из Win32Window
+#elif defined(__linux__)
+    // TODO: need func
+#elif defined(__APPLE__)
+    // TODO: need func
+#endif  // WIN32
+#else
+    isPressed = (action == GLFW_PRESS);
+    int glfwMods = mods;
+#endif
     m_currentMouseButtons[button] = isPressed;
 
-    if (isPressed)
+    if (isPressed && m_activeController)
     {
-        if (m_activeController)
-        {
-            m_activeController->onMouseButton(button, action, mods, x, y);
-            RP_LOG(InputManagerLog, Display, "mouse button {}, with action {} and mods {}  mouse pos x{},y{}", button, action, mods, x, y);
-        }
+        m_activeController->onMouseButton(button, action, glfwMods, x, y);
     }
 }
 
 void InputManager::handleMouseScrollEvent(double xoffset, double yoffset)
 {
     m_scrollOffset = yoffset;
-    RP_LOG(InputManagerLog, Display, "Mouse Scroll: {:.1f}", yoffset);
     if (m_activeController)
     {
         m_activeController->onMouseScroll(xoffset, yoffset);
-        RP_LOG(InputManagerLog, Display, "mouse offset x{} y {}", xoffset, yoffset);
     }
 }
 
@@ -399,6 +420,7 @@ void RPE::InputManager::setActiveController(std::shared_ptr<IController> control
     }
     else
     {
+        m_activeController = nullptr;
         RP_LOG(InputManagerLog, Display, "Active controller cleared");
     }
 }

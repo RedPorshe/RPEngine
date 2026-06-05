@@ -31,6 +31,10 @@ private:
     bool m_initialized{false};
 
 public:
+    class InstanceManager* getInstanceManager();
+    const class InstanceManager* getInstanceManager() const;
+    class DeviceManager* getDeviceManager();
+    const class DeviceManager* getDeviceManager() const;
     template <typename T>
     T* findManager()
     {

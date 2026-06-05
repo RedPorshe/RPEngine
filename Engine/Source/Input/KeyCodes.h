@@ -221,10 +221,12 @@ inline Key Win32ToRPKey(int vkCode)
         case VK_LSHIFT: return Key::LeftShift;
         case VK_LCONTROL: return Key::LeftControl;
         case VK_LMENU: return Key::LeftAlt;
+        case VK_RMENU: return Key::RightAlt;
+        case VK_MENU: return Key ::LeftAlt;
+
         case VK_LWIN: return Key::LeftSuper;
         case VK_RSHIFT: return Key::RightShift;
         case VK_RCONTROL: return Key::RightControl;
-        case VK_RMENU: return Key::RightAlt;
         case VK_RWIN: return Key::RightSuper;
 
         case VK_NUMPAD0: return Key::KP0;

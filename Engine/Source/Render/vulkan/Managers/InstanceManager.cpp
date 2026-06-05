@@ -51,27 +51,34 @@ bool InstanceManager::init()
         RP_LOG(InstanceVkManager, Error, " Surface not created");
         return false;
     }
+    m_isInitialized = true;
     return true;
 }
 
 void InstanceManager::shutdown()
 {
-    if (surface != VK_NULL_HANDLE)
+    if (isInitialized())
     {
+        if (surface != VK_NULL_HANDLE)
+        {
+            if (instance != VK_NULL_HANDLE)
+            {
+                vkDestroySurfaceKHR(instance, surface, nullptr);
+                surface = VK_NULL_HANDLE;
+                RP_LOG(InstanceVkManager, Display, "vulkan surface destroyed");
+            }
+            else
+            {
+                surface = VK_NULL_HANDLE;
+            }
+        }
         if (instance != VK_NULL_HANDLE)
         {
-            vkDestroySurfaceKHR(instance, surface, nullptr);
-            surface = VK_NULL_HANDLE;
+            vkDestroyInstance(instance, nullptr);
+            instance = VK_NULL_HANDLE;
+            RP_LOG(InstanceVkManager, Display, "vulkan instance destroyed");
         }
-        else
-        {
-            surface = VK_NULL_HANDLE;
-        }
-    }
-    if (instance != VK_NULL_HANDLE)
-    {
-        vkDestroyInstance(instance, nullptr);
-        instance = VK_NULL_HANDLE;
+        m_isInitialized = false;
     }
 }
 
@@ -162,6 +169,11 @@ bool InstanceManager::createInstance(const WindowSettings& settings, const std::
 
 bool InstanceManager::createSurface()
 {
+    if (surface != VK_NULL_HANDLE)
+    {
+        RP_LOG(InstanceVkManager, Warning, "Surface already created");
+        return true;
+    }
     auto& engine = Engine::Get();
     const auto window = engine.getMainWindow();
 
