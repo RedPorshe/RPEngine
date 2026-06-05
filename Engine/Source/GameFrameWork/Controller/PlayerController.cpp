@@ -84,13 +84,12 @@ void PlayerController::handleMouseMove(double x, double y)
 }
 
 void PlayerController::handleMouseButton(int button, int action, int mods, double x, double y)
-{   
+{
     if (auto obj = getControlledObject())
     {
         obj->getInputComponent()->processKey(static_cast<Key>(button), action);
     }
     // RP_LOG(PlayerControllerLog, Display, "Mouse Button {}: {} at ({:.0f}, {:.0f})", button, actionStr, x, y);
-    
 }
 
 void PlayerController::handleMouseScroll(double xoffset, double yoffset)
