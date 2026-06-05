@@ -2,6 +2,8 @@
 #include <string>
 #include <functional>
 #include "Window/IWindow.h"
+#include "Event/Event.h"
+#include "Event/InputEvent.h"
 
 namespace RPE
 {
@@ -16,6 +18,11 @@ public:
     bool isValid() const override;
     bool shouldClose() const override;
     void* getWindowHandle() const override;
+    Event<const InputEvent&>& onEvent() { return m_windowEvent; };
+
+private:
+    const WindowId m_id;
+    Event<const InputEvent&> m_windowEvent;
 };
 
 }  // namespace RPE
