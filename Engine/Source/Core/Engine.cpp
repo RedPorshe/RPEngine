@@ -39,6 +39,10 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
 {
     s_instance = this;
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
+
+    RP_LOG(EngineLog, Display, "Adding needed pipeline: {}", "main");
+    m_neededPipelineNames.push_back("main");
+    m_neededPipelineNames.push_back("Triangle");
     WindowSettings wset;
     wset.width = 1024;
     wset.height = 768;
@@ -80,6 +84,7 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
             m_initialized = false;
             return;
         }
+        m_renderer->setEnginePtr(this);
         if (!m_renderer->init(window.get()))
         {
             RP_LOG(EngineLog, Error, "Failed to Init renderer");
@@ -87,7 +92,6 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
             return;
         }
     }
-    m_renderer->setEnginePtr(this);
     m_initialized = true;
 }
 
@@ -150,6 +154,11 @@ void RPE::Engine::requestExit()
 IWindow* Engine::getMainWindow() const
 {
     return m_WindowManager->getWindowById(mainWindowId).get();
+}
+
+std::vector<std::string>& RPE::Engine::getNeededPipelineNames()
+{
+    return m_neededPipelineNames;
 }
 
 void Engine::onInputEvent(const InputEvent& event)

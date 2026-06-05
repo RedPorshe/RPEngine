@@ -47,8 +47,6 @@ bool FrameBufferManager::init()
         return false;
     }
 
-    swapchainMgr->onRecreate().subscribe([this](const InputEvent& event) { recreateBuffer(); });
-
     if (!createBuffers())
     {
         RP_LOG(FrameBufferLog, Error, "Failed to create framebuffers");
@@ -73,6 +71,14 @@ void FrameBufferManager::shutdown()
 std::string FrameBufferManager::getName()
 {
     return "[Frame buffers Manager]";
+}
+
+void FrameBufferManager::onResize(int width, int height)
+{
+    if (!recreateBuffer())
+    {
+        RP_LOG(FrameBufferLog, Error, "Failed recreate frame buffers");
+    }
 }
 
 const std::vector<VkFramebuffer>& RPE::FrameBufferManager::getFramebuffers() const

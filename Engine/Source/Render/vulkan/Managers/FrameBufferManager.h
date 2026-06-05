@@ -17,7 +17,7 @@ public:
     bool init() override;
     void shutdown() override;
     std::string getName() override;
-
+    void onResize(int width, int height) override;
     const std::vector<VkFramebuffer>& getFramebuffers() const;
 
 private:

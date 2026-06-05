@@ -6,6 +6,8 @@
 #include "Managers/SwapchainManager.h"
 #include "Managers/RenderpassManager.h"
 #include "Managers/FrameBufferManager.h"
+#include "Managers/PipelineManager.h"
+#include "vkRender.h"
 
 DEFINE_LOG_CATEGORY_STATIC(vkContextLog)
 using namespace RPE;
@@ -17,6 +19,7 @@ VulkanContext::VulkanContext()
     registerManager(std::make_unique<SwapchainManager>());
     registerManager(std::make_unique<RenderPassManager>());
     registerManager(std::make_unique<FrameBufferManager>());
+    registerManager(std::make_unique<PipelineManager>());
 }
 
 VulkanContext::~VulkanContext()
@@ -162,12 +165,22 @@ const RenderPassManager* VulkanContext::getRenderpassManager() const
     return findManager<RenderPassManager>();
 }
 
-FrameBufferManager* RPE::VulkanContext::getFrameBufferManager()
+FrameBufferManager* VulkanContext::getFrameBufferManager()
 {
     return findManager<FrameBufferManager>();
 }
 
-const FrameBufferManager* RPE::VulkanContext::getFrameBufferManager() const
+const FrameBufferManager* VulkanContext::getFrameBufferManager() const
 {
     return findManager<FrameBufferManager>();
+}
+
+VkRenderer* VulkanContext::getVulkanRenderer()
+{
+    return m_renderer;
+}
+
+void VulkanContext::SetRenderPtr(VkRenderer* ptr)
+{
+    m_renderer = ptr;
 }

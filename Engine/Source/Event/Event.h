@@ -31,7 +31,6 @@ public:
     // Вызов всех подписчиков
     void invoke(Args... args)
     {
-        // Используем итераторы правильно
         for (auto& pair : m_callbacks)
         {
             if (pair.second)

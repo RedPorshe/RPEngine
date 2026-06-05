@@ -151,16 +151,8 @@ bool RPE::SwapchainManager::RecreateSwapchain()
     }
 
     RP_LOG(LogSwapchainManager, Display, "Swap chain recreated successfully");
-    InputEvent event;
-    event.type = EventType::WindowResize;
-    event.data = ResizeData{static_cast<int>(m_extent.width), static_cast<int>(m_extent.height)};
-    RecreateEvent.invoke(event);
-    return true;
-}
 
-Event<InputEvent> RPE::SwapchainManager::onRecreate()
-{
-    return RecreateEvent;
+    return true;
 }
 
 bool SwapchainManager::createSwapchain()
@@ -280,7 +272,6 @@ void SwapchainManager::chooseSurfaceFormat()
     std::vector<VkSurfaceFormatKHR> formats(formatCount);
     vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, formats.data());
 
-    // Предпочитаем формат RGBA8 SRGB
     for (const auto& format : formats)
     {
         if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
@@ -290,8 +281,6 @@ void SwapchainManager::chooseSurfaceFormat()
             return;
         }
     }
-
-    // Иначе используем первый доступный
     m_imageFormat = formats[0].format;
     m_colorSpace = formats[0].colorSpace;
 }
@@ -310,7 +299,6 @@ void SwapchainManager::choosePresentMode()
     std::vector<VkPresentModeKHR> presentModes(presentModeCount);
     vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, presentModes.data());
 
-    // Предпочитаем MAILBOX (тройная буферизация, низкая задержка)
     for (const auto& mode : presentModes)
     {
         if (mode == VK_PRESENT_MODE_MAILBOX_KHR)
@@ -320,7 +308,6 @@ void SwapchainManager::choosePresentMode()
         }
     }
 
-    // Иначе FIFO (гарантированно доступен)
     m_presentMode = VK_PRESENT_MODE_FIFO_KHR;
 }
 

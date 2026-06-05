@@ -25,7 +25,6 @@ public:
     VkExtent2D getExtent() const;
     const std::vector<VkImageView>& getImageViews() const;
     bool RecreateSwapchain();
-    Event<InputEvent> onRecreate();
 
 private:
     bool createSwapchain();
@@ -43,6 +42,5 @@ private:
     std::vector<VkImage> m_swapchainImages;
     std::vector<VkImageView> m_swapchainImageViews;
     WindowSettings m_settings;
-    Event<InputEvent> RecreateEvent;
 };
 }  // namespace RPE

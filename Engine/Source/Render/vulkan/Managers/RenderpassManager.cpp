@@ -39,7 +39,7 @@ bool RenderPassManager::init()
         return false;
     }
     m_swapchainFormat = swapchainMgr->getImageFormat();
-    swapchainMgr->onRecreate().subscribe([this](const InputEvent& event) { RecreateRenderPass(); });
+
     if (!createRenderPass())
     {
         RP_LOG(RenderPassLog, Error, "Failed to create render pass");

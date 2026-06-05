@@ -29,6 +29,7 @@ private:
     std::vector<std::unique_ptr<class IVkManager>> m_managers;
     IWindow* m_windowHandle{nullptr};
     bool m_initialized{false};
+    class VkRenderer* m_renderer = nullptr;
 
 public:
     class InstanceManager* getInstanceManager();
@@ -41,6 +42,8 @@ public:
     const class RenderPassManager* getRenderpassManager() const;
     class FrameBufferManager* getFrameBufferManager();
     const class FrameBufferManager* getFrameBufferManager() const;
+    class VkRenderer* getVulkanRenderer();
+    void SetRenderPtr(class VkRenderer* ptr);
     template <typename T>
     T* findManager()
     {

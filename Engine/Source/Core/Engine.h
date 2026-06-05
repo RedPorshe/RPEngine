@@ -29,8 +29,10 @@ public:
     }
     std::shared_ptr<class InputManager> getInputManager() const { return m_inputManager; }
     class IWindow* getMainWindow() const;
+    std::vector<std::string>& getNeededPipelineNames();
 
 private:
+    std::vector<std::string> m_neededPipelineNames;
     const std::unique_ptr<class IWindowManager> m_WindowManager;
     const std::shared_ptr<class InputManager> m_inputManager;
     const std::unique_ptr<class RHI> m_renderer;

@@ -47,7 +47,9 @@ set(ENGINE_SOURCES_BASE
     Source/Render/vulkan/Managers/RenderpassManager.h   
     Source/Render/vulkan/Managers/RenderpassManager.cpp    
     Source/Render/vulkan/Managers/FrameBufferManager.h   
-    Source/Render/vulkan/Managers/FrameBufferManager.cpp       
+    Source/Render/vulkan/Managers/FrameBufferManager.cpp   
+    Source/Render/vulkan/Managers/PipelineManager.h   
+    Source/Render/vulkan/Managers/PipelineManager.cpp      
     # interfaces
     Source/Window/IWindowManager.h 
     Source/Window/IWindow.h 

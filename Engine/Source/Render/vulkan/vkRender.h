@@ -20,12 +20,13 @@ public:
     void shutdown() override;
     std::string getName() const override;
     std::string getVersion() const override;
+    class Engine* getEngine();
 
 protected:
     void onResize(int width, int height) override;
 
 private:
-    Engine* m_EnginePtr = nullptr;
+    class Engine* m_EnginePtr = nullptr;
     std::unique_ptr<class VulkanContext> m_ctx;
     std::string m_version{ENGINE_VERSION_STRING};
     void* m_WindowHandle = nullptr;
