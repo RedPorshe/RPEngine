@@ -42,6 +42,8 @@ public:
     const class RenderPassManager* getRenderpassManager() const;
     class FrameBufferManager* getFrameBufferManager();
     const class FrameBufferManager* getFrameBufferManager() const;
+    class ShaderManager* getShaderManager();
+    const class ShaderManager* getShaderManager() const;
     class VkRenderer* getVulkanRenderer();
     void SetRenderPtr(class VkRenderer* ptr);
     template <typename T>

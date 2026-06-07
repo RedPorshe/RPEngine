@@ -37,62 +37,7 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
     : m_WindowManager(std::move(WindowManager)), m_inputManager(std::make_shared<InputManager>()), m_renderer(std::move(renderer)),
       mainWindowId(WindowId{0})
 {
-    s_instance = this;
-    RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
-
-    RP_LOG(EngineLog, Display, "Adding needed pipeline: {}", "main");
-    m_neededPipelineNames.push_back("main");
-    m_neededPipelineNames.push_back("Triangle");
-    WindowSettings wset;
-    wset.width = 1024;
-    wset.height = 768;
-    wset.title = "Lost";
-    wset.x = 200;
-    wset.y = 200;
-    const auto windowResult = m_WindowManager->createWindow(wset);
-    if (m_renderer)
-    {
-        if (!m_renderer->preInit(wset, ENGINE_NAME))
-        {
-            RP_LOG(EngineLog, Error, "Failed to preInit {}", m_renderer->getName());
-            m_renderer->shutdown();
-            return;
-        }
-    }
-    else
-    {
-        RP_LOG(EngineLog, Fatal, "Renderer is not created!!!");
-    }
-
-    if (!windowResult)
-    {
-        RP_LOG(EngineLog, Error, "Failed to create Window for {}", ENGINE_NAME);
-        m_initialized = false;
-        return;
-    }
-    setupWindowEvents(windowResult.value());
-    mainWindowId = WindowId{windowResult.value()};
-    if (m_inputManager)
-    {
-        m_inputManager->setExitCallback([this]() { requestExit(); });
-    }
-    if (const auto window = m_WindowManager->getWindowById(windowResult.value()))
-    {
-        if (!window->isValid())
-        {
-            RP_LOG(EngineLog, Error, "Created window is not valid for {}", ENGINE_NAME);
-            m_initialized = false;
-            return;
-        }
-        m_renderer->setEnginePtr(this);
-        if (!m_renderer->init(window.get()))
-        {
-            RP_LOG(EngineLog, Error, "Failed to Init renderer");
-            m_renderer->shutdown();
-            return;
-        }
-    }
-    m_initialized = true;
+    s_instance = this;  
 }
 
 Engine::~Engine()
@@ -160,6 +105,94 @@ std::vector<std::string>& RPE::Engine::getNeededPipelineNames()
 {
     return m_neededPipelineNames;
 }
+
+int Engine::preInit(int argc, char* argv[])
+{
+    if (argc > 0)
+    {
+        std::string fullPath = argv[0];
+
+        // Находим последний разделитель пути
+        size_t lastSlash = fullPath.find_last_of("\\/");
+        if (lastSlash != std::string::npos)
+        {
+            m_executablePath = fullPath.substr(0, lastSlash + 1);
+        }
+        else
+        {
+            m_executablePath = "./";
+        }
+
+        RP_LOG(EngineLog, Display, "Executable path: {}", m_executablePath);
+    }
+    return 0;
+}
+
+int RPE::Engine::init()
+{
+    RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
+
+    RP_LOG(EngineLog, Display, "Adding needed pipeline: {}", "main");
+    m_neededPipelineNames.push_back("main");
+    m_neededPipelineNames.push_back("Triangle");
+    m_neededPipelineNames.push_back("Wireframe");
+    m_neededPipelineNames.push_back("PointCloud");
+    m_neededPipelineNames.push_back("Transparent");
+    WindowSettings wset;
+    wset.width = 1024;
+    wset.height = 768;
+    wset.title = "Lost";
+    wset.x = 200;
+    wset.y = 200;
+    const auto windowResult = m_WindowManager->createWindow(wset);
+    if (m_renderer)
+    {
+        if (!m_renderer->preInit(wset, ENGINE_NAME))
+        {
+            RP_LOG(EngineLog, Error, "Failed to preInit {}", m_renderer->getName());
+            m_renderer->shutdown();
+            return 1;
+        }
+    }
+    else
+    {
+        RP_LOG(EngineLog, Fatal, "Renderer is not created!!!");
+        return 2;
+    }
+
+    if (!windowResult)
+    {
+        RP_LOG(EngineLog, Error, "Failed to create Window for {}", ENGINE_NAME);
+        m_initialized = false;
+        return 3;
+    }
+    setupWindowEvents(windowResult.value());
+    mainWindowId = WindowId{windowResult.value()};
+    if (m_inputManager)
+    {
+        m_inputManager->setExitCallback([this]() { requestExit(); });
+    }
+    if (const auto window = m_WindowManager->getWindowById(windowResult.value()))
+    {
+        if (!window->isValid())
+        {
+            RP_LOG(EngineLog, Error, "Created window is not valid for {}", ENGINE_NAME);
+            m_initialized = false;
+            return 4;
+        }
+        m_renderer->setEnginePtr(this);
+        if (!m_renderer->init(window.get()))
+        {
+            RP_LOG(EngineLog, Error, "Failed to Init renderer");
+            m_renderer->shutdown();
+            return 5;
+        }
+    }
+    m_initialized = true;
+    return 0;
+}
+
+
 
 void Engine::onInputEvent(const InputEvent& event)
 {

@@ -2,15 +2,30 @@
 #include "IVkManager.h"
 #include <unordered_map>
 #include <vulkan/vulkan.h>
-#include <string_view>
+#include <string>
 #include <vector>
 
 namespace RPE
 {
+    struct PipelineCreateInfo
+        {
+        VkGraphicsPipelineCreateInfo pipelineInfo{};
+        std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+        VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+        VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+        VkPipelineViewportStateCreateInfo viewportState{};
+        VkPipelineRasterizationStateCreateInfo rasterizer{};
+        VkPipelineMultisampleStateCreateInfo multisampling{};
+        VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+        VkPipelineColorBlendStateCreateInfo colorBlending{};
+        std::vector<VkDynamicState> dynamicStates;
+        VkPipelineDynamicStateCreateInfo dynamicState{};
+        };
 struct PipelineInfo
 {
     VkPipeline pipeline{VK_NULL_HANDLE};
     VkPipelineLayout layout{VK_NULL_HANDLE};
+    VkPipelineCache cache{VK_NULL_HANDLE};
     std::string name{};
 };
 
@@ -29,7 +44,8 @@ public:
 
 private:
     bool CreatePipelines();
-    bool CreateGraphicsPipeline(const std::string_view name);
+    bool CreateGraphicsPipeline(const std::string name);
+    VkPipelineLayout createPipelineLayout();
     std::vector<std::string> m_availablePipelines;
     std::unordered_map<std::string, PipelineInfo> m_pipelines;
 };

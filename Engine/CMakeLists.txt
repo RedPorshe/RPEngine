@@ -49,7 +49,9 @@ set(ENGINE_SOURCES_BASE
     Source/Render/vulkan/Managers/FrameBufferManager.h   
     Source/Render/vulkan/Managers/FrameBufferManager.cpp   
     Source/Render/vulkan/Managers/PipelineManager.h   
-    Source/Render/vulkan/Managers/PipelineManager.cpp      
+    Source/Render/vulkan/Managers/PipelineManager.cpp    
+    Source/Render/vulkan/Managers/ShadersManager.h   
+    Source/Render/vulkan/Managers/ShadersManager.cpp      
     # interfaces
     Source/Window/IWindowManager.h 
     Source/Window/IWindow.h 
@@ -69,7 +71,45 @@ set(ENGINE_SOURCES_BASE
     Source/GameFrameWork/GameObjects/WorldObject/WorldObject.cpp
     Source/GameFrameWork/GameObjects/Components/InputComponent.h 
     Source/GameFrameWork/GameObjects/Components/InputComponent.cpp
+    # shaders
+    Assets/shaders/main.vert
+    Assets/shaders/main.frag
+    Assets/shaders/Triangle.vert
+    Assets/shaders/Triangle.frag
+    Assets/shaders/Wireframe.vert
+    Assets/shaders/Wireframe.frag
+    Assets/shaders/PointCloud.vert
+    Assets/shaders/PointCloud.frag
+    Assets/shaders/Transparent.vert
+    Assets/shaders/Transparent.frag
+    
 )
+
+set(SHADER_FILES
+    Assets/shaders/main.vert
+    Assets/shaders/main.frag
+    Assets/shaders/Triangle.vert
+    Assets/shaders/Triangle.frag
+    Assets/shaders/Wireframe.vert
+    Assets/shaders/Wireframe.frag
+    Assets/shaders/PointCloud.vert
+    Assets/shaders/PointCloud.frag
+    Assets/shaders/Transparent.vert
+    Assets/shaders/Transparent.frag
+)
+set(SHADER_DEST_DIR ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/Assets/shaders)
+
+# Копируем каждый шейдер
+foreach(SHADER ${SHADER_FILES})
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${SHADER_DEST_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_CURRENT_SOURCE_DIR}/${SHADER}
+            ${SHADER_DEST_DIR}/
+    )
+endforeach()
+ 
 
 # GLFW источники
 set(ENGINE_SOURCES_GLFW

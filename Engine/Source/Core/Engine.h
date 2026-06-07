@@ -30,6 +30,11 @@ public:
     std::shared_ptr<class InputManager> getInputManager() const { return m_inputManager; }
     class IWindow* getMainWindow() const;
     std::vector<std::string>& getNeededPipelineNames();
+    int preInit(int argc, char* argv[]);
+  
+    std::string getExecutablePath() const { return m_executablePath; }
+    std::string getAssetsPath() const { return m_executablePath + "Assets/"; }
+    int init();
 
 private:
     std::vector<std::string> m_neededPipelineNames;
@@ -44,6 +49,7 @@ private:
     void setupWindowEvents(struct WindowId windowId);
     std::atomic<bool> m_requestExit{false};
     static Engine* s_instance;
+    std::string m_executablePath;
 };
 
 }  // namespace RPE

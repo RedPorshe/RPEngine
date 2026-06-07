@@ -71,7 +71,7 @@ void TestWindowManagerInitialization()
 #endif
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 #ifdef SKIP_WINDOW_TESTS
     RP_LOG(MainLog, Display, "==============Starting Window managers tests======");
@@ -116,14 +116,32 @@ int main()
     }
 
     RPE::Engine engine{std::move(WindowManager), std::move(Renderer)};
-    if (!engine.isInitialized())
+    auto errorlevel = engine.preInit(argc, argv);
+    if (errorlevel == 0)
     {
-        RP_LOG(MainLog, Error, "Failed to initialize the engine.");
-        return EXIT_FAILURE;
+        errorlevel = engine.init();
+        if (errorlevel == 0)
+        {
+            if (!engine.isInitialized())
+            {
+                RP_LOG(MainLog, Error, "Failed to initialize the engine.");
+                return EXIT_FAILURE;
+            }
+            else
+            {
+                engine.run();
+            }
+        }
+        else
+        {
+            RP_LOG(MainLog, Error, "Initializing engine return error code: {}", errorlevel);
+            return errorlevel;
+        }
     }
     else
     {
-        engine.run();
+        RP_LOG(MainLog, Error, "preInitializing engine return error code: {}", errorlevel);
+        return errorlevel;
     }
 
     return EXIT_SUCCESS;
