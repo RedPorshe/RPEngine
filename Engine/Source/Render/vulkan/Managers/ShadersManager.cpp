@@ -59,8 +59,8 @@ bool ShaderManager::init()
         info.pipelineName = name;
         info.shaders = {
             // Графические шейдеры
-            {ShaderStage::Vertex,assetspath + "shaders/" + name + "_vert.spv", assetspath + "shaders/" + name + ".vert", "main"},
-            {ShaderStage::Fragment,assetspath + "shaders/" + name + "_frag.spv", assetspath + "shaders/" + name + ".frag", "main"},
+            {ShaderStage::Vertex, assetspath + "shaders/" + name + "_vert.spv", assetspath + "shaders/" + name + ".vert", "main"},
+            {ShaderStage::Fragment, assetspath + "shaders/" + name + "_frag.spv", assetspath + "shaders/" + name + ".frag", "main"},
 
             // Опциональные графические шейдеры (если нужны)
             // {ShaderStage::Geometry, "shaders/" + name + "_geom.spv", "main"},
@@ -182,12 +182,10 @@ bool ShaderManager::loadShaderModule(ShaderModuleInfo& shaderInfo)
         return false;
     }
 
-    
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = buffer.size();
     createInfo.pCode = reinterpret_cast<const uint32_t*>(buffer.data());
-    
 
     auto* deviceMgr = m_contextPtr->getDeviceManager();
     if (!deviceMgr)
@@ -210,7 +208,7 @@ bool ShaderManager::loadShaderModule(ShaderModuleInfo& shaderInfo)
         return false;
     }
     std::string stageStr = stageToString(shaderInfo.stage);
-    RP_LOG(ShaderLog, Display, "Loaded shader module: {} (stage: {})", shaderInfo.path,stageStr);
+    RP_LOG(ShaderLog, Display, "Loaded shader module: {} (stage: {})", shaderInfo.path, stageStr);
 
     return true;
 }
@@ -262,7 +260,7 @@ bool ShaderManager::compileShaders()
             if (!compileShader(shaderInfo))
             {
                 std::string stageStr = stageToString(shaderInfo.stage);
-                RP_LOG(ShaderLog, Error, "Failed to compile shader module for pipeline: {}, stage: {}", name,stageStr);
+                RP_LOG(ShaderLog, Error, "Failed to compile shader module for pipeline: {}, stage: {}", name, stageStr);
                 return false;
             }
             if (std::filesystem::exists(shaderInfo.path)) continue;
@@ -272,14 +270,14 @@ bool ShaderManager::compileShaders()
 }
 
 bool RPE::ShaderManager::compileShader(ShaderModuleInfo& shaderInfo)
-{   
+{
 
     if (!std::filesystem::exists(shaderInfo.sourcePath))
     {
         RP_LOG(ShaderLog, Error, "Shader source file not found: {}", shaderInfo.sourcePath);
         return false;
     }
-       
+
     if (std::filesystem::exists(shaderInfo.path))
     {
         auto sourceTime = std::filesystem::last_write_time(shaderInfo.sourcePath);
@@ -291,7 +289,7 @@ bool RPE::ShaderManager::compileShader(ShaderModuleInfo& shaderInfo)
         }
     }
 
-  std::string stageStr = stageToString(shaderInfo.stage);
+    std::string stageStr = stageToString(shaderInfo.stage);
     std::string stageFlag;
     switch (shaderInfo.stage)
     {
@@ -301,20 +299,19 @@ bool RPE::ShaderManager::compileShader(ShaderModuleInfo& shaderInfo)
         case ShaderStage::Compute: stageFlag = "-V"; break;
         default: RP_LOG(ShaderLog, Error, "Unsupported shader stage for compilation: {}", stageStr); return false;
     }
-       
+
     std::string cmd = "glslangValidator " + stageFlag + " \"" + shaderInfo.sourcePath + "\" -o \"" + shaderInfo.path + "\"";
 
     RP_LOG(ShaderLog, Display, "Compiling shader: {}", shaderInfo.sourcePath);
     RP_LOG(ShaderLog, Display, "Command: {}", cmd);
 
-   
     int result = std::system(cmd.c_str());
     if (result != 0)
     {
         RP_LOG(ShaderLog, Error, "Failed to compile shader: {}, error code: {}", shaderInfo.sourcePath, result);
         return false;
     }
-        
+
     if (!std::filesystem::exists(shaderInfo.path))
     {
         RP_LOG(ShaderLog, Error, "Compilation completed but SPIR-V file not found: {}", shaderInfo.path);

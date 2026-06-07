@@ -213,7 +213,7 @@ bool PipelineManager::CreateGraphicsPipeline(const std::string name)
     VkBlendOp alphaBlendOp = VK_BLEND_OP_ADD;
     VkColorComponentFlags colorWriteMask =
         VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-    //vertex
+    // vertex
     std::vector<VkVertexInputBindingDescription> bindingDescriptions;
     std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
 

@@ -37,7 +37,7 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
     : m_WindowManager(std::move(WindowManager)), m_inputManager(std::make_shared<InputManager>()), m_renderer(std::move(renderer)),
       mainWindowId(WindowId{0})
 {
-    s_instance = this;  
+    s_instance = this;
 }
 
 Engine::~Engine()
@@ -191,8 +191,6 @@ int RPE::Engine::init()
     m_initialized = true;
     return 0;
 }
-
-
 
 void Engine::onInputEvent(const InputEvent& event)
 {

@@ -31,7 +31,7 @@ public:
     class IWindow* getMainWindow() const;
     std::vector<std::string>& getNeededPipelineNames();
     int preInit(int argc, char* argv[]);
-  
+
     std::string getExecutablePath() const { return m_executablePath; }
     std::string getAssetsPath() const { return m_executablePath + "Assets/"; }
     int init();

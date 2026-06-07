@@ -7,20 +7,20 @@
 
 namespace RPE
 {
-    struct PipelineCreateInfo
-        {
-        VkGraphicsPipelineCreateInfo pipelineInfo{};
-        std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
-        VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-        VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
-        VkPipelineViewportStateCreateInfo viewportState{};
-        VkPipelineRasterizationStateCreateInfo rasterizer{};
-        VkPipelineMultisampleStateCreateInfo multisampling{};
-        VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-        VkPipelineColorBlendStateCreateInfo colorBlending{};
-        std::vector<VkDynamicState> dynamicStates;
-        VkPipelineDynamicStateCreateInfo dynamicState{};
-        };
+struct PipelineCreateInfo
+{
+    VkGraphicsPipelineCreateInfo pipelineInfo{};
+    std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+    VkPipelineViewportStateCreateInfo viewportState{};
+    VkPipelineRasterizationStateCreateInfo rasterizer{};
+    VkPipelineMultisampleStateCreateInfo multisampling{};
+    VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+    VkPipelineColorBlendStateCreateInfo colorBlending{};
+    std::vector<VkDynamicState> dynamicStates;
+    VkPipelineDynamicStateCreateInfo dynamicState{};
+};
 struct PipelineInfo
 {
     VkPipeline pipeline{VK_NULL_HANDLE};
