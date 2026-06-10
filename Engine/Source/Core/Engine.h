@@ -50,6 +50,8 @@ private:
     std::atomic<bool> m_requestExit{false};
     static Engine* s_instance;
     std::string m_executablePath;
+    int m_currentWidth = 200;
+    int m_currentHeigth = 200;
 };
 
 }  // namespace RPE

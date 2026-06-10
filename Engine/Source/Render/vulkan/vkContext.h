@@ -55,6 +55,8 @@ public:
     const class CommandManager* getCommandManager() const;
     class CommandManager* getCommandManager();
     const class SyncManager* getSyncManager() const;
+    class BufferManager* getBufferManager();
+    const class BufferManager* getBufferManager() const;
     class SyncManager* getSyncManager();
     class VkRenderer* getVulkanRenderer();
     void SetRenderPtr(class VkRenderer* ptr);

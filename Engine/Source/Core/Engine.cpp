@@ -57,6 +57,9 @@ void Engine::run()
     RP_LOG(EngineLog, Display, "{} runned", ENGINE_NAME);
     while (!m_WindowManager->areAllWindowsClosed() && !m_requestExit)
     {
+        // m_currentWidth = m_renderer->getWidth();
+        //  m_currentHeigth = m_renderer->getHeight();
+
         auto currentTime = std::chrono::high_resolution_clock::now();
         float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
         lastTime = currentTime;
@@ -65,9 +68,16 @@ void Engine::run()
         updateGameLogic(deltaTime);
         static int failcount = 0;
         constexpr int MAXFAILCOUNT = 3;
+        if (m_currentWidth == 0 && m_currentHeigth == 0)
+        {
+            m_WindowManager->update();
+            continue;
+        }
+
         if (m_renderer)
         {
             m_renderer->update();
+            if (m_WindowManager->areAllWindowsClosed()) return;
             if (!m_renderer->render())
             {
 
@@ -84,6 +94,7 @@ void Engine::run()
                 failcount = 0;
             }
         }
+
         m_inputManager->update();
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
@@ -91,7 +102,7 @@ void Engine::run()
     RP_LOG(EngineLog, Display, "{} stoped", ENGINE_NAME);
 }
 
-void RPE::Engine::requestExit()
+void Engine::requestExit()
 {
     m_requestExit = true;
 }
@@ -101,7 +112,7 @@ IWindow* Engine::getMainWindow() const
     return m_WindowManager->getWindowById(mainWindowId).get();
 }
 
-std::vector<std::string>& RPE::Engine::getNeededPipelineNames()
+std::vector<std::string>& Engine::getNeededPipelineNames()
 {
     return m_neededPipelineNames;
 }
@@ -128,7 +139,7 @@ int Engine::preInit(int argc, char* argv[])
     return 0;
 }
 
-int RPE::Engine::init()
+int Engine::init()
 {
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
 
@@ -198,7 +209,12 @@ void Engine::onInputEvent(const InputEvent& event)
         if (std::holds_alternative<ResizeData>(event.data))
         {
             const auto data = std::get<ResizeData>(event.data);
-            m_renderer->onResize(data.width, data.height);
+            m_currentHeigth = data.height;
+            m_currentWidth = data.width;
+            if (data.width > 0 && data.height > 0)
+            {
+                m_renderer->onResize(data.width, data.height);
+            }
         }
     }
     if (!m_inputManager) return;

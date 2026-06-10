@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Utility.h"
 #include "Window/IWindow.h"
+#include "../FrameInfo.h"
 
 #include <string>
 
@@ -21,5 +22,12 @@ public:
     virtual std::string getVersion() const = 0;
 
     virtual void onResize(int width, int height) = 0;
+    int getWidth() const { return m_width; }
+    int getHeight() const { return m_height; }
+
+protected:
+    int m_height = 800;
+    int m_width = 600;
+    FrameInfo m_FrameInfo{};
 };
 }  // namespace RPE

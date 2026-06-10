@@ -92,24 +92,34 @@ void SwapchainManager::onResize(int width, int height)
 {
     if (!m_isInitialized) return;
 
+    if (width <= 0 || height <= 0)
+    {
+        return;
+    }
+
     m_settings.width = width;
     m_settings.height = height;
-
-    // Пересоздаём swap chain
-    RecreateSwapchain();
+    if (width != 0 && height != 0)
+    {
+        if (!RecreateSwapchain())
+        {
+            RP_LOG(LogSwapchainManager, Error, "Failed to recreate swapchain");
+            return;
+        }
+    }
 }
 
-VkSwapchainKHR RPE::SwapchainManager::getSwapchain() const
+VkSwapchainKHR SwapchainManager::getSwapchain() const
 {
     return m_swapchain;
 }
 
-VkFormat RPE::SwapchainManager::getImageFormat() const
+VkFormat SwapchainManager::getImageFormat() const
 {
     return m_imageFormat;
 }
 
-VkExtent2D RPE::SwapchainManager::getExtent() const
+VkExtent2D SwapchainManager::getExtent() const
 {
     return m_extent;
 }
@@ -119,9 +129,15 @@ const std::vector<VkImageView>& RPE::SwapchainManager::getImageViews() const
     return m_swapchainImageViews;
 }
 
-bool RPE::SwapchainManager::RecreateSwapchain()
+bool SwapchainManager::RecreateSwapchain()
 {
     if (!m_contextPtr) return false;
+
+    if (m_extent.width == 0 || m_extent.height == 0)
+    {
+        RP_LOG(LogSwapchainManager, Warning, "Cannot recreate swapchain with invalid extent: {}x{}", m_extent.width, m_extent.height);
+        return false;
+    }
 
     auto* deviceMgr = m_contextPtr->getDeviceManager();
     if (!deviceMgr) return false;
@@ -137,6 +153,12 @@ bool RPE::SwapchainManager::RecreateSwapchain()
 
     // Пересоздаём
     chooseExtent(m_settings);
+
+    if (m_extent.width == 0 || m_extent.height == 0)
+    {
+        RP_LOG(LogSwapchainManager, Error, "Invalid extent after chooseExtent: {}x{}", m_extent.width, m_extent.height);
+        return false;
+    }
 
     if (!createSwapchain())
     {
@@ -180,7 +202,16 @@ bool SwapchainManager::createSwapchain()
     {
         imageCount = capabilities.minImageCount;
     }
-    m_contextPtr->setMaxFrames(imageCount);
+    if (imageCount > 0 && imageCount <= 16)  // Проверка валидности
+    {
+        m_contextPtr->setMaxFrames(imageCount);
+        RP_LOG(LogSwapchainManager, Display, "Set MAX_FRAMES_COUNT to: {}", imageCount);
+    }
+    else
+    {
+        RP_LOG(LogSwapchainManager, Error, "Invalid imageCount: {}", imageCount);
+        return false;
+    }
 
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -222,7 +253,6 @@ bool SwapchainManager::createSwapchain()
         return false;
     }
 
-    // Получаем изображения swap chain
     vkGetSwapchainImagesKHR(device, m_swapchain, &imageCount, nullptr);
     m_swapchainImages.resize(imageCount);
     vkGetSwapchainImagesKHR(device, m_swapchain, &imageCount, m_swapchainImages.data());

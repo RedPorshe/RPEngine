@@ -32,6 +32,7 @@ set(ENGINE_SOURCES_BASE
     # render 
     Source/Render/RHI/Renderer.h 
     Source/Render/RHI/Renderer.cpp 
+    Source/Render/FrameInfo.h
     # vulkan 
     Source/Render/vulkan/vkRender.h 
     Source/Render/vulkan/vkRender.cpp 
@@ -89,8 +90,27 @@ set(ENGINE_SOURCES_BASE
     Assets/shaders/PointCloud.vert
     Assets/shaders/PointCloud.frag
     Assets/shaders/Transparent.vert
-    Assets/shaders/Transparent.frag
-    
+    Assets/shaders/Transparent.frag   
+    # math
+    Source/Math/CE_MathConstants.h 
+    Source/Math/MathConstants.cpp 
+    Source/Math/MathGLMConverters.h
+    Source/Math/MathHelpers.cpp 
+    Source/Math/MathTypes.h
+    Source/Math/Matrix4.cpp
+    Source/Math/Matrix4.h 
+    Source/Math/Quaternion.h 
+    Source/Math/Quaternion.cpp 
+    Source/Math/Vector2D.h 
+    Source/Math/Vector2D.cpp  
+    Source/Math/Vector3D.h 
+    Source/Math/Vector3D.cpp  
+    Source/Math/Vector4.h 
+    Source/Math/Vector4.cpp  
+)
+
+set(MATH_LIB
+
 )
 
 set(SHADER_FILES
@@ -156,7 +176,7 @@ if(SKIP_WINDOW_TESTS)
 endif()
 
 if(RPE_USE_NATIVE_WINDOW)
-    set(ENGINE_SOURCES ${ENGINE_SOURCES_BASE})
+    set(ENGINE_SOURCES ${ENGINE_SOURCES_BASE} ${MATH_LIB})
     
     if(WIN32)
         list(APPEND ENGINE_SOURCES ${ENGINE_SOURCES_NATIVE_WIN32})

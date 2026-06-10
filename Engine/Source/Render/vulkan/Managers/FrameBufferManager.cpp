@@ -75,6 +75,12 @@ std::string FrameBufferManager::getName()
 
 void FrameBufferManager::onResize(int width, int height)
 {
+
+    if (width <= 0 || height <= 0)
+    {
+        return;
+    }
+
     if (!recreateBuffer())
     {
         RP_LOG(FrameBufferLog, Error, "Failed recreate frame buffers");
@@ -116,23 +122,12 @@ bool FrameBufferManager::createBuffers()
     }
 
     auto* deviceMgr = m_contextPtr->getDeviceManager();
-    if (!deviceMgr)
-    {
-        RP_LOG(FrameBufferLog, Error, "DeviceManager is null");
-        return false;
-    }
-
     auto* swapchainMgr = m_contextPtr->getSwapchainManager();
-    if (!swapchainMgr)
-    {
-        RP_LOG(FrameBufferLog, Error, "SwapchainManager is null");
-        return false;
-    }
-
     auto* renderPassMgr = m_contextPtr->getRenderpassManager();
-    if (!renderPassMgr)
+
+    if (!deviceMgr || !swapchainMgr || !renderPassMgr)
     {
-        RP_LOG(FrameBufferLog, Error, "RenderPassManager is null");
+        RP_LOG(FrameBufferLog, Error, "Required managers are null");
         return false;
     }
 
@@ -141,9 +136,17 @@ bool FrameBufferManager::createBuffers()
     const auto& imageViews = swapchainMgr->getImageViews();
     VkExtent2D extent = swapchainMgr->getExtent();
 
+    // Проверяем валидность
     if (device == VK_NULL_HANDLE || renderPass == VK_NULL_HANDLE || imageViews.empty())
     {
         RP_LOG(FrameBufferLog, Error, "Invalid Vulkan components for framebuffer creation");
+        return false;
+    }
+
+    // Проверяем валидность размеров
+    if (extent.width == 0 || extent.height == 0)
+    {
+        RP_LOG(FrameBufferLog, Warning, "Invalid extent for framebuffer creation: {}x{}", extent.width, extent.height);
         return false;
     }
 
@@ -176,6 +179,17 @@ bool FrameBufferManager::createBuffers()
 
 bool FrameBufferManager::recreateBuffer()
 {
+    // Проверяем валидность размеров через swapchain
+    auto* swapchainMgr = m_contextPtr->getSwapchainManager();
+    if (!swapchainMgr) return false;
+
+    VkExtent2D extent = swapchainMgr->getExtent();
+    if (extent.width == 0 || extent.height == 0)
+    {
+        RP_LOG(FrameBufferLog, Warning, "Cannot recreate framebuffers with invalid extent: {}x{}", extent.width, extent.height);
+        return false;
+    }
+
     RP_LOG(FrameBufferLog, Display, "Recreating framebuffers...");
 
     if (!m_contextPtr) return false;

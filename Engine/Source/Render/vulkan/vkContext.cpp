@@ -10,6 +10,7 @@
 #include "Managers/ShadersManager.h"
 #include "Managers/CommandManager.h"
 #include "Managers/SyncManager.h"
+#include "Managers/BufferManager.h"
 #include "Managers/DescriptorManager.h"
 #include "vkRender.h"
 
@@ -73,6 +74,10 @@ void VulkanContext::shutdown()
 
 void VulkanContext::OnResize(int width, int height)
 {
+    if (width <= 0 || height <= 0)
+    {
+        return;
+    }
     for (auto& manager : m_managers)
     {
         manager->onResize(width, height);
@@ -136,8 +141,15 @@ bool VulkanContext::initManagers()
 
 void RPE::VulkanContext::setMaxFrames(uint32_t value)
 {
-    MAX_FRAMES_COUNT = value;
-    RP_LOG(vkContextLog, Display, " new MAX_FRAMES_COUNT = {}", MAX_FRAMES_COUNT);
+    if (value > 0 && value < 100)
+    {
+        MAX_FRAMES_COUNT = value;
+        RP_LOG(vkContextLog, Display, " new MAX_FRAMES_COUNT = {}", MAX_FRAMES_COUNT);
+    }
+    else
+    {
+        RP_LOG(vkContextLog, Error, " Invalid MAX_FRAMES_COUNT value: {}", value);
+    }
 }
 
 InstanceManager* VulkanContext::getInstanceManager()
@@ -243,6 +255,16 @@ SyncManager* VulkanContext::getSyncManager()
 VkRenderer* VulkanContext::getVulkanRenderer()
 {
     return m_renderer;
+}
+
+BufferManager* VulkanContext::getBufferManager()
+{
+    return findManager<BufferManager>();
+}
+
+const BufferManager* VulkanContext::getBufferManager() const
+{
+    return findManager<BufferManager>();
 }
 
 void VulkanContext::SetRenderPtr(VkRenderer* ptr)

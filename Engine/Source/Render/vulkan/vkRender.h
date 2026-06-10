@@ -3,14 +3,13 @@
 #include "EngineConfig.h"
 #include <string>
 #include <memory>
+#include <vector>
+#include <vulkan/vulkan.h>
+
+#include <glm/glm.hpp>
 
 namespace RPE
 {
-
-struct FrameInfo
-{
-    bool isValid() { return false; }
-};
 
 class VkRenderer : public RHI
 {
@@ -37,11 +36,27 @@ private:
     std::string m_version{ENGINE_VERSION_STRING};
     void* m_WindowHandle = nullptr;
     bool m_initialized{false};
-    FrameInfo m_frameInfo{};
 
     bool startFrame();
     bool endFrame();
-
     bool renderTriangle(uint32_t imageIndex);
+    bool renderWorld(uint32_t imageIndex);
+    bool renderClear(uint32_t imageIndex);
+    bool recordCommandBuffer(uint32_t imageIndex);
+    bool createUniformBuffers();
+    bool createDescriptorSets();
+    void updateUniformBuffer(uint32_t currentFrame);
+    bool recreateSwapchain();
+    void cleanupUniformBuffers();
+    void cleanupDescriptorSets();
+
+    // Rendering resources
+    std::vector<VkBuffer> m_uniformBuffers;
+    std::vector<VkDeviceMemory> m_uniformBuffersMemory;
+    std::vector<void*> m_uniformBuffersMapped;
+    std::vector<VkDescriptorSet> m_descriptorSets;
+    uint32_t m_currentImageIndex{0};
+    bool m_frameStarted{false};
+    bool m_RenderFallbackTriangle = false;
 };
 }  // namespace RPE

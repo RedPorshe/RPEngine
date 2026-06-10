@@ -80,7 +80,17 @@ std::string RenderPassManager::getName()
 
 void RenderPassManager::onResize(int width, int height)
 {
-    RecreateRenderPass();
+    if (width <= 0 || height <= 0)
+    {
+        RP_LOG(RenderPassLog, Warning, "Invalid resize dimensions: {}x{}", width, height);
+        return;
+    }
+
+    if (!RecreateRenderPass())
+    {
+        RP_LOG(RenderPassLog, Error, "failed to recreate RenderPass");
+        return;
+    }
 }
 
 VkRenderPass RPE::RenderPassManager::getRenderPass() const
@@ -159,12 +169,26 @@ bool RenderPassManager::createRenderPass()
 
 bool RenderPassManager::RecreateRenderPass()
 {
-
     if (!m_contextPtr)
     {
         RP_LOG(RenderPassLog, Error, "{} has no context ptr...", getName());
         return false;
     }
+
+    auto swapchainMgr = m_contextPtr->getSwapchainManager();
+    if (!swapchainMgr)
+    {
+        RP_LOG(RenderPassLog, Error, "SwapchainManager is null");
+        return false;
+    }
+
+    VkExtent2D extent = swapchainMgr->getExtent();
+    if (extent.width == 0 || extent.height == 0)
+    {
+        RP_LOG(RenderPassLog, Warning, "Cannot recreate renderpass with invalid extent: {}x{}", extent.width, extent.height);
+        return false;
+    }
+
     VkDevice device = VK_NULL_HANDLE;
     auto devicMgr = m_contextPtr->getDeviceManager();
     if (!devicMgr)
@@ -178,12 +202,7 @@ bool RenderPassManager::RecreateRenderPass()
         RP_LOG(RenderPassLog, Error, "device is null");
         return false;
     }
-    auto swapchainMgr = m_contextPtr->getSwapchainManager();
-    if (!swapchainMgr)
-    {
-        RP_LOG(RenderPassLog, Error, "SwapchainManager is null");
-        return false;
-    }
+
     m_swapchainFormat = swapchainMgr->getImageFormat();
 
     if (m_renderPass != VK_NULL_HANDLE)
