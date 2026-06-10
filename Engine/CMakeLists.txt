@@ -216,6 +216,12 @@ Tests/WindowTests.cpp
 Tests/EventTests.cpp 
 Tests/EventChaining.cpp
 Tests/EventSubscriptionLifetime.cpp
+Tests/MathTests.cpp
+Tests/Vector2DTests.cpp
+Tests/Vector3DTests.cpp
+Tests/Vector4DTests.cpp
+Tests/QuatTests.cpp
+Tests/MatrixTests.cpp
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 
