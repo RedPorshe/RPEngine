@@ -58,6 +58,8 @@ set(ENGINE_SOURCES_BASE
     Source/Render/vulkan/Managers/SyncManager.cpp 
     Source/Render/vulkan/Managers/DescriptorManager.h   
     Source/Render/vulkan/Managers/DescriptorManager.cpp      
+    Source/Render/vulkan/Managers/BufferManager.h    
+    Source/Render/vulkan/Managers/BufferManager.cpp    
     # interfaces
     Source/Window/IWindowManager.h 
     Source/Window/IWindow.h 
