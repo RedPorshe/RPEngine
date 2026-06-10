@@ -52,6 +52,7 @@ private:
     std::string m_executablePath;
     int m_currentWidth = 200;
     int m_currentHeigth = 200;
+    std::unique_ptr<class CObject> Gameinstance = nullptr;
 };
 
 }  // namespace RPE

@@ -2,12 +2,13 @@
 #include "Input/KeyCodes.h"
 #include "GameFrameWork/GameObjects/Components/InputComponent.h"
 #include "Log/Log.h"
+#include "Core/ObjectFactory.h"
 
 using namespace RPE;
 
 DEFINE_LOG_CATEGORY_STATIC(WorldObjectLog);
 
-WorldObject::WorldObject()
+WorldObject::WorldObject(const std::string& inDisplayName, CObject* inOwner) : CObject(inDisplayName, inOwner)
 {
     m_inputComponent = new InputComponent();
     setupInputBindings();
@@ -25,7 +26,6 @@ InputComponent* WorldObject::getInputComponent()
 
 void WorldObject::update(float deltaTime)
 {
-    // Здесь будет обновление позиции, физики и т.д.
     (void)deltaTime;
 }
 

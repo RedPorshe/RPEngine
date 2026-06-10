@@ -23,6 +23,9 @@ set(ENGINE_SOURCES_BASE
     # core object
     Source/Core/SystemObject.h 
     Source/Core/SystemObject.cpp 
+    Source/Core/SystemObject.hpp
+    Source/Core/ObjectFactory.h 
+    Source/Core/ObjectFactory.cpp 
     # utility_source
     Source/Core/Utility.h
     .clang-format
@@ -226,6 +229,7 @@ Tests/Vector4DTests.cpp
 Tests/QuatTests.cpp
 Tests/MatrixTests.cpp
 Tests/GLMconverterTests.cpp
+Tests/ObjectsTests.cpp
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 
