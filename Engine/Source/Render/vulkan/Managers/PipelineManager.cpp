@@ -1,6 +1,7 @@
 #include "PipelineManager.h"
 #include "ShadersManager.h"
 #include "RenderpassManager.h"
+#include "DescriptorManager.h"
 #include "DeviceManager.h"
 #include "../vkContext.h"
 #include "../vkRender.h"
@@ -50,6 +51,14 @@ bool PipelineManager::init()
     {
         m_availablePipelines.push_back(name);
     }
+
+    auto* descMgr = m_contextPtr->getDescriptorManager();
+    if (!descMgr || !descMgr->isInitialized())
+    {
+        RP_LOG(PipelineLog, Error, "DescriptorManager is not initialized");
+        return false;
+    }
+    descMgr->registerPipelineLayouts(m_availablePipelines);
     auto succes = CreatePipelines();
     if (!succes)
     {
@@ -170,14 +179,18 @@ bool PipelineManager::CreateGraphicsPipeline(const std::string name)
     }
     RP_LOG(PipelineLog, Display, "Pipeline cache created for pipeline: {}", name);
 
-    // Создаём структуру для пайплайна
     PipelineCreateInfo pipelineCreateData{};
     pipelineCreateData.pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
     pipelineCreateData.pipelineInfo.pNext = nullptr;
     pipelineCreateData.pipelineInfo.flags = 0;
 
-    // Получаем шейдеры
     auto* shaderMgr = m_contextPtr->getShaderManager();
+    if (!shaderMgr)
+    {
+
+        RP_LOG(PipelineLog, Error, "ShaderManager is null ");
+        return false;
+    }
     auto* shadersInfo = shaderMgr->getShaders(name);
     if (!shadersInfo)
     {
@@ -185,7 +198,6 @@ bool PipelineManager::CreateGraphicsPipeline(const std::string name)
         return false;
     }
 
-    // Заполняем шейдерные стадии
     for (const auto& shaderInfo : shadersInfo->shaders)
     {
         VkPipelineShaderStageCreateInfo stage{};
@@ -196,7 +208,6 @@ bool PipelineManager::CreateGraphicsPipeline(const std::string name)
         pipelineCreateData.shaderStages.push_back(stage);
     }
 
-    // Настройки в зависимости от имени пайплайна
     VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     VkPolygonMode polygonMode = VK_POLYGON_MODE_FILL;
     VkCullModeFlags cullMode = VK_CULL_MODE_BACK_BIT;
@@ -328,7 +339,7 @@ bool PipelineManager::CreateGraphicsPipeline(const std::string name)
     pipelineCreateData.pipelineInfo.subpass = 0;
 
     // Создаём layout
-    VkPipelineLayout layout = createPipelineLayout();
+    VkPipelineLayout layout = createPipelineLayout(name);
     if (layout == VK_NULL_HANDLE) return false;
     pipelineCreateData.pipelineInfo.layout = layout;
 
@@ -350,12 +361,35 @@ bool PipelineManager::CreateGraphicsPipeline(const std::string name)
     return true;
 }
 
-VkPipelineLayout PipelineManager::createPipelineLayout()
+VkPipelineLayout PipelineManager::createPipelineLayout(const std::string& name)
 {
+    auto* descMgr = m_contextPtr->getDescriptorManager();
+    if (!descMgr)
+    {
+        RP_LOG(PipelineLog, Error, "DescriptorManager is null");
+        return VK_NULL_HANDLE;
+    }
+
+    VkDescriptorSetLayout descLayout = descMgr->getDescriptorSetLayout(name);
+
+    if (descLayout == VK_NULL_HANDLE)
+    {
+        RP_LOG(PipelineLog, Warning, "No specific layout for '{}', trying shared layout", name);
+        descLayout = descMgr->getDescriptorSetLayout("StandardGraphicsLayout");
+
+        if (descLayout == VK_NULL_HANDLE)
+        {
+            RP_LOG(PipelineLog, Error, "No shared layout available");
+            return VK_NULL_HANDLE;
+        }
+    }
+
     VkPipelineLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    layoutInfo.pNext = nullptr;
-    layoutInfo.flags = 0;
+    layoutInfo.setLayoutCount = 1;
+    layoutInfo.pSetLayouts = &descLayout;
+    layoutInfo.pushConstantRangeCount = 0;
+    layoutInfo.pPushConstantRanges = nullptr;
 
     VkPipelineLayout layout;
     auto* deviceMgr = m_contextPtr->getDeviceManager();
@@ -364,9 +398,10 @@ VkPipelineLayout PipelineManager::createPipelineLayout()
     VkResult result = vkCreatePipelineLayout(device, &layoutInfo, nullptr, &layout);
     if (result != VK_SUCCESS)
     {
-        RP_LOG(PipelineLog, Error, "Failed to create pipeline layout. error code: {}", static_cast<int>(result));
+        RP_LOG(PipelineLog, Error, "Failed to create pipeline layout for '{}': {}", name, static_cast<int>(result));
         return VK_NULL_HANDLE;
     }
 
+    RP_LOG(PipelineLog, Display, "Created pipeline layout for '{}'", name);
     return layout;
 }

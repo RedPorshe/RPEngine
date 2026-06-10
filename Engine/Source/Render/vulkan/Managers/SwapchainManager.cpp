@@ -166,12 +166,21 @@ bool SwapchainManager::createSwapchain()
 
     VkSurfaceCapabilitiesKHR capabilities;
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &capabilities);
-
+    auto maxCount = m_contextPtr->getMaxFrames();  // == MAX_FRAMES_COUNT
     uint32_t imageCount = capabilities.minImageCount + 1;
     if (capabilities.maxImageCount > 0 && imageCount > capabilities.maxImageCount)
     {
         imageCount = capabilities.maxImageCount;
     }
+    if (imageCount > maxCount)
+    {
+        imageCount = maxCount;
+    }
+    if (imageCount < capabilities.minImageCount)
+    {
+        imageCount = capabilities.minImageCount;
+    }
+    m_contextPtr->setMaxFrames(imageCount);
 
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;

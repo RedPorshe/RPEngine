@@ -15,9 +15,12 @@ RenderPassManager::RenderPassManager()
 
 RenderPassManager::~RenderPassManager()
 {
-    RP_LOG(RenderPassLog, Display, "{} destroing", getName());
-    shutdown();
-    RP_LOG(RenderPassLog, Display, "{} destroing complete", getName());
+    if (isInitialized())
+    {
+        RP_LOG(RenderPassLog, Display, "{} destroying", getName());
+        shutdown();
+        RP_LOG(RenderPassLog, Display, "{} destroyed", getName());
+    }
 }
 
 bool RenderPassManager::preInit(const WindowSettings& settings, const std::string& EngineName)

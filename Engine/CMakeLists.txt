@@ -51,7 +51,13 @@ set(ENGINE_SOURCES_BASE
     Source/Render/vulkan/Managers/PipelineManager.h   
     Source/Render/vulkan/Managers/PipelineManager.cpp    
     Source/Render/vulkan/Managers/ShadersManager.h   
-    Source/Render/vulkan/Managers/ShadersManager.cpp      
+    Source/Render/vulkan/Managers/ShadersManager.cpp  
+    Source/Render/vulkan/Managers/CommandManager.h   
+    Source/Render/vulkan/Managers/CommandManager.cpp     
+    Source/Render/vulkan/Managers/SyncManager.h   
+    Source/Render/vulkan/Managers/SyncManager.cpp 
+    Source/Render/vulkan/Managers/DescriptorManager.h   
+    Source/Render/vulkan/Managers/DescriptorManager.cpp      
     # interfaces
     Source/Window/IWindowManager.h 
     Source/Window/IWindow.h 

@@ -132,12 +132,11 @@ int RPE::Engine::init()
 {
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
 
-    RP_LOG(EngineLog, Display, "Adding needed pipeline: {}", "main");
-    m_neededPipelineNames.push_back("main");
+    // m_neededPipelineNames.push_back("main");
     m_neededPipelineNames.push_back("Triangle");
-    m_neededPipelineNames.push_back("Wireframe");
-    m_neededPipelineNames.push_back("PointCloud");
-    m_neededPipelineNames.push_back("Transparent");
+    // m_neededPipelineNames.push_back("Wireframe");
+    // m_neededPipelineNames.push_back("PointCloud");
+    // m_neededPipelineNames.push_back("Transparent");
     WindowSettings wset;
     wset.width = 1024;
     wset.height = 768;

@@ -1,6 +1,7 @@
 #include "vkRender.h"
 #include "vkContext.h"
 #include "Core/Engine.h"
+#include "Managers/SyncManager.h"
 #include "Log/Log.h"
 
 DEFINE_LOG_CATEGORY_STATIC(VkRenderLog);
@@ -54,8 +55,15 @@ void VkRenderer::setEnginePtr(Engine* ptr)
 
 bool VkRenderer::render()
 {
-
-    return true;  // stub
+    if (!startFrame())
+    {
+        RP_LOG(VkRenderLog, Error, "failed to start frame");
+    }
+    if (!endFrame())
+    {
+        RP_LOG(VkRenderLog, Error, "failed to end frame");
+    }
+    return true;
 }
 
 void VkRenderer::shutdown()
@@ -81,4 +89,20 @@ Engine* VkRenderer::getEngine()
 void VkRenderer::onResize(int width, int height)
 {
     if (m_ctx) m_ctx->OnResize(width, height);
+}
+
+bool RPE::VkRenderer::startFrame()
+{
+    auto currentFrame = m_ctx->getSyncManager()->getCurrentFrame();
+    return true;
+}
+
+bool RPE::VkRenderer::endFrame()
+{
+    return true;
+}
+
+bool RPE::VkRenderer::renderTriangle(uint32_t imageIndex)
+{
+    return true;
 }

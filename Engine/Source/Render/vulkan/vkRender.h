@@ -6,6 +6,12 @@
 
 namespace RPE
 {
+
+struct FrameInfo
+{
+    bool isValid() { return false; }
+};
+
 class VkRenderer : public RHI
 {
 public:
@@ -31,5 +37,11 @@ private:
     std::string m_version{ENGINE_VERSION_STRING};
     void* m_WindowHandle = nullptr;
     bool m_initialized{false};
+    FrameInfo m_frameInfo{};
+
+    bool startFrame();
+    bool endFrame();
+
+    bool renderTriangle(uint32_t imageIndex);
 };
 }  // namespace RPE

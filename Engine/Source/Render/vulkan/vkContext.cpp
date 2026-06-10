@@ -8,6 +8,9 @@
 #include "Managers/FrameBufferManager.h"
 #include "Managers/PipelineManager.h"
 #include "Managers/ShadersManager.h"
+#include "Managers/CommandManager.h"
+#include "Managers/SyncManager.h"
+#include "Managers/DescriptorManager.h"
 #include "vkRender.h"
 
 DEFINE_LOG_CATEGORY_STATIC(vkContextLog)
@@ -15,13 +18,17 @@ using namespace RPE;
 
 VulkanContext::VulkanContext()
 {
+    RP_LOG(vkContextLog, Display, "MAX_FRAMES_COUNT on start = {}", MAX_FRAMES_COUNT);
     registerManager(std::make_unique<InstanceManager>());
     registerManager(std::make_unique<DeviceManager>());
     registerManager(std::make_unique<SwapchainManager>());
     registerManager(std::make_unique<RenderPassManager>());
     registerManager(std::make_unique<FrameBufferManager>());
     registerManager(std::make_unique<ShaderManager>());
+    registerManager(std::make_unique<DescriptorManager>());
     registerManager(std::make_unique<PipelineManager>());
+    registerManager(std::make_unique<CommandManager>());
+    registerManager(std::make_unique<SyncManager>());
 }
 
 VulkanContext::~VulkanContext()
@@ -127,6 +134,12 @@ bool VulkanContext::initManagers()
     return true;
 }
 
+void RPE::VulkanContext::setMaxFrames(uint32_t value)
+{
+    MAX_FRAMES_COUNT = value;
+    RP_LOG(vkContextLog, Display, " new MAX_FRAMES_COUNT = {}", MAX_FRAMES_COUNT);
+}
+
 InstanceManager* VulkanContext::getInstanceManager()
 {
     return findManager<InstanceManager>();
@@ -177,14 +190,54 @@ const FrameBufferManager* VulkanContext::getFrameBufferManager() const
     return findManager<FrameBufferManager>();
 }
 
-ShaderManager* RPE::VulkanContext::getShaderManager()
+ShaderManager* VulkanContext::getShaderManager()
 {
     return findManager<ShaderManager>();
 }
 
-const ShaderManager* RPE::VulkanContext::getShaderManager() const
+const ShaderManager* VulkanContext::getShaderManager() const
 {
     return findManager<ShaderManager>();
+}
+
+const DescriptorManager* VulkanContext::getDescriptorManager() const
+{
+    return findManager<DescriptorManager>();
+}
+
+DescriptorManager* VulkanContext::getDescriptorManager()
+{
+    return findManager<DescriptorManager>();
+}
+
+const PipelineManager* VulkanContext::getPipelineManager() const
+{
+    return findManager<PipelineManager>();
+}
+
+PipelineManager* VulkanContext::getPipelineManager()
+{
+    return findManager<PipelineManager>();
+}
+
+const CommandManager* VulkanContext::getCommandManager() const
+{
+    return findManager<CommandManager>();
+}
+
+CommandManager* VulkanContext::getCommandManager()
+{
+    return findManager<CommandManager>();
+}
+
+const SyncManager* VulkanContext::getSyncManager() const
+{
+    return findManager<SyncManager>();
+}
+
+SyncManager* VulkanContext::getSyncManager()
+{
+    return findManager<SyncManager>();
 }
 
 VkRenderer* VulkanContext::getVulkanRenderer()

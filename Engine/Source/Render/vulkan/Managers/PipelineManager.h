@@ -45,7 +45,7 @@ public:
 private:
     bool CreatePipelines();
     bool CreateGraphicsPipeline(const std::string name);
-    VkPipelineLayout createPipelineLayout();
+    VkPipelineLayout createPipelineLayout(const std::string& name);
     std::vector<std::string> m_availablePipelines;
     std::unordered_map<std::string, PipelineInfo> m_pipelines;
 };

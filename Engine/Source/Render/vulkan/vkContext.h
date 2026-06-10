@@ -30,8 +30,12 @@ private:
     IWindow* m_windowHandle{nullptr};
     bool m_initialized{false};
     class VkRenderer* m_renderer = nullptr;
+    uint32_t MAX_FRAMES_COUNT = 5;
 
 public:
+    void setMaxFrames(uint32_t value);
+
+    uint32_t getMaxFrames() const { return MAX_FRAMES_COUNT; }
     class InstanceManager* getInstanceManager();
     const class InstanceManager* getInstanceManager() const;
     class DeviceManager* getDeviceManager();
@@ -44,6 +48,14 @@ public:
     const class FrameBufferManager* getFrameBufferManager() const;
     class ShaderManager* getShaderManager();
     const class ShaderManager* getShaderManager() const;
+    const class DescriptorManager* getDescriptorManager() const;
+    class DescriptorManager* getDescriptorManager();
+    const class PipelineManager* getPipelineManager() const;
+    class PipelineManager* getPipelineManager();
+    const class CommandManager* getCommandManager() const;
+    class CommandManager* getCommandManager();
+    const class SyncManager* getSyncManager() const;
+    class SyncManager* getSyncManager();
     class VkRenderer* getVulkanRenderer();
     void SetRenderPtr(class VkRenderer* ptr);
     template <typename T>
