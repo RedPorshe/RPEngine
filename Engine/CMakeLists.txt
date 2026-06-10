@@ -222,6 +222,7 @@ Tests/Vector3DTests.cpp
 Tests/Vector4DTests.cpp
 Tests/QuatTests.cpp
 Tests/MatrixTests.cpp
+Tests/GLMconverterTests.cpp
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 
