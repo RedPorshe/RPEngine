@@ -20,6 +20,9 @@ set(ENGINE_SOURCES_BASE
     # Engine
     Source/Core/Engine.cpp
     Source/Core/Engine.h
+    # core object
+    Source/Core/SystemObject.h 
+    Source/Core/SystemObject.cpp 
     # utility_source
     Source/Core/Utility.h
     .clang-format

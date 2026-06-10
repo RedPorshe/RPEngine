@@ -27,6 +27,117 @@
 #include <format>
 #include <thread>
 
+/*            TESTS      */
+#include "SystemObject.h"
+#include <cassert>
+
+DEFINE_LOG_CATEGORY_STATIC(TestLog)
+
+using namespace RPE;
+
+void RunObjectSystemTests()
+{
+    RP_LOG(TestLog, Display, "========== Starting Object System Tests ==========");
+
+    // Тест 1: Создание и базовая иерархия
+    {
+        RP_LOG(TestLog, Display, "Test 1: Basic hierarchy creation");
+        auto root = std::make_shared<SysObject>(nullptr, "Root");
+
+        auto child1 = root->addSubobject<SysObject>("Child1");
+        auto child2 = root->addSubobject<SysObject>("Child2");
+        auto grandChild = child1->addSubobject<SysObject>("GrandChild");
+
+        RP_LOG(TestLog, Display, "Root children count: {}", root->getChildCount());
+        RP_LOG(TestLog, Display, "Child1 children count: {}", child1->getChildCount());
+
+        assert(root->getChildCount() == 2);
+        assert(child1->getChildCount() == 1);
+        assert(root->getChild("Child1") == child1);
+        assert(child1->getOwner() == root.get());
+    }
+
+    // Тест 2: Смена владельца
+    {
+        RP_LOG(TestLog, Display, "Test 2: Changing owner");
+        auto root = std::make_shared<SysObject>(nullptr, "Root");
+        auto newParent = std::make_shared<SysObject>(nullptr, "NewParent");
+        auto object = std::make_shared<SysObject>(root.get(), "MovableObject");
+
+        RP_LOG(TestLog, Display, "Before move - owner: {}", object->getOwner()->getName());
+        assert(object->getOwner() == root.get());
+
+        object->setOwner(newParent.get());
+
+        RP_LOG(TestLog, Display, "After move - owner: {}", object->getOwner()->getName());
+        assert(object->getOwner() == newParent.get());
+        assert(root->getChild("MovableObject") == nullptr);
+        assert(newParent->getChild("MovableObject") == object.get());
+    }
+
+    // Тест 3: Поиск объектов
+    {
+        RP_LOG(TestLog, Display, "Test 3: Object search");
+        auto root = std::make_shared<SysObject>(nullptr, "Root");
+        auto child = root->addSubobject<SysObject>("Child");
+        auto grandChild = child->addSubobject<SysObject>("GrandChild");
+
+        auto found = root->findChildRecursive("GrandChild");
+        RP_LOG(TestLog, Display, "Found object: {}", found ? found->getName() : "Not found");
+        assert(found == grandChild);
+
+        auto notFound = root->findChildRecursive("NonExistent");
+        assert(notFound == nullptr);
+    }
+
+    // Тест 4: Проверка отношений
+    {
+        RP_LOG(TestLog, Display, "Test 4: Relationship checks");
+        auto root = std::make_shared<SysObject>(nullptr, "Root");
+        auto child = root->addSubobject<SysObject>("Child");
+        auto grandChild = child->addSubobject<SysObject>("GrandChild");
+
+        assert(root->isRoot());
+        assert(!child->isRoot());
+        assert(grandChild->isChildOf(child));
+        assert(grandChild->isChildOf(root.get()));
+        assert(!root->isChildOf(child));
+    }
+
+    // Тест 5: Удаление объектов
+    {
+        RP_LOG(TestLog, Display, "Test 5: Object destruction");
+        auto root = std::make_shared<SysObject>(nullptr, "Root");
+        auto childShared = std::make_shared<SysObject>(root.get(), "Child");
+        root->addChild(childShared);  // Добавляем через addChild, а не addSubobject
+        auto grandChild = std::make_shared<SysObject>(childShared.get(), "GrandChild");
+        childShared->addChild(grandChild);
+        RP_LOG(TestLog, Display, "Root childs = {}", root->getChildCount());
+        // Удаляем child - grandChild должен удалиться автоматически
+        childShared.reset();
+        RP_LOG(TestLog, Display, "Root childs after  childShared.reset() = {}", root->getChildCount());
+
+        assert(root->getChildCount() == 1);
+        RP_LOG(TestLog, Display, "Child and GrandChild automatically destroyed");
+    }
+
+    RP_LOG(TestLog, Display, "========== Object System Tests Completed ==========");
+}
+void TestCircularReferences()
+{
+    auto a = std::make_shared<SysObject>(nullptr, "A");
+    auto b = std::make_shared<SysObject>(nullptr, "B");
+    auto c = std::make_shared<SysObject>(b.get(), "C");
+    auto cD = std::make_shared<SysObject>(a.get(), "CD");
+
+    a->addChild(b);  // B становится дочерним A
+    b->addChild(a);  // Должно быть запрещено или вызывать предупреждение
+    c->addChild(a);
+    cD->setOwner(b.get());
+}
+
+/*                 end tests*/
+
 using namespace RPE;
 
 Engine* Engine::s_instance = nullptr;
@@ -38,6 +149,8 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
       mainWindowId(WindowId{0})
 {
     s_instance = this;
+    RunObjectSystemTests();
+    TestCircularReferences();
 }
 
 Engine::~Engine()
