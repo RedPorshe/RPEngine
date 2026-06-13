@@ -240,13 +240,14 @@ find_package(glfw3 REQUIRED)
 find_package(GTest REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(glm REQUIRED)
-
+find_package(RapidJSON REQUIRED)
 
 target_link_libraries(${PROJECT_NAME}lib PUBLIC 
  spdlog::spdlog  
     glfw
     Vulkan::Vulkan
     glm::glm
+    rapidjson
 )
 
 target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest )
