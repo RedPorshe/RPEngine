@@ -10,10 +10,7 @@
 #include <typeinfo>
 #include <algorithm>
 #include <cctype>
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/prettywriter.h>
+
 
 // Forward declaration
 namespace RPE
@@ -40,15 +37,7 @@ public:                                                                         
     virtual const char* GetObjectClassName() const override                                                                     \
     {                                                                                                                           \
         return #ClassName;                                                                                                      \
-    }                                                                                                                           \
-    virtual void SerializeProperties(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const override \
-    {                                                                                                                           \
-        Super::SerializeProperties(jsonValue, allocator);                                                                       \
-    }                                                                                                                           \
-    virtual void DeserializeProperties(const rapidjson::Value& jsonValue) override                                              \
-    {                                                                                                                           \
-        Super::DeserializeProperties(jsonValue);                                                                                \
-    }
+    }                                                                                                                           
 
 #define CHUDDO_DECLARE_ABSTRACT_CLASS(ClassName, BaseClassName)                                                                 \
 public:                                                                                                                         \
@@ -64,15 +53,7 @@ public:                                                                         
     virtual const char* GetObjectClassName() const override                                                                     \
     {                                                                                                                           \
         return #ClassName;                                                                                                      \
-    }                                                                                                                           \
-    virtual void SerializeProperties(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const override \
-    {                                                                                                                           \
-        Super::SerializeProperties(jsonValue, allocator);                                                                       \
-    }                                                                                                                           \
-    virtual void DeserializeProperties(const rapidjson::Value& jsonValue) override                                              \
-    {                                                                                                                           \
-        Super::DeserializeProperties(jsonValue);                                                                                \
-    }
+    }                                                                                                                           
 
 class CObject
 {
@@ -81,9 +62,7 @@ public:
     static const char* StaticClassName() { return "CObject"; }
     static const char* StaticBaseClassName() { return ""; }
     virtual const char* GetObjectClassName() const { return "CObject"; }
-    virtual void SerializeProperties(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const;
-    virtual void DeserializeProperties(const rapidjson::Value& jsonValue);
-
+    
 private:
     static std::string GenerateUUID()
     {
@@ -173,16 +152,7 @@ public:
         return const_cast<CObject*>(root);
     }
 
-    virtual void Serialize(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const;
-    virtual void Deserialize(const rapidjson::Value& jsonValue);
-    std::string ToJSON(bool pretty = false) const;
-    bool FromJSON(const std::string& jsonString);
-    bool SaveToFile(const std::string& filename, bool pretty = true) const;
-    bool LoadFromFile(const std::string& filename);
-    static std::unique_ptr<CObject> CreateFromJSON(const std::string& jsonString);
-    static std::unique_ptr<CObject> LoadFromJSONFile(const std::string& filename);
-    std::string GetJSONSchema() const;
-
+    
 protected:
     CObject* ObjectOwner = nullptr;
     std::string DisplayName{};
