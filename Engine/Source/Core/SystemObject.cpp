@@ -1,34 +1,12 @@
 #include "Core/SystemObject.h"
 #include "Core/ObjectFactory.h"
+#include "Core/Engine.h"
 #include <functional>
 #include <sstream>
 #include <cctype>
 #include <algorithm>
 #include <fstream>
 #include "Log/Log.h"
-#include <nlohmann/json.hpp>
-
-// json tests
-using json = nlohmann::json;
-
-json toJSon(RPE::CObject* object)
-{
-    if (!object) return json{};
-    json j;
-    j["ClassName"] = object->GetObjectClassName();
-    j["DisplayName"] = object->GetName();
-    j["UUID"] = object->GetUUID();
-
-    // Сериализуем детей
-    json children = json::array();
-    for (const auto& child : object->GetOwnedObjects())
-    {
-        children.push_back(toJSon(child.get()));
-    }
-    j["Children"] = children;
-
-    return j;
-}
 
 using namespace RPE;
 DEFINE_LOG_CATEGORY_STATIC(ObjectLog);
@@ -41,11 +19,6 @@ CObject::CObject(const std::string& inDisplayName, CObject* inOwner) : ObjectOwn
         ObjectOwner->AddOwnedObject(this);
     }
     RP_LOG(ObjectLog, Display, "[{}] created", GetName());
-    auto jj = toJSon(this);
-    if (!jj.empty())
-    {
-        std::cout << jj << "\n";
-    }
 }
 
 CObject::~CObject()
@@ -64,29 +37,191 @@ CObject::~CObject()
 
         if (it != ownerChildren.end())
         {
-            // Отвязываем связь, но не удаляем объект (он уже удаляется)
-            it->release();  // Освобождаем указатель, чтобы не было двойного удаления
-                            // ownerChildren.erase(it);
+
+            it->release();
         }
 
         ObjectOwner = nullptr;
     }
 }
 
+void CObject::serialize(nlohmann::json& jsonObject) const
+{
+    jsonObject["ClassName"] = GetObjectClassName();
+    jsonObject["DisplayName"] = DisplayName;
+    jsonObject["UUID"] = ObjectUUID;
+    serializeProperties(jsonObject);
+
+    if (!OwnedObjects.empty())
+    {
+        nlohmann::json children = nlohmann::json::array();
+        for (const auto& child : OwnedObjects)
+        {
+            nlohmann::json childJSon;
+            child->serialize(childJSon);
+            children.push_back(childJSon);
+        }
+        jsonObject["Children"] = children;
+    }
+}
+
+void CObject::deserialize(const nlohmann::json& jsonObject)
+{
+    if (jsonObject.contains("DisplayName") && jsonObject["DisplayName"].is_string())
+        DisplayName = jsonObject["DisplayName"].get<std::string>();
+
+    if (jsonObject.contains("UUID") && jsonObject["UUID"].is_string()) ObjectUUID = jsonObject["UUID"].get<std::string>();
+
+    // Десериализуем свойства из производного класса
+    deserializeProperties(jsonObject);
+
+    // Десериализуем детей
+    if (jsonObject.contains("Children") && jsonObject["Children"].is_array())
+    {
+        for (const auto& childJson : jsonObject["Children"])
+        {
+            if (childJson.contains("ClassName") && childJson["ClassName"].is_string())
+            {
+                std::string className = childJson["ClassName"].get<std::string>();
+                std::string displayName = "LoadedObject";
+
+                if (childJson.contains("DisplayName") && childJson["DisplayName"].is_string())
+                    displayName = childJson["DisplayName"].get<std::string>();
+
+                CObject* childObj = AddSubObjectByClass(className, displayName);
+                if (childObj) childObj->deserialize(childJson);
+            }
+        }
+    }
+}
+
+void CObject::serializeProperties(nlohmann::json& jsonObject) const {}
+
+void CObject::deserializeProperties(const nlohmann::json& jsonObject) {}
+
+CObject* CObject::CreateFromJSON(nlohmann::json jsonObject)
+{
+    if (!jsonObject.contains("ClassName") || !jsonObject["ClassName"].is_string())
+    {
+        RP_LOG(ObjectLog, Error, "CreateFromJSON: Missing or invalid 'ClassName' field");
+        return nullptr;
+    }
+    std::string className = jsonObject["ClassName"].get<std::string>();
+    std::string displayName = "LoadedObject";
+
+    if (jsonObject.contains("DisplayName") && jsonObject["DisplayName"].is_string())
+    {
+        displayName = jsonObject["DisplayName"].get<std::string>();
+    }
+    CObject* obj = OBJECT_FACTORY.Create(className, nullptr, displayName);
+    if (!obj)
+    {
+        RP_LOG(ObjectLog, Error, "CreateFromJSON: Failed to create object of class '{}'", className);
+        return nullptr;
+    }
+    obj->deserialize(jsonObject);
+
+    return obj;
+}
+
+CObject* RPE::CObject::LoadFromJSONFile(const std::string& filename)
+{
+    std::string fullPath = filename;
+
+    try
+    {
+        auto& engine = Engine::Get();
+        // Проверяем, не содержит ли уже путь папку Assets
+        if (fullPath.find("Assets/") == std::string::npos && fullPath.find("Assets\\") == std::string::npos)
+        {
+            fullPath = engine.getAssetsPath() + filename;
+        }
+    }
+    catch (const std::exception& e)
+    {
+        RP_LOG(ObjectLog, Warning, "Engine not available, using raw path: {}", e.what());
+    }
+
+    std::ifstream file(fullPath);
+    if (!file.is_open())
+    {
+        RP_LOG(ObjectLog, Error, "LoadFromJSONFile: Cannot open file '{}'", fullPath);
+        return nullptr;
+    }
+
+    nlohmann::json jsonObject;
+    try
+    {
+        file >> jsonObject;
+    }
+    catch (const nlohmann::json::parse_error& e)
+    {
+        RP_LOG(ObjectLog, Error, "LoadFromJSONFile: JSON parse error in '{}': {}", filename, e.what());
+        return nullptr;
+    }
+
+    file.close();
+
+    return CreateFromJSON(jsonObject);
+}
+
+bool RPE::CObject::SaveToJSONFile(const std::string& filename, bool pretty) const
+{
+    std::string fullPath = filename;
+
+    try
+    {
+        auto& engine = Engine::Get();
+        if (fullPath.find("Assets/") == std::string::npos && fullPath.find("Assets\\") == std::string::npos)
+        {
+            fullPath = engine.getAssetsPath() + filename;
+        }
+    }
+    catch (const std::exception& e)
+    {
+        RP_LOG(ObjectLog, Warning, "Engine not available, using raw path: {}", e.what());
+    }
+
+    // Создаем директорию если нужно
+    std::filesystem::path path(fullPath);
+    std::filesystem::create_directories(path.parent_path());
+
+    std::ofstream file(fullPath);
+    if (!file.is_open())
+    {
+        RP_LOG(ObjectLog, Error, "SaveToJSONFile: Cannot open file '{}'", fullPath);
+        return false;
+    }
+
+    nlohmann::json j;
+    serialize(j);
+
+    if (pretty)
+        file << j.dump(4);
+    else
+        file << j.dump();
+
+    file.close();
+    RP_LOG(ObjectLog, Display, "Saved object to '{}'", fullPath);
+    return true;
+}
+
+bool CObject::SaveObjectToJSONFile(const CObject* obj, const std::string& filename, bool pretty)
+{
+    return obj->SaveToJSONFile(filename, pretty);
+}
+
 void CObject::SetOwner(CObject* newOwner)
 {
     if (ObjectOwner == newOwner) return;
 
-    // Удаляем из старого владельца
     if (ObjectOwner)
     {
         ObjectOwner->RemoveOwnedObject(GetName());
     }
 
-    // Устанавливаем нового владельца
     ObjectOwner = newOwner;
 
-    // Добавляем к новому владельцу
     if (ObjectOwner)
     {
         ObjectOwner->AddOwnedObject(this);
@@ -138,7 +273,6 @@ CObject* CObject::FindObjectByDisplayNameRecursive(const std::string& displayNam
         return FoundChild;
     }
 
-    // Search up the hierarchy
     auto root = this;
     while (root->GetOwner())
     {

@@ -38,6 +38,9 @@ public:
 
 private:
     std::vector<std::string> m_neededPipelineNames;
+    bool LoadGameInstance();
+    bool SaveGameInstance();
+    bool CreateDefaultGameInstance();
     const std::unique_ptr<class IWindowManager> m_WindowManager;
     const std::shared_ptr<class InputManager> m_inputManager;
     const std::unique_ptr<class RHI> m_renderer;
@@ -52,7 +55,7 @@ private:
     std::string m_executablePath;
     int m_currentWidth = 200;
     int m_currentHeigth = 200;
-    std::unique_ptr<class CObject> Gameinstance = nullptr;
+    std::unique_ptr<class RGameInstance> Gameinstance = nullptr;
 };
 
 }  // namespace RPE

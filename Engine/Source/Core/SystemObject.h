@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <cctype>
 
+#include <nlohmann/json.hpp>
+
 // Forward declaration
 namespace RPE
 {
@@ -81,6 +83,17 @@ private:
 public:
     CObject(const std::string& inDisplayName = "Object", CObject* inOwner = nullptr);
     virtual ~CObject();
+
+    // json serializing\deserializing
+    virtual void serialize(nlohmann::json& jsonObject) const;
+    virtual void deserialize(const nlohmann::json& jsonObject);
+    virtual void serializeProperties(nlohmann::json& jsonObject) const;
+    virtual void deserializeProperties(const nlohmann::json& jsonObject);
+
+    static CObject* CreateFromJSON(nlohmann::json jason);
+    static CObject* LoadFromJSONFile(const std::string& filename);
+    bool SaveToJSONFile(const std::string& filename, bool pretty = true) const;
+    static bool SaveObjectToJSONFile(const CObject* obj, const std::string& filename, bool pretty = true);
 
     void SetOwner(CObject* newOwner);
     CObject* GetOwner() const { return ObjectOwner; }

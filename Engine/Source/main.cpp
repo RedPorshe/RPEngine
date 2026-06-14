@@ -71,8 +71,12 @@ void TestWindowManagerInitialization()
 #endif
 }
 
+#include "Core/SystemObject.h"
+#include <fstream>
+
 int main(int argc, char* argv[])
 {
+
 #ifdef SKIP_WINDOW_TESTS
     RP_LOG(MainLog, Display, "==============Starting Window managers tests======");
     TestWindowManagerInitialization();

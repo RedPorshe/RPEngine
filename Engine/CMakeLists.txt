@@ -26,6 +26,8 @@ set(ENGINE_SOURCES_BASE
     Source/Core/SystemObject.hpp
     Source/Core/ObjectFactory.h 
     Source/Core/ObjectFactory.cpp 
+    Source/Core/GameInstance.h 
+    Source/Core/GameInstance.cpp 
     # utility_source
     Source/Core/Utility.h
     .clang-format

@@ -1,7 +1,9 @@
 #include "Engine.h"
 #include "Log/Log.h"
+#include "GameInstance.h"
 #include "Window/IWindowManager.h"
 #include "Window/IWindow.h"
+#include <fstream>
 
 #include "Render/RHI/Renderer.h"
 
@@ -45,6 +47,10 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
 
 Engine::~Engine()
 {
+    if (!SaveGameInstance())
+    {
+        RP_LOG(EngineLog, Error, "Failed to save GameInstance to json");
+    }
     s_instance = nullptr;
     m_initialized = false;
     Gameinstance.reset();
@@ -200,8 +206,123 @@ int Engine::init()
             return 5;
         }
     }
+    if (!LoadGameInstance())
+    {
+        RP_LOG(EngineLog, Error, "Failed to load game instance");
+        return 99;
+    }
     m_initialized = true;
+
     return 0;
+}
+
+bool Engine::LoadGameInstance()
+{
+    std::string SettingsPath = m_executablePath + "GameInstance.json";
+    std::ifstream file(SettingsPath);
+
+    if (file.is_open())
+    {
+        RP_LOG(EngineLog, Display, "Loading GameInstance from: {}", SettingsPath);
+
+        nlohmann::json jsonData;
+        try
+        {
+            file >> jsonData;
+            file.close();
+
+            // Проверяем наличие ClassName (один раз, не два)
+            if (!jsonData.contains("ClassName") || !jsonData["ClassName"].is_string())
+            {
+                RP_LOG(EngineLog, Error, "Invalid GameInstance.json: missing ClassName");
+                return CreateDefaultGameInstance();
+            }
+
+            std::string className = jsonData["ClassName"].get<std::string>();
+
+            // ПРОВЕРЯЕМ, зарегистрирован ли класс
+            if (!OBJECT_FACTORY.IsClassRegistered(className))
+            {
+                RP_LOG(EngineLog, Error, "Class '{}' not registered, creating default GameInstance", className);
+                return CreateDefaultGameInstance();
+            }
+
+            // Опционально: проверяем, что класс наследуется от RGameInstance
+            if (!OBJECT_FACTORY.IsDerivedFrom(className, "RGameInstance"))
+            {
+                RP_LOG(EngineLog, Error, "Class '{}' is not derived from RGameInstance, creating default", className);
+                return CreateDefaultGameInstance();
+            }
+
+            std::string displayName = "GameInstance";
+            if (jsonData.contains("DisplayName") && jsonData["DisplayName"].is_string())
+            {
+                displayName = jsonData["DisplayName"].get<std::string>();
+            }
+
+            // Создаем объект через фабрику
+            CObject* obj = OBJECT_FACTORY.Create(className, nullptr, displayName);
+            if (!obj)
+            {
+                RP_LOG(EngineLog, Error, "Failed to create GameInstance of class '{}'", className);
+                return CreateDefaultGameInstance();
+            }
+
+            // Десериализуем
+            obj->deserialize(jsonData);
+
+            // Приводим к нужному типу
+            Gameinstance = std::unique_ptr<RGameInstance>(static_cast<RGameInstance*>(obj));
+
+            RP_LOG(EngineLog, Display, "GameInstance loaded successfully: {}", displayName);
+            return true;
+        }
+        catch (const nlohmann::json::parse_error& e)
+        {
+            RP_LOG(EngineLog, Error, "JSON parse error in GameInstance.json: {}", e.what());
+            return CreateDefaultGameInstance();
+        }
+        catch (const std::exception& e)
+        {
+            RP_LOG(EngineLog, Error, "Unexpected error loading GameInstance: {}", e.what());
+            return CreateDefaultGameInstance();
+        }
+    }
+
+    return CreateDefaultGameInstance();
+}
+bool Engine::CreateDefaultGameInstance()
+{
+    RP_LOG(EngineLog, Warning, "Creating default GameInstance");
+    Gameinstance = std::make_unique<RGameInstance>("GameInstance", nullptr);
+    return true;
+}
+
+bool Engine::SaveGameInstance()
+{
+    if (!Gameinstance)
+    {
+        RP_LOG(EngineLog, Error, "Cannot save GameInstance: not initialized");
+        return false;
+    }
+
+    std::string SettingsPath = m_executablePath + "GameInstance.json";
+    std::ofstream file(SettingsPath);
+
+    if (!file.is_open())
+    {
+        RP_LOG(EngineLog, Error, "Cannot save GameInstance to: {}", SettingsPath);
+        return false;
+    }
+
+    nlohmann::json jsonData;
+    Gameinstance->serialize(jsonData);
+
+    file << jsonData.dump(4);  // pretty print
+    file.close();
+
+    RP_LOG(EngineLog, Display, "GameInstance saved to: {}", SettingsPath);
+    return true;
 }
 
 void Engine::onInputEvent(const InputEvent& event)
@@ -225,6 +346,9 @@ void Engine::onInputEvent(const InputEvent& event)
 
 void Engine::updateGameLogic(float deltaTime)
 {
+    if (!Gameinstance) return;
+
+    Gameinstance->tick(deltaTime);
     // here we will update our game logic, physics, animations, etc. based on the delta time
     (void)deltaTime;
     /*   if (!m_currentGameInstance) return;
