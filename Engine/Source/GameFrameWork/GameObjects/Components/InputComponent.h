@@ -3,6 +3,8 @@
 #include <functional>
 #include <string>
 
+#include "WorldActorComponent.h"
+
 namespace RPE
 {
 
@@ -14,9 +16,15 @@ enum class ActionType
     Any       // Любое изменение
 };
 
-class InputComponent
+class WInputComponent : public WActorComponent
 {
+    CHUDDO_DECLARE_CLASS(WInputComponent, WActorComponent);
+
 public:
+    WInputComponent(const std::string& inDisplayName = "Input Component", CObject* inOwner = nullptr);
+    virtual ~WInputComponent();
+    void tick(float deltaTime) override;
+    void onDestroy() override;
     using ActionCallback = std::function<void()>;
     using AxisCallback = std::function<void(float)>;
     using MouseMoveCallback = std::function<void(float, float)>;
@@ -67,3 +75,8 @@ private:
     // Удалено problematic: std::unordered_map<AxisCallback, float> m_axisValues;
 };
 }  // namespace RPE
+
+namespace RPE
+{
+REGISTER_CLASS_FACTORY(WInputComponent);
+}

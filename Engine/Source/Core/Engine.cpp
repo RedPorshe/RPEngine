@@ -31,7 +31,9 @@
 
 #include "Core/SystemObject.h"
 #include "Core/ObjectFactory.h"
-#include "GameFramework/GameObjects/WorldObject/WorldObject.h"
+
+#include "../GameFramework/GameObjects/WorldObject/WorldActor.h"
+#include "../GameFramework/GameObjects/WorldObject/WorldPawn.h"
 
 using namespace RPE;
 Engine* Engine::s_instance = nullptr;
@@ -211,6 +213,7 @@ int Engine::init()
         RP_LOG(EngineLog, Error, "Failed to load game instance");
         return 99;
     }
+
     m_initialized = true;
 
     return 0;
@@ -270,7 +273,7 @@ bool Engine::LoadGameInstance()
 
             // Десериализуем
             obj->deserialize(jsonData);
-
+            Gameinstance.reset();
             // Приводим к нужному типу
             Gameinstance = std::unique_ptr<RGameInstance>(static_cast<RGameInstance*>(obj));
 

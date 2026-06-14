@@ -5,27 +5,44 @@ DEFINE_LOG_CATEGORY_STATIC(LogInputComponent)
 
 using namespace RPE;
 
-void InputComponent::bindAction(Key key, ActionType type, ActionCallback callback)
+WInputComponent::WInputComponent(const std::string& inDisplayName, CObject* inOwner)  //
+    : Super(inDisplayName, inOwner)
+{
+}
+
+WInputComponent::~WInputComponent() {}
+
+void WInputComponent::tick(float deltaTime)
+{
+    (void)deltaTime;
+}
+
+void WInputComponent::onDestroy()
+{
+    popContext();
+}
+
+void WInputComponent::bindAction(Key key, ActionType type, ActionCallback callback)
 {
     m_activeActionBindings.push_back({key, type, callback});
 }
 
-void InputComponent::bindAxis(Key positive, Key negative, AxisCallback callback, float deadZone)
+void WInputComponent::bindAxis(Key positive, Key negative, AxisCallback callback, float deadZone)
 {
     m_activeAxisBindings.push_back({positive, negative, callback, deadZone});
 }
 
-void InputComponent::bindMouseMove(MouseMoveCallback callback)
+void WInputComponent::bindMouseMove(MouseMoveCallback callback)
 {
     m_mouseMoveCallback = callback;
 }
 
-void InputComponent::bindMouseScroll(MouseScrollCallback callback)
+void WInputComponent::bindMouseScroll(MouseScrollCallback callback)
 {
     m_mouseScrollCallback = callback;
 }
 
-void InputComponent::processKey(Key key, int action)
+void WInputComponent::processKey(Key key, int action)
 {
     bool isPressed = (action == 1 || action == 2);  // Press или Repeat
 
@@ -69,7 +86,7 @@ void InputComponent::processKey(Key key, int action)
     }
 }
 
-void InputComponent::processMouseMove(float deltaX, float deltaY)
+void WInputComponent::processMouseMove(float deltaX, float deltaY)
 {
     if (m_mouseMoveCallback)
     {
@@ -77,7 +94,7 @@ void InputComponent::processMouseMove(float deltaX, float deltaY)
     }
 }
 
-void InputComponent::processMouseScroll(float delta)
+void WInputComponent::processMouseScroll(float delta)
 {
     if (m_mouseScrollCallback)
     {
@@ -85,7 +102,7 @@ void InputComponent::processMouseScroll(float delta)
     }
 }
 
-void InputComponent::setContext(const std::string& context)
+void WInputComponent::setContext(const std::string& context)
 {
     auto it = std::find(m_contextStack.begin(), m_contextStack.end(), context);
     if (it == m_contextStack.end())
@@ -98,12 +115,12 @@ void InputComponent::setContext(const std::string& context)
     }
 }
 
-void InputComponent::pushContext(const std::string& context)
+void WInputComponent::pushContext(const std::string& context)
 {
     m_contextStack.push_back(context);
 }
 
-void InputComponent::popContext()
+void WInputComponent::popContext()
 {
     if (!m_contextStack.empty())
     {

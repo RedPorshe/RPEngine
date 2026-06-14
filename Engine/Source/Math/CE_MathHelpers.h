@@ -19,9 +19,9 @@ inline bool IsEqual(float a, float b, float epsilon = EPSILON)
     return std::fabs(a - b) < epsilon;
 }
 
-inline float Clamp(float value, float min, float max)
+inline float Clamp(float value, float minV, float maxV)
 {
-    return std::max(min, std::min(value, max));
+    return (std::max)(minV, (std::min)(value, maxV));
 }
 
 inline float Lerp(float a, float b, float t)
@@ -182,12 +182,12 @@ inline float Log10(float value)
 
 inline float Min(float a, float b)
 {
-    return std::min(a, b);
+    return (std::min)(a, b);
 }
 
 inline float Max(float a, float b)
 {
-    return std::max(a, b);
+    return (std::max)(a, b);
 }
 
 inline int Sign(float value)

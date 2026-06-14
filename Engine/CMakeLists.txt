@@ -84,10 +84,17 @@ set(ENGINE_SOURCES_BASE
     Source/GameFrameWork/Controller/Controller.cpp
     Source/GameFrameWork/Controller/PlayerController.h
     Source/GameFrameWork/Controller/PlayerController.cpp
-    Source/GameFrameWork/GameObjects/WorldObject/WorldObject.h 
-    Source/GameFrameWork/GameObjects/WorldObject/WorldObject.cpp
+    Source/GameFrameWork/GameObjects/WorldObject/WorldActor.h 
+    Source/GameFrameWork/GameObjects/WorldObject/WorldActor.cpp 
+    Source/GameFrameWork/GameObjects/WorldObject/WorldPawn.h 
+    Source/GameFrameWork/GameObjects/WorldObject/WorldPawn.cpp
+    # components
+    Source/GameFrameWork/GameObjects/Components/WorldActorComponent.h 
+    Source/GameFrameWork/GameObjects/Components/WorldActorComponent.cpp
     Source/GameFrameWork/GameObjects/Components/InputComponent.h 
     Source/GameFrameWork/GameObjects/Components/InputComponent.cpp
+    Source/GameFrameWork/GameObjects/Components/TransformComponent.h 
+    Source/GameFrameWork/GameObjects/Components/TransformComponent.cpp
     # shaders
     Assets/shaders/main.vert
     Assets/shaders/main.frag

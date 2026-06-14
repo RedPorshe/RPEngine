@@ -83,7 +83,7 @@ private:
 public:
     CObject(const std::string& inDisplayName = "Object", CObject* inOwner = nullptr);
     virtual ~CObject();
-
+    CObject* FindOwnedRecursive(const std::string& displayName) const;
     // json serializing\deserializing
     virtual void serialize(nlohmann::json& jsonObject) const;
     virtual void deserialize(const nlohmann::json& jsonObject);

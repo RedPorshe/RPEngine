@@ -72,7 +72,6 @@ void CObject::deserialize(const nlohmann::json& jsonObject)
 
     if (jsonObject.contains("UUID") && jsonObject["UUID"].is_string()) ObjectUUID = jsonObject["UUID"].get<std::string>();
 
-    // Десериализуем свойства из производного класса
     deserializeProperties(jsonObject);
 
     // Десериализуем детей
@@ -88,11 +87,34 @@ void CObject::deserialize(const nlohmann::json& jsonObject)
                 if (childJson.contains("DisplayName") && childJson["DisplayName"].is_string())
                     displayName = childJson["DisplayName"].get<std::string>();
 
-                CObject* childObj = AddSubObjectByClass(className, displayName);
-                if (childObj) childObj->deserialize(childJson);
+                // ИСПРАВЛЕНО: ищем рекурсивно во всей иерархии
+                CObject* existingObj = FindObjectByDisplayNameRecursive(displayName);
+
+                if (existingObj)
+                {
+                    RP_LOG(ObjectLog, Display, "Updating existing object: {}", displayName);
+                    existingObj->deserialize(childJson);
+                }
+                else
+                {
+                    RP_LOG(ObjectLog, Display, "Creating new object: {}", displayName);
+                    CObject* childObj = AddSubObjectByClass(className, displayName);
+                    if (childObj) childObj->deserialize(childJson);
+                }
             }
         }
     }
+}
+// Добавьте этот метод:
+CObject* CObject::FindOwnedRecursive(const std::string& displayName) const
+{
+    for (const auto& obj : OwnedObjects)
+    {
+        if (obj->GetName() == displayName) return obj.get();
+
+        if (auto found = obj->FindOwnedRecursive(displayName)) return found;
+    }
+    return nullptr;
 }
 
 void CObject::serializeProperties(nlohmann::json& jsonObject) const {}

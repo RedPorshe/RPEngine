@@ -1,7 +1,7 @@
 #include "PlayerController.h"
 #include "Input/KeyCodes.h"
 #include "GameFrameWork/GameObjects/Components/InputComponent.h"
-#include "GameFrameWork/GameObjects/WorldObject/WorldObject.h"
+#include "GameFrameWork/GameObjects/WorldObject/WorldPawn.h"
 #include "Log/Log.h"
 
 using namespace RPE;
@@ -10,7 +10,10 @@ DEFINE_LOG_CATEGORY_STATIC(PlayerControllerLog);
 
 // ========== PlayerController ==========
 
-PlayerController::PlayerController() : controllerName("Player Controller"), m_ControlledObject(nullptr) {}
+PlayerController::PlayerController(const std::string& inDisplayName, CObject* inOwner)
+    : Super(inDisplayName, inOwner), controllerName(inDisplayName), m_ControlledObject(nullptr)
+{
+}
 
 PlayerController::~PlayerController() {}
 
@@ -44,7 +47,7 @@ void PlayerController::setName(const std::string& newName)
     controllerName = newName;
 }
 
-InputComponent* PlayerController::getPlayerInputComponent() const
+WInputComponent* PlayerController::getPlayerInputComponent() const
 {
     if (getControlledObject())
     {
@@ -53,12 +56,12 @@ InputComponent* PlayerController::getPlayerInputComponent() const
     return nullptr;
 }
 
-WorldObject* PlayerController::getControlledObject() const
+WPawn* PlayerController::getControlledObject() const
 {
     return m_ControlledObject;
 }
 
-void PlayerController::setControlledObject(WorldObject* object)
+void PlayerController::setControlledObject(WPawn* object)
 {
     m_ControlledObject = object;
 }
@@ -76,7 +79,7 @@ void PlayerController::handleKeyPress(int key, int scancode, int action, int mod
 
 void PlayerController::handleMouseMove(double x, double y)
 {
-    // RP_LOG(PlayerControllerLog, Display, "Mouse Moved: ({:.0f}, {:.0f})", x, y);
+
     if (auto* obj = getControlledObject())
     {
         obj->getInputComponent()->processMouseMove(static_cast<float>(x), static_cast<float>(y));
@@ -94,7 +97,7 @@ void PlayerController::handleMouseButton(int button, int action, int mods, doubl
 
 void PlayerController::handleMouseScroll(double xoffset, double yoffset)
 {
-    //  RP_LOG(PlayerControllerLog, Display, "Mouse Scrolled: ({:.1f}, {:.1f})", xoffset, yoffset);
+
     if (auto* obj = getControlledObject())
     {
         obj->getInputComponent()->processMouseScroll(static_cast<float>(yoffset));

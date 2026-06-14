@@ -16,6 +16,8 @@ public:
     virtual void onDestroy();
 
 protected:
+    class WActor* world = nullptr;
+    class WActor* level = nullptr;
 };
 
 }  // namespace RPE

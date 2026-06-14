@@ -6,6 +6,7 @@ namespace RPE
 {
 class IController : public NonCopyable
 {
+
 public:
     virtual ~IController() = default;
     virtual void onKeyPress(int key, int scancode, int action, int mods) = 0;
@@ -15,4 +16,5 @@ public:
     virtual std::string name() const = 0;
     virtual void setName(const std::string& newName) = 0;
 };
+
 }  // namespace RPE

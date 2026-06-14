@@ -6,14 +6,17 @@
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+#include "GameFrameWork/GameObjects/WorldObject/WorldActor.h"
 
 namespace RPE
 {
 
-class PlayerController : public IController
+class PlayerController : public WActor, public IController
 {
+    CHUDDO_DECLARE_CLASS(PlayerController, WActor);
+
 public:
-    PlayerController();
+    PlayerController(const std::string& inDisplayName = "PlayerController", CObject* inOwner = nullptr);
     ~PlayerController() override;
 
     void onKeyPress(int key, int scancode, int action, int mods) override;
@@ -23,9 +26,9 @@ public:
     std::string name() const override;
     void setName(const std::string& newName) override;
 
-    class InputComponent* getPlayerInputComponent() const;
-    class WorldObject* getControlledObject() const;
-    void setControlledObject(class WorldObject* object);
+    class WInputComponent* getPlayerInputComponent() const;
+    class WPawn* getControlledObject() const;
+    void setControlledObject(class WPawn* object);
 
 private:
     void update(float deltaTime);
@@ -35,7 +38,9 @@ private:
     void handleMouseScroll(double xoffset, double yoffset);
 
     std::string controllerName;
-    class WorldObject* m_ControlledObject = nullptr;
+    class WPawn* m_ControlledObject = nullptr;
 };
+
+REGISTER_CLASS_FACTORY(PlayerController);
 
 }  // namespace RPE

@@ -17,7 +17,7 @@
         static bool bRegistered = false;                                   \
         if (!bRegistered)                                                  \
         {                                                                  \
-            RPE::CObjectFactory::GetInstance().registerClass<ClassName>(); \
+            RPE::CObjectFactory::GetInstance().registerclass<ClassName>(); \
             bRegistered = true;                                            \
         }                                                                  \
         return bRegistered;                                                \
@@ -46,7 +46,7 @@ public:
     CObjectFactory& operator=(const CObjectFactory&) = delete;
 
     template <typename T>
-    void registerClass()
+    void registerclass()
     {
         static_assert(std::is_base_of<CObject, T>::value, "CObjectFactory: Class must derive from CObject");
 
@@ -80,7 +80,7 @@ public:
     }
 
     template <typename T>
-    void RegisterClass(const std::string& className)
+    void Registerclass(const std::string& className)
     {
         static_assert(std::is_base_of<CObject, T>::value, "CObjectFactory: Class must derive from CObject");
 
