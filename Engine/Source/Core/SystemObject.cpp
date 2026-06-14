@@ -6,6 +6,29 @@
 #include <algorithm>
 #include <fstream>
 #include "Log/Log.h"
+#include <nlohmann/json.hpp>
+
+// json tests
+using json = nlohmann::json;
+
+json toJSon(RPE::CObject* object)
+{
+    if (!object) return json{};
+    json j;
+    j["ClassName"] = object->GetObjectClassName();
+    j["DisplayName"] = object->GetName();
+    j["UUID"] = object->GetUUID();
+
+    // Сериализуем детей
+    json children = json::array();
+    for (const auto& child : object->GetOwnedObjects())
+    {
+        children.push_back(toJSon(child.get()));
+    }
+    j["Children"] = children;
+
+    return j;
+}
 
 using namespace RPE;
 DEFINE_LOG_CATEGORY_STATIC(ObjectLog);
@@ -18,6 +41,11 @@ CObject::CObject(const std::string& inDisplayName, CObject* inOwner) : ObjectOwn
         ObjectOwner->AddOwnedObject(this);
     }
     RP_LOG(ObjectLog, Display, "[{}] created", GetName());
+    auto jj = toJSon(this);
+    if (!jj.empty())
+    {
+        std::cout << jj << "\n";
+    }
 }
 
 CObject::~CObject()

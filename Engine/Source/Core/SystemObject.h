@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <cctype>
 
-
 // Forward declaration
 namespace RPE
 {
@@ -23,37 +22,37 @@ namespace RPE
 
 #define CLASS_NAME_TO_STR(ClassName) std::string(#ClassName)
 
-#define CHUDDO_DECLARE_CLASS(ClassName, BaseClassName)                                                                          \
-public:                                                                                                                         \
-    using Super = BaseClassName;                                                                                                \
-    static const char* StaticClassName()                                                                                        \
-    {                                                                                                                           \
-        return #ClassName;                                                                                                      \
-    }                                                                                                                           \
-    static const char* StaticBaseClassName()                                                                                    \
-    {                                                                                                                           \
-        return #BaseClassName;                                                                                                  \
-    }                                                                                                                           \
-    virtual const char* GetObjectClassName() const override                                                                     \
-    {                                                                                                                           \
-        return #ClassName;                                                                                                      \
-    }                                                                                                                           
+#define CHUDDO_DECLARE_CLASS(ClassName, BaseClassName)      \
+public:                                                     \
+    using Super = BaseClassName;                            \
+    static const char* StaticClassName()                    \
+    {                                                       \
+        return #ClassName;                                  \
+    }                                                       \
+    static const char* StaticBaseClassName()                \
+    {                                                       \
+        return #BaseClassName;                              \
+    }                                                       \
+    virtual const char* GetObjectClassName() const override \
+    {                                                       \
+        return #ClassName;                                  \
+    }
 
-#define CHUDDO_DECLARE_ABSTRACT_CLASS(ClassName, BaseClassName)                                                                 \
-public:                                                                                                                         \
-    using Super = BaseClassName;                                                                                                \
-    static const char* StaticClassName()                                                                                        \
-    {                                                                                                                           \
-        return #ClassName;                                                                                                      \
-    }                                                                                                                           \
-    static const char* StaticBaseClassName()                                                                                    \
-    {                                                                                                                           \
-        return #BaseClassName;                                                                                                  \
-    }                                                                                                                           \
-    virtual const char* GetObjectClassName() const override                                                                     \
-    {                                                                                                                           \
-        return #ClassName;                                                                                                      \
-    }                                                                                                                           
+#define CHUDDO_DECLARE_ABSTRACT_CLASS(ClassName, BaseClassName) \
+public:                                                         \
+    using Super = BaseClassName;                                \
+    static const char* StaticClassName()                        \
+    {                                                           \
+        return #ClassName;                                      \
+    }                                                           \
+    static const char* StaticBaseClassName()                    \
+    {                                                           \
+        return #BaseClassName;                                  \
+    }                                                           \
+    virtual const char* GetObjectClassName() const override     \
+    {                                                           \
+        return #ClassName;                                      \
+    }
 
 class CObject
 {
@@ -62,7 +61,7 @@ public:
     static const char* StaticClassName() { return "CObject"; }
     static const char* StaticBaseClassName() { return ""; }
     virtual const char* GetObjectClassName() const { return "CObject"; }
-    
+
 private:
     static std::string GenerateUUID()
     {
@@ -152,7 +151,6 @@ public:
         return const_cast<CObject*>(root);
     }
 
-    
 protected:
     CObject* ObjectOwner = nullptr;
     std::string DisplayName{};

@@ -41,23 +41,6 @@ Engine::Engine(std::unique_ptr<class IWindowManager> WindowManager, std::unique_
       mainWindowId(WindowId{0})
 {
     s_instance = this;
-    Gameinstance = std::make_unique<CObject>("gameInstance");
-    if (Gameinstance)
-    {
-        WorldObject* World = Gameinstance->AddSubObject<WorldObject>("World");
-        if (World)
-        {
-            WorldObject* Level = World->AddSubObject<WorldObject>("Level");
-            if (Level)
-            {
-                CObject* Actor = Level->AddSubObject<CObject>("Actor");
-                if (Actor)
-                {
-                    CObject* Camera = OBJECT_FACTORY.Create("CObject", Actor, "Camera");
-                }
-            }
-        }
-    }
 }
 
 Engine::~Engine()
@@ -75,31 +58,6 @@ void Engine::run()
         return;
     }
 
-    if (Gameinstance)
-    {
-        // FindRecursive возвращает bool, проверяет существование объекта в иерархии
-        bool found = Gameinstance->FindRecursive("Camera");
-        if (found)
-        {
-            RP_LOG(EngineLog, Display, "Camera object found in hierarchy");
-
-            // FindObjectByDisplayNameRecursive ищет вверх по иерархии, но Camera находится ВНИЗУ
-            // Нужно искать от корня или использовать другой метод
-            CObject* camera = Gameinstance->FindOwned("Camera");
-            if (camera)
-            {
-                RP_LOG(EngineLog, Display, "Camera object found with name: {}", camera->GetName());
-            }
-            else
-            {
-                RP_LOG(EngineLog, Display, "Camera object not found");
-            }
-        }
-        else
-        {
-            RP_LOG(EngineLog, Display, "Camera not found in hierarchy");
-        }
-    }
     auto lastTime = std::chrono::high_resolution_clock::now();
     RP_LOG(EngineLog, Display, "{} runned", ENGINE_NAME);
     while (!m_WindowManager->areAllWindowsClosed() && !m_requestExit)

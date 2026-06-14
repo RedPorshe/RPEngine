@@ -392,4 +392,3 @@ TEST(ObjectTest1, FindByType1)
 
     delete root;
 }
-
