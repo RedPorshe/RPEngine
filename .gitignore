@@ -1,6 +1,7 @@
 build_debug/
 build_release/
 build/
+.vs/
 EngineConfig.h
 settings.json
 CMakeUserPresets.json
