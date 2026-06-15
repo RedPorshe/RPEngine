@@ -11,7 +11,9 @@ option(SKIP_WINDOW_TESTS "Skip window managers tests on startup" ON)
 
 # common options
 project(KuzbassEngine VERSION 1.0.0)
-add_executable(${PROJECT_NAME} Source/main.cpp)
+add_executable(${PROJECT_NAME} 
+    Source/main.cpp
+)
 
 #version
 configure_file(EngineConfig.h.template ${CMAKE_CURRENT_SOURCE_DIR}/Source/EngineConfig.h)
@@ -239,6 +241,7 @@ Tests/QuatTests.cpp
 Tests/MatrixTests.cpp
 Tests/GLMconverterTests.cpp
 Tests/ObjectsTests.cpp
+Tests/MathconstantsTests.cpp
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 

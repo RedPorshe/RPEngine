@@ -103,29 +103,3 @@ TEST(MathHelpersTest, NextPowerOfTwo)
     EXPECT_EQ(NextPowerOfTwo(0), 1);
     EXPECT_EQ(NextPowerOfTwo(-5), 1);
 }
-
-// ============================================================================
-// Constants Tests
-// ============================================================================
-
-TEST(ConstantsTest, PIValues)
-{
-    EXPECT_NEAR(PI, 3.14159265358979323846f, 1e-6f);
-    EXPECT_NEAR(TWO_PI, 6.28318530717958647692f, 1e-6f);
-    EXPECT_NEAR(HALF_PI, 1.57079632679489661923f, 1e-6f);
-    EXPECT_NEAR(QUARTER_PI, 0.785398163397448309616f, 1e-6f);
-}
-
-TEST(ConstantsTest, ConversionFactors)
-{
-    EXPECT_NEAR(DEG_TO_RAD, PI / 180.0f, 1e-6f);
-    EXPECT_NEAR(RAD_TO_DEG, 180.0f / PI, 1e-6f);
-}
-
-TEST(ConstantsTest, Epsilon)
-{
-    EXPECT_GT(EPSILON, 0.0f);
-    EXPECT_LE(EPSILON, 1e-6f);  // Используем <= вместо <
-    // Или просто проверяем точное значение
-    EXPECT_FLOAT_EQ(EPSILON, 1e-6f);
-}
