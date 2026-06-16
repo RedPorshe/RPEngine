@@ -1,10 +1,11 @@
 #pragma once
 #include "Core/SystemObject.h"
+
 #include <vector>
+#include "Math/MathTypes.h"
 
 namespace RPE
 {
-
 class WActorComponent;
 class WTransformComponent;
 
@@ -46,14 +47,57 @@ public:
     WTransformComponent* getRootComponent() const { return m_RootComponent; }
     void setRootComponent(WTransformComponent* component);
     bool hasRootComponent() const { return m_RootComponent != nullptr; }
+    WActor* GetAttachParentActor() const;
+    void AttachActorToActor(WActor* newParent);
+    std::vector<WActor*>& getChildActors();
+    const std::vector<WActor*>& getChildActors() const;
+    void DetachFromParent();
+    bool IsAttachedToActor(const WActor* potentialParent) const;
+    bool IsRootActor() const { return m_ParentActor == nullptr; }
+    WActor* GetRootParent();
+    const WActor* GetRootParent() const;
+    // actorTransform
+    // location
+    void setActorLocation(const FVector& loc);
+    void setActorLocation(float x, float y, float z);
+    void setActorRelativeLocation(const FVector& loc);
+    void setActorRelativeLocation(float x, float y, float z);
+    FVector getActorLocation() const;
+    FVector getActorLocation();
+    FVector getActorRelativeLocation() const;
+    FVector getActorRelativeLocation();
+    // rotation
+    void setActorRotation(const FQuat& rot);
+    void setActorRotation(float x, float y, float z, float w = 1);
+    void setActorRelativeRotation(const FQuat& rot);
+    void setActorRelativeRotation(float x, float y, float z, float w = 1);
+    FQuat getActorRotation() const;
+    FQuat getActorRotation();
+    FQuat getActorRelativeRotation() const;
+    FQuat getActorRelativeRotation();
+    // scale
+    void setActorScale(const FVector& scale);
+    void setActorScale(float x, float y, float z);
+    void setActorScale(float scale);
+    void setActorRelativeScale(const FVector& scale);
+    void setActorRelativeScale(float x, float y, float z);
+    void setActorRelativeScale(float scale);
+    FVector getActorScale() const;
+    FVector getActorScale();
+    FVector getActorRelativeScale() const;
+    FVector getActorRelativeScale();
 
 protected:
     void cleanUp();
+    void addChildActor(WActor* child);
 
 private:
+    WActor* m_ParentActor = nullptr;
     bool m_isPendingToDestroy = false;
     std::vector<WActorComponent*> m_actorComponents;
+    std::vector<WActor*> m_ChildActors;
     WTransformComponent* m_RootComponent = nullptr;
+    bool IsCircularAttachment(WActor* potentialParent) const;
 };
 }  // namespace RPE
 #include "Log/Log.h"

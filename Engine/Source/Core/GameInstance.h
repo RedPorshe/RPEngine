@@ -14,10 +14,12 @@ public:
     virtual void Init();
     virtual void tick(float deltaTime);
     virtual void onDestroy();
+    bool isInitialized() const;
+    void StartGame();
 
 protected:
-    class WActor* world = nullptr;
-    class WActor* level = nullptr;
+    class WWorld* world = nullptr;
+    bool bIsinitialized{false};
 };
 
 }  // namespace RPE

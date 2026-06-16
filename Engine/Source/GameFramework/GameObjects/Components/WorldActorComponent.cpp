@@ -137,4 +137,14 @@ int WActorComponent::getChildComponentIndex(const WActorComponent* component) co
     return -1;
 }
 
+void WActorComponent::serializeProperties(nlohmann::json& jsonObject) const
+{
+    Super::serializeProperties(jsonObject);
+}
+
+void WActorComponent::deserializeProperties(const nlohmann::json& jsonObject)
+{
+    Super::deserializeProperties(jsonObject);
+}
+
 }  // namespace RPE

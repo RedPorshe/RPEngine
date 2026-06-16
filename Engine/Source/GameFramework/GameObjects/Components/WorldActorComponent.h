@@ -45,6 +45,8 @@ protected:
     WActor* m_owner = nullptr;
     WActorComponent* m_parent = nullptr;
     std::vector<WActorComponent*> m_childComponents;
+    void serializeProperties(nlohmann::json& jsonObject) const override;
+    void deserializeProperties(const nlohmann::json& jsonObject) override;
 };
 
 }  // namespace RPE

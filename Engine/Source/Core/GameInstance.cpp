@@ -1,6 +1,7 @@
 #include "GameInstance.h"
 #include "../GameFramework/GameObjects/WorldObject/WorldActor.h"
 #include "../GameFramework/GameObjects/WorldObject/WorldPawn.h"
+#include "../GameFramework/World/World.h"
 #include "Log/Log.h"
 
 DEFINE_LOG_CATEGORY_STATIC(GameInstanceLog);
@@ -10,9 +11,7 @@ using namespace RPE;
 RGameInstance::RGameInstance(const std::string& inDisplayName, CObject* inOwner)  //
     : Super(inDisplayName, inOwner)
 {
-    world = AddSubObject<WActor>("world");
-    level = world->AddSubObject<WActor>("level");
-    auto pawn = level->AddSubObject<WPawn>("Pawn");
+    world = AddSubObject<WWorld>("main world");
 }
 
 RGameInstance::~RGameInstance()
@@ -20,7 +19,15 @@ RGameInstance::~RGameInstance()
     onDestroy();
 }
 
-void RGameInstance::Init() {}
+void RGameInstance::Init()
+{
+    if (world)
+        if (!world->hasLevel("main_level"))
+        {
+            world->createLevel("main_level");
+        }
+    bIsinitialized = true;
+}
 
 void RGameInstance::tick(float deltaTime)
 {
@@ -31,11 +38,23 @@ void RGameInstance::tick(float deltaTime)
         cccc2++;
     }
     world->Tick(deltaTime);
-    level->Tick(deltaTime);
-    if (const auto& pawn = dynamic_cast<WPawn*>(level->FindOwned("Pawn")))
-    {
-        pawn->Tick(deltaTime);
-    }
 }
 
-void RGameInstance::onDestroy() {}
+void RGameInstance::onDestroy()
+{
+    world->clearLevels();
+    bIsinitialized = false;
+}
+
+bool RGameInstance::isInitialized() const
+{
+    return bIsinitialized;
+}
+
+void RGameInstance::StartGame()
+{
+    if (world)
+    {
+        world->BeginPlay();
+    }
+}

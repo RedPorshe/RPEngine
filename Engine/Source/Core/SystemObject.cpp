@@ -50,7 +50,6 @@ void CObject::serialize(nlohmann::json& jsonObject) const
     jsonObject["ClassName"] = GetObjectClassName();
     jsonObject["DisplayName"] = DisplayName;
     jsonObject["UUID"] = ObjectUUID;
-    serializeProperties(jsonObject);
 
     if (!OwnedObjects.empty())
     {
@@ -63,6 +62,7 @@ void CObject::serialize(nlohmann::json& jsonObject) const
         }
         jsonObject["Children"] = children;
     }
+    serializeProperties(jsonObject);
 }
 
 void CObject::deserialize(const nlohmann::json& jsonObject)
@@ -71,8 +71,6 @@ void CObject::deserialize(const nlohmann::json& jsonObject)
         DisplayName = jsonObject["DisplayName"].get<std::string>();
 
     if (jsonObject.contains("UUID") && jsonObject["UUID"].is_string()) ObjectUUID = jsonObject["UUID"].get<std::string>();
-
-    deserializeProperties(jsonObject);
 
     // Десериализуем детей
     if (jsonObject.contains("Children") && jsonObject["Children"].is_array())
@@ -104,6 +102,7 @@ void CObject::deserialize(const nlohmann::json& jsonObject)
             }
         }
     }
+    deserializeProperties(jsonObject);
 }
 // Добавьте этот метод:
 CObject* CObject::FindOwnedRecursive(const std::string& displayName) const

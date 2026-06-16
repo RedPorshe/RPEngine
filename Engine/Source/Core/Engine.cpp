@@ -65,7 +65,13 @@ void Engine::run()
         RP_LOG(EngineLog, Error, "Cannot run: {} is not initialized ...", ENGINE_NAME);
         return;
     }
-
+    if (Gameinstance)
+    {
+        if (Gameinstance->isInitialized())
+        {
+            Gameinstance->StartGame();
+        }
+    }
     auto lastTime = std::chrono::high_resolution_clock::now();
     RP_LOG(EngineLog, Display, "{} runned", ENGINE_NAME);
     while (!m_WindowManager->areAllWindowsClosed() && !m_requestExit)
@@ -213,7 +219,10 @@ int Engine::init()
         RP_LOG(EngineLog, Error, "Failed to load game instance");
         return 99;
     }
-
+    if (Gameinstance)
+    {
+        Gameinstance->Init();
+    }
     m_initialized = true;
 
     return 0;
@@ -352,10 +361,6 @@ void Engine::updateGameLogic(float deltaTime)
     if (!Gameinstance) return;
 
     Gameinstance->tick(deltaTime);
-    // here we will update our game logic, physics, animations, etc. based on the delta time
-    (void)deltaTime;
-    /*   if (!m_currentGameInstance) return;
-       m_currentGameInstance->update(deltaTime);*/
 }
 
 void Engine::setupWindowEvents(WindowId windowId)

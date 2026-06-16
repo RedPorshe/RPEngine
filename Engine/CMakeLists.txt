@@ -86,6 +86,12 @@ set(ENGINE_SOURCES_BASE
     Source/GameFrameWork/Controller/Controller.cpp
     Source/GameFrameWork/Controller/PlayerController.h
     Source/GameFrameWork/Controller/PlayerController.cpp
+    # World 
+    Source/GameFrameWork/World/World.h
+    Source/GameFrameWork/World/World.cpp
+    Source/GameFrameWork/World/Level.h
+    Source/GameFrameWork/World/Level.cpp
+    # actors
     Source/GameFrameWork/GameObjects/WorldObject/WorldActor.h 
     Source/GameFrameWork/GameObjects/WorldObject/WorldActor.cpp 
     Source/GameFrameWork/GameObjects/WorldObject/WorldPawn.h 

@@ -1,6 +1,7 @@
 #include "WorldActor.h"
 #include "../Components/WorldActorComponent.h"
 #include "../Components/TransformComponent.h"
+#include "Math/MathTypes.h"
 #include "Log/Log.h"
 
 namespace RPE
@@ -18,6 +19,11 @@ WActor::WActor(const std::string& inDisplayName, CObject* inOwner) : CObject(inD
 WActor::~WActor()
 {
     RP_LOG(WActorLog, Display, "[{}] destroyed", GetName());
+
+    DetachFromParent();
+
+    m_ChildActors.clear();
+
     cleanUp();
 }
 
@@ -33,12 +39,7 @@ void WActor::BeginPlay()
 
 void WActor::Tick(float DeltaTime)
 {
-    static int cccc2 = 0;
-    if (cccc2 < 1)
-    {
-        RP_LOG(WActorLog, Display, "Tick for {}", GetName());
-        cccc2++;
-    }
+
     for (auto* component : m_actorComponents)
     {
         if (component) component->tick(DeltaTime);
@@ -62,9 +63,21 @@ void WActor::destroy()
     m_isPendingToDestroy = true;
     RP_LOG(WActorLog, Display, "[{}] marked for destruction", GetName());
 
+    for (WActor* child : m_ChildActors)
+    {
+        if (child && !child->isPendingToDestroy())
+        {
+            child->destroy();
+        }
+    }
+    m_ChildActors.clear();
+
+    DetachFromParent();
+
     if (ObjectOwner)
     {
         ObjectOwner->RemoveOwnedObject(GetName());
+        return;
     }
 }
 
@@ -72,6 +85,28 @@ void WActor::cleanUp()
 {
     m_actorComponents.clear();
     m_RootComponent = nullptr;
+}
+
+void WActor::addChildActor(WActor* child)
+{
+    if (!child || child == this) return;
+
+    auto it = std::find(m_ChildActors.begin(), m_ChildActors.end(), child);
+    if (it != m_ChildActors.end()) return;
+
+    m_ChildActors.push_back(child);
+    RP_LOG(WActorLog, Display, "[{}] added child actor [{}]", GetName(), child->GetName());
+}
+
+bool WActor::IsCircularAttachment(WActor* potentialParent) const
+{
+    WActor* temp = potentialParent;
+    while (temp)
+    {
+        if (temp == this) return true;
+        temp = temp->GetAttachParentActor();
+    }
+    return false;
 }
 
 void WActor::removeComponent(WActorComponent* component)
@@ -146,6 +181,313 @@ void WActor::setRootComponent(WTransformComponent* component)
 
     m_RootComponent = component;
     RP_LOG(WActorLog, Display, "[{}] root component set to [{}]", GetName(), component->GetName());
+}
+
+WActor* WActor::GetAttachParentActor() const
+{
+    return m_ParentActor;
+}
+
+void WActor::AttachActorToActor(WActor* newParent)
+{
+    if (newParent == nullptr)
+    {
+        RP_LOG(WActorLog, Warning, "[{}] trying to attach to null parent", GetName());
+        return;
+    }
+
+    if (newParent == this)
+    {
+        RP_LOG(WActorLog, Warning, "[{}] cannot attach to itself", GetName());
+        return;
+    }
+
+    if (IsCircularAttachment(newParent))
+    {
+        RP_LOG(WActorLog, Warning, "[{}] circular attachment detected", GetName());
+        return;
+    }
+
+    if (m_ParentActor)
+    {
+        auto& parentChildren = m_ParentActor->m_ChildActors;
+        auto it = std::find(parentChildren.begin(), parentChildren.end(), this);
+        if (it != parentChildren.end())
+        {
+            parentChildren.erase(it);
+        }
+        RP_LOG(WActorLog, Display, "[{}] detached from parent [{}]", GetName(), m_ParentActor->GetName());
+    }
+
+    m_ParentActor = newParent;
+    newParent->addChildActor(this);
+
+    if (m_RootComponent)
+    {
+
+        WTransformComponent* parentTransform = newParent->getRootComponent();
+        if (parentTransform)
+        {
+
+            m_RootComponent->setRelativeLocation(FVector::Zero());
+            m_RootComponent->setRelativeRotation(FQuat::Identity());
+            m_RootComponent->setRelativeScale(FVector::One());
+        }
+    }
+
+    RP_LOG(WActorLog, Display, "[{}] attached to parent [{}]", GetName(), newParent->GetName());
+}
+
+void WActor::DetachFromParent()
+{
+    if (!m_ParentActor) return;
+
+    auto& parentChildren = m_ParentActor->m_ChildActors;
+    auto it = std::find(parentChildren.begin(), parentChildren.end(), this);
+    if (it != parentChildren.end())
+    {
+        parentChildren.erase(it);
+    }
+
+    m_ParentActor = nullptr;
+    RP_LOG(WActorLog, Display, "[{}] detached from parent", GetName());
+}
+
+bool WActor::IsAttachedToActor(const WActor* potentialParent) const
+{
+    const WActor* current = this;
+    while (current)
+    {
+        if (current == potentialParent) return true;
+        current = current->GetAttachParentActor();
+    }
+    return false;
+}
+
+WActor* WActor::GetRootParent()
+{
+    WActor* root = this;
+    while (root->GetAttachParentActor())
+    {
+        root = root->GetAttachParentActor();
+    }
+    return root;
+}
+
+const WActor* WActor::GetRootParent() const
+{
+    const WActor* root = this;
+    while (root->GetAttachParentActor())
+    {
+        root = root->GetAttachParentActor();
+    }
+    return root;
+}
+
+void WActor::setActorLocation(const FVector& loc)
+{
+    if (m_RootComponent)
+    {
+        m_RootComponent->setLocation(loc);
+    }
+}
+
+void WActor::setActorLocation(float x, float y, float z)
+{
+    setActorLocation(FVector(x, y, z));
+}
+
+void WActor::setActorRelativeLocation(const FVector& loc)
+{
+    if (m_RootComponent)
+    {
+        m_RootComponent->setRelativeLocation(loc);
+    }
+}
+
+void WActor::setActorRelativeLocation(float x, float y, float z)
+{
+    setActorRelativeLocation(FVector(x, y, z));
+}
+
+FVector WActor::getActorLocation() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getLocation();
+    }
+    return FVector::Zero();
+}
+
+FVector WActor::getActorLocation()
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getLocation();
+    }
+    return FVector::Zero();
+}
+
+FVector WActor::getActorRelativeLocation() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRelativeLocation();
+    }
+    return FVector::Zero();
+}
+
+FVector WActor::getActorRelativeLocation()
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRelativeLocation();
+    }
+    return FVector::Zero();
+}
+
+void WActor::setActorRotation(const FQuat& rot)
+{
+    if (m_RootComponent)
+    {
+        m_RootComponent->setRotation(rot);
+    }
+}
+
+void WActor::setActorRotation(float x, float y, float z, float w)
+{
+    setActorRotation(FQuat(x, y, z, w));
+}
+
+void WActor::setActorRelativeRotation(const FQuat& rot)
+{
+    if (m_RootComponent)
+    {
+        m_RootComponent->setRelativeRotation(rot);
+    }
+}
+
+void WActor::setActorRelativeRotation(float x, float y, float z, float w)
+{
+    setActorRelativeRotation(FQuat(x, y, z, w));
+}
+
+FQuat WActor::getActorRotation() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRotation();
+    }
+    return FQuat::Identity();
+}
+
+FQuat WActor::getActorRotation()
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRotation();
+    }
+    return FQuat::Identity();
+}
+
+FQuat WActor::getActorRelativeRotation() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRelativeRotation();
+    }
+    return FQuat::Identity();
+}
+
+FQuat WActor::getActorRelativeRotation()
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRelativeRotation();
+    }
+    return FQuat::Identity();
+}
+
+void WActor::setActorScale(const FVector& scale)
+{
+    if (m_RootComponent)
+    {
+        m_RootComponent->setScale(scale);
+    }
+}
+
+void WActor::setActorScale(float x, float y, float z)
+{
+    setActorScale(FVector(x, y, z));
+}
+
+void WActor::setActorScale(float scale)
+{
+    setActorScale(scale, scale, scale);
+}
+
+void WActor::setActorRelativeScale(const FVector& scale)
+{
+    if (m_RootComponent)
+    {
+        m_RootComponent->setRelativeScale(scale);
+    }
+}
+
+void WActor::setActorRelativeScale(float x, float y, float z)
+{
+    setActorRelativeScale(FVector(x, y, z));
+}
+
+void WActor::setActorRelativeScale(float scale)
+{
+    setActorRelativeScale(scale, scale, scale);
+}
+
+FVector WActor::getActorScale() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getScale();
+    }
+    return FVector::One();
+}
+
+FVector WActor::getActorScale()
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getScale();
+    }
+    return FVector::One();
+}
+
+FVector WActor::getActorRelativeScale() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRelativeScale();
+    }
+    return FVector::One();
+}
+
+FVector WActor::getActorRelativeScale()
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRelativeScale();
+    }
+    return FVector::One();
+}
+
+std::vector<WActor*>& WActor::getChildActors()
+{
+    return m_ChildActors;
+}
+
+const std::vector<WActor*>& WActor::getChildActors() const
+{
+    return m_ChildActors;
 }
 
 }  // namespace RPE
