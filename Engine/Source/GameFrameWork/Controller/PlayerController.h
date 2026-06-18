@@ -18,7 +18,7 @@ class PlayerController : public WActor, public IController
 public:
     PlayerController(const std::string& inDisplayName = "PlayerController", CObject* inOwner = nullptr);
     ~PlayerController() override;
-
+    void BeginPlay() override;
     void onKeyPress(int key, int scancode, int action, int mods) override;
     void onMouseMove(double x, double y) override;
     void onMouseButton(int button, int action, int mods, double x, double y) override;

@@ -9,7 +9,10 @@ DEFINE_LOG_CATEGORY_STATIC(TransformLog);
 
 REGISTER_CLASS_FACTORY(WTransformComponent);
 
-WTransformComponent::WTransformComponent(const std::string& inDisplayName, CObject* inOwner) : Super(inDisplayName, inOwner) {}
+WTransformComponent::WTransformComponent(const std::string& inDisplayName, CObject* inOwner)  //
+    : Super(inDisplayName, inOwner)
+{
+}
 
 WTransformComponent::~WTransformComponent() {}
 

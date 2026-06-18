@@ -74,8 +74,12 @@ public:
     // rotation
     void setActorRotation(const FQuat& rot);
     void setActorRotation(float x, float y, float z, float w = 1);
+    void setActorRotation(float pitch, float yaw, float roll);
+    void setActorRotation(const FVector& eulerDegrees);
     void setActorRelativeRotation(const FQuat& rot);
     void setActorRelativeRotation(float x, float y, float z, float w = 1);
+    void setActorRelativeRotation(float pitch, float yaw, float roll);
+    void setActorRelativeRotation(const FVector& eulerDegrees);
 
     FQuat getActorRotation() const;
     FQuat getActorRotation();
@@ -96,6 +100,26 @@ public:
 
     void MoveActor(const FVector& Direction, float offset, bool bTeleport = false);
     void LaunchActor(const FVector& Direction, float force, bool bTeleport = false);
+
+    FVector getActorForwardVector() const;
+    FVector getActorRightVector() const;
+    FVector getActorUpVector() const;
+
+    void rotateYaw(float radians);
+    void rotatePitch(float radians);
+    void rotateRoll(float radians);
+    void rotateActor(const FQuat& rotation);
+    void rotateActor(float pitch, float yaw, float roll);
+    void addActorRotation(const FQuat& delta);
+    void addActorRotation(float pitch, float yaw, float roll);
+
+    void rotateRelativeYaw(float radians);
+    void rotateRelativePitch(float radians);
+    void rotateRelativeRoll(float radians);
+    void rotateRelativeActor(const FQuat& rotation);
+    void rotateRelativeActor(float pitch, float yaw, float roll);
+    void addActorRelativeRotation(const FQuat& delta);
+    void addActorRelativeRotation(float pitch, float yaw, float roll);
 
 protected:
     void cleanUp();
@@ -127,7 +151,7 @@ inline Comp* WActor::addComponent(const std::string& inName, Args&&... args)
     static_assert(std::is_base_of_v<WActorComponent, Comp>, "Comp must be derived from WActorComponent");
 
     // Создаем компонент через фабрику
-    CObject* obj = OBJECT_FACTORY.Create(Comp::StaticClassName(), this, inName + "_" + GetName());
+    CObject* obj = OBJECT_FACTORY.Create(Comp::StaticClassName(), this, inName);
     if (!obj) return nullptr;
 
     Comp* component = static_cast<Comp*>(obj);

@@ -62,20 +62,18 @@ bool CObjectFactory::IsDerivedFrom(const std::string& ClassName, const std::stri
 
 CObject* CObjectFactory::Create(const std::string& className, CObject* owner, const std::string& displayName)
 {
-    // Проверка валидности имени
+
     if (displayName.empty())
     {
         return nullptr;
     }
 
-    // Проверить уникальность имени в иерархии owner
     std::string finalDisplayName = displayName;
     if (owner)
     {
         CObject* root = owner->GetRoot();
         if (root->FindRecursive(finalDisplayName))
         {
-            // Генерируем уникальное имя
             finalDisplayName = CObject::GenerateUniqueDisplayNameVariant(finalDisplayName, root);
         }
     }
@@ -96,7 +94,6 @@ CObject* CObjectFactory::Create(const std::string& className, CObject* owner, co
         return obj;
     }
 
-    // Try to find in parent classes (for backward compatibility)
     std::string parentClass = FindParentClass(className);
     if (!parentClass.empty())
     {

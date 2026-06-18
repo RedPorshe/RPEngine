@@ -13,7 +13,7 @@ DEFINE_LOG_CATEGORY_STATIC(WActorLog);
 WActor::WActor(const std::string& inDisplayName, CObject* inOwner) : CObject(inDisplayName, inOwner)
 {
     RP_LOG(WActorLog, Display, "[{}] created", GetName());
-    m_RootComponent = addComponent<WTransformComponent>("Default Root");
+    m_RootComponent = addComponent<WTransformComponent>("Default_Root");
 }
 
 WActor::~WActor()
@@ -359,6 +359,19 @@ void WActor::setActorRotation(float x, float y, float z, float w)
     setActorRotation(FQuat(x, y, z, w));
 }
 
+void WActor::setActorRotation(float pitch, float yaw, float roll)
+{
+    setActorRotation(FQuat(pitch, yaw, roll));
+}
+
+void WActor::setActorRotation(const FVector& eulerDegrees)
+{
+    float pitch = CEMath::DegreesToRadians(eulerDegrees.x);
+    float yaw = CEMath::DegreesToRadians(eulerDegrees.y);
+    float roll = CEMath::DegreesToRadians(eulerDegrees.z);
+    setActorRotation(pitch, yaw, roll, 1.f);
+}
+
 void WActor::setActorRelativeRotation(const FQuat& rot)
 {
     if (m_RootComponent)
@@ -370,6 +383,19 @@ void WActor::setActorRelativeRotation(const FQuat& rot)
 void WActor::setActorRelativeRotation(float x, float y, float z, float w)
 {
     setActorRelativeRotation(FQuat(x, y, z, w));
+}
+
+void WActor::setActorRelativeRotation(float pitch, float yaw, float roll)
+{
+    setActorRotation(FQuat(pitch, yaw, roll));
+}
+
+void WActor::setActorRelativeRotation(const FVector& eulerDegrees)
+{
+    float pitch = CEMath::DegreesToRadians(eulerDegrees.x);
+    float yaw = CEMath::DegreesToRadians(eulerDegrees.y);
+    float roll = CEMath::DegreesToRadians(eulerDegrees.z);
+    setActorRotation(pitch, yaw, roll, 1.f);
 }
 
 FQuat WActor::getActorRotation() const
@@ -485,6 +511,8 @@ void WActor::MoveActor(const FVector& Direction, float offset, bool bTeleport)
     if (CEMath::IsZero(offset)) return;
     if (Direction.IsZero()) return;
     const auto& currentLocation = getActorLocation();
+    RP_LOG(WActorLog, Display, "moving actor {}  from {:.10f},{:.10f},{:.10f}", GetName(), currentLocation.x, currentLocation.y,
+        currentLocation.z);
     FVector NewLocation;
 
     if (bTeleport)
@@ -497,6 +525,7 @@ void WActor::MoveActor(const FVector& Direction, float offset, bool bTeleport)
         float deltaTime = (std::min)(m_deltaTime, MAX_DELTA_TIME);
         NewLocation = currentLocation + (Direction * offset * deltaTime);
     }
+    RP_LOG(WActorLog, Display, "moving actor {}  to {:.10f},{:.10f},{:.10f}", GetName(), NewLocation.x, NewLocation.y, NewLocation.z);
     setActorLocation(NewLocation);
 }
 
@@ -520,6 +549,104 @@ void WActor::LaunchActor(const FVector& Direction, float force, bool bTeleport)
     }
 
     setActorLocation(getActorLocation() + (dir * offset));
+}
+
+FVector WActor::getActorForwardVector() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRotation() * FVector::Forward();
+    }
+    return FVector::Forward();
+}
+
+FVector WActor::getActorRightVector() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRotation() * FVector::Right();
+    }
+    return FVector::Right();
+}
+
+FVector WActor::getActorUpVector() const
+{
+    if (m_RootComponent)
+    {
+        return m_RootComponent->getRotation() * FVector::Up();
+    }
+    return FVector::Up();
+}
+
+void WActor::rotateYaw(float radians)
+{
+    addActorRotation(FQuat(FVector::Up(), radians));
+}
+
+void WActor::rotatePitch(float radians)
+{
+    addActorRotation(FQuat(FVector::Right(), radians));
+}
+
+void WActor::rotateRoll(float radians)
+{
+    addActorRotation(FQuat(FVector::Forward(), radians));
+}
+
+void WActor::rotateActor(const FQuat& rotation)
+{
+    setActorRotation(rotation);
+}
+
+void WActor::rotateActor(float pitch, float yaw, float roll)
+{
+    setActorRotation(FQuat(pitch, yaw, roll));
+}
+
+void WActor::addActorRotation(const FQuat& delta)
+{
+    FQuat current = getActorRotation();
+    setActorRotation(delta * current);
+}
+
+void WActor::addActorRotation(float pitch, float yaw, float roll)
+{
+    addActorRotation(FQuat(pitch, yaw, roll));
+}
+
+void WActor::rotateRelativeYaw(float radians)
+{
+    addActorRelativeRotation(FQuat(getActorUpVector(), radians));
+}
+
+void WActor::rotateRelativePitch(float radians)
+{
+    addActorRelativeRotation(FQuat(getActorRightVector(), radians));
+}
+
+void WActor::rotateRelativeRoll(float radians)
+{
+    addActorRelativeRotation(FQuat(getActorForwardVector(), radians));
+}
+
+void WActor::rotateRelativeActor(const FQuat& rotation)
+{
+    setActorRelativeRotation(rotation);
+}
+
+void WActor::rotateRelativeActor(float pitch, float yaw, float roll)
+{
+    setActorRelativeRotation(FQuat(pitch, yaw, roll));
+}
+
+void WActor::addActorRelativeRotation(const FQuat& delta)
+{
+    setActorRelativeRotation(delta * getActorRelativeRotation());
+}
+
+void WActor::addActorRelativeRotation(float pitch, float yaw, float roll)
+{
+    addActorRelativeRotation(FQuat(pitch, yaw, roll));
 }
 
 std::vector<WActor*>& WActor::getChildActors()

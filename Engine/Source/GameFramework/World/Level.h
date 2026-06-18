@@ -24,8 +24,17 @@ public:
 
     template <typename ActorClass>
     ActorClass* SpawnActor(const std::string& ActorName);
+
+    WActor* SpawnActor(const std::string& ActorClass, const std::string& ActorName);
+
     template <typename ActorClass>
     ActorClass* GetActor(const std::string& ActorName) const;
+
+    template <typename ActorClass>
+    std::vector<ActorClass*> getAllActorsOfClass();
+
+    template <typename ActorClass>
+    inline std::vector<const ActorClass*> getAllActorsOfClass() const;
 
     void DestroyActor(const std::string& ActorName);
     void DestroyActor(WActor* Actor);
@@ -89,5 +98,35 @@ ActorClass* WLevel::GetActor(const std::string& ActorName) const
         return dynamic_cast<ActorClass*>(it->second);
     }
     return nullptr;
+}
+template <typename ActorClass>
+inline std::vector<ActorClass*> WLevel::getAllActorsOfClass()
+{
+    static_assert(std::is_base_of_v<WActor, ActorClass>, "ActorClass must be derived from WActor");
+
+    std::vector<ActorClass*> result;
+    for (const auto& [name, actor] : m_actors)
+    {
+        if (ActorClass* casted = dynamic_cast<ActorClass*>(actor))
+        {
+            result.push_back(casted);
+        }
+    }
+    return result;
+}
+template <typename ActorClass>
+inline std::vector<const ActorClass*> WLevel::getAllActorsOfClass() const
+{
+    static_assert(std::is_base_of_v<WActor, ActorClass>, "ActorClass must be derived from WActor");
+
+    std::vector<const ActorClass*> result;
+    for (const auto& [name, actor] : m_actors)
+    {
+        if (const ActorClass* casted = dynamic_cast<const ActorClass*>(actor))
+        {
+            result.push_back(casted);
+        }
+    }
+    return result;
 }
 }  // namespace RPE

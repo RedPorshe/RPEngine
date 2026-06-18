@@ -65,6 +65,7 @@ void CObject::serialize(nlohmann::json& jsonObject) const
 
 void CObject::deserialize(const nlohmann::json& jsonObject)
 {
+
     if (jsonObject.contains("DisplayName") && jsonObject["DisplayName"].is_string())
         DisplayName = jsonObject["DisplayName"].get<std::string>();
 

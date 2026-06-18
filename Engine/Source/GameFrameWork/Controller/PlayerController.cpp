@@ -15,6 +15,12 @@ PlayerController::PlayerController(const std::string& inDisplayName, CObject* in
 
 PlayerController::~PlayerController() {}
 
+void PlayerController::BeginPlay()
+{
+    Super::BeginPlay();
+    removeComponent("Default_Root");
+}
+
 void PlayerController::onKeyPress(int key, int scancode, int action, int mods)
 {
     handleKeyPress(key, scancode, action, mods);

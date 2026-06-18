@@ -16,11 +16,12 @@ WLevel::WLevel(const std::string& inName, CObject* inOwner) : Super(inName, inOw
 {
     bisLoaded = false;
     bHasBegunPlay = false;
-    pawn = SpawnActor<WPawn>("test pawn");
-    auto controller = SpawnActor<PlayerController>(pawn->GetName() + "_Controller");
-    auto inpmanager = Engine::Get().getInputManager();
-    inpmanager->setActiveController(controller);
-    controller->setControlledObject(pawn);
+    auto* controller = dynamic_cast<PlayerController*>(SpawnActor("PlayerController", "Player_Controller"));
+    pawn = SpawnActor<WPawn>("Player");
+    if (controller)
+    {
+        controller->setControlledObject(pawn);
+    }
 }
 
 WLevel::~WLevel()
@@ -99,6 +100,33 @@ const WWorld* WLevel::getWorld() const
     return dynamic_cast<const WWorld*>(ObjectOwner);
 }
 
+WActor* WLevel::SpawnActor(const std::string& ActorClass, const std::string& ActorName)
+{
+    CObject* obj = OBJECT_FACTORY.Create(ActorClass, this, ActorName);
+    if (!obj)
+    {
+        RP_LOG(levelLog, Error, "Failed to create actor of class {} in level {}", ActorClass, GetName());
+        return nullptr;
+    }
+    if (WActor* actor = dynamic_cast<WActor*>(obj))
+    {
+        std::string realname = actor->GetName();
+        m_actors[realname] = actor;
+        RP_LOG(levelLog, Display, "Actor of class '{}' with name '{}' was spawned in level {}", ActorClass, realname, GetName());
+        if (bHasBegunPlay && bisLoaded)
+        {
+            actor->BeginPlay();
+        }
+        return actor;
+    }
+    if (obj)
+    {
+        RemoveOwnedObject(obj->GetName());
+        RP_LOG(levelLog, Error, "Object of class '{}' is not an actor", ActorClass);
+    }
+    return nullptr;
+}
+
 void WLevel::onLevelLoaded()
 {
     if (bisLoaded)
@@ -150,8 +178,9 @@ void WLevel::serializeProperties(nlohmann::json& jsonObject) const
     RP_LOG(levelLog, Display, "Level '{}' serialized {} actor references", GetName(), m_actors.size());
 }
 
-void RPE::WLevel::deserializeProperties(const nlohmann::json& jsonObject)
+void WLevel::deserializeProperties(const nlohmann::json& jsonObject)
 {
+    RP_LOG(levelLog, Display, "deserializeproperties with dynamic_cast");
     Super::deserializeProperties(jsonObject);
 
     if (jsonObject.contains("isLoaded"))
@@ -167,11 +196,11 @@ void RPE::WLevel::deserializeProperties(const nlohmann::json& jsonObject)
             {
                 std::string actorUUID = actorInfo["UUID"].get<std::string>();
 
-                // Ищем актора по UUID среди существующих объектов
                 CObject* found = FindByUUIDRecursive(actorUUID);
-                if (found && found->GetObjectClassName() == std::string("WActor"))
+
+                WActor* actor = dynamic_cast<WActor*>(found);
+                if (actor)
                 {
-                    WActor* actor = static_cast<WActor*>(found);
                     std::string actorName = actor->GetName();
                     m_actors[actorName] = actor;
                     RP_LOG(levelLog, Display, "Restored actor reference: '{}' (UUID: {})", actorName, actorUUID.substr(0, 8));
