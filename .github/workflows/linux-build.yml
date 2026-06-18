@@ -4,7 +4,7 @@ on:
   push:
     branches: ["disabled"]
   pull_request:
-    branches: ["disabled"]
+    branches: ["main"]
 
 env:
   TARGETS: KuzbassEngine
