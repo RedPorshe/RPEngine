@@ -160,7 +160,7 @@ FVector WTransformComponent::getLocation() const
 
 FQuat WTransformComponent::getRotation() const
 {
- 
+
     if (!hasParentAsTransformComponent())
     {
         return m_Rotation * m_RelativeRotation;
@@ -301,7 +301,7 @@ void WTransformComponent::deserializeProperties(const nlohmann::json& jsonObject
         m_RelativeScale = FVector(x, y, z);
     }
 
-    //markDirty();
+    // markDirty();
     updateTransform();
 
     RP_LOG(TransformLog, Display, "TransformComponent '{}' deserialized", GetName());

@@ -23,26 +23,22 @@ public:
     void onDestroy() override;
     void onBeginPlay() override;
 
-  
     void setLocation(const FVector& loc);
     void setRotation(const FQuat& rot);
     void setScale(const FVector& scale);
-      
+
     void setRelativeLocation(const FVector& loc);
     void setRelativeRotation(const FQuat& rot);
     void setRelativeScale(const FVector& scale);
-
 
     FVector getLocation() const;
     FQuat getRotation() const;
     FVector getScale() const;
 
- 
     FVector getRelativeLocation() const { return m_RelativeLocation; }
     FQuat getRelativeRotation() const { return m_RelativeRotation; }
     FVector getRelativeScale() const { return m_RelativeScale; }
 
- 
     FMat4& getMatrix();
     const FMat4& getMatrix() const;
     void updateTransform();
@@ -51,12 +47,12 @@ public:
     WTransformComponent* getParentTransform() const;
 
 protected:
-    FVector m_Location = FVector::Zero();          
-    FQuat m_Rotation = FQuat::Identity();          
-    FVector m_Scale = FVector::One();              
-    FVector m_RelativeLocation = FVector::Zero();  
-    FQuat m_RelativeRotation = FQuat::Identity();  
-    FVector m_RelativeScale = FVector::One();      
+    FVector m_Location = FVector::Zero();
+    FQuat m_Rotation = FQuat::Identity();
+    FVector m_Scale = FVector::One();
+    FVector m_RelativeLocation = FVector::Zero();
+    FQuat m_RelativeRotation = FQuat::Identity();
+    FVector m_RelativeScale = FVector::One();
     FMat4 m_transformMatrix = FMat4(1.0f);
 
     bool isDirty{false};

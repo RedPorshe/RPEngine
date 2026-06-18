@@ -43,7 +43,6 @@ public:
     void bindMouseMove(MouseMoveCallback callback);
     void bindMouseScroll(MouseScrollCallback callback);
 
-
     void processMouseMove(float deltaX, float deltaY);
     void processMouseScroll(float delta);
 
@@ -52,7 +51,6 @@ public:
     void pushContext(const std::string& context);
     void popContext();
     void clearContext();
-
 
     float getAxisValue(Key positive, Key negative) const;
 
@@ -73,8 +71,6 @@ private:
         AxisCallback callback;
         float deadZone = 0.1f;
     };
-
-  
 
     // Привязки
     std::vector<ActionBinding> m_activeActionBindings;

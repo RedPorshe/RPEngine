@@ -39,7 +39,6 @@ public:
 
     void clear() { m_callbacks.clear(); }
 
-   
     size_t getSubscriberCount() const { return m_callbacks.size(); }
 
 private:

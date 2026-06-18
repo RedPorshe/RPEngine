@@ -488,11 +488,11 @@ void WActor::MoveActor(const FVector& Direction, float offset, bool bTeleport)
     FVector NewLocation;
 
     if (bTeleport)
-    {       
+    {
         NewLocation = currentLocation + (Direction * offset);
     }
     else
-    {      
+    {
         constexpr float MAX_DELTA_TIME = 0.05f;  // 50ms
         float deltaTime = (std::min)(m_deltaTime, MAX_DELTA_TIME);
         NewLocation = currentLocation + (Direction * offset * deltaTime);
@@ -500,7 +500,7 @@ void WActor::MoveActor(const FVector& Direction, float offset, bool bTeleport)
     setActorLocation(NewLocation);
 }
 
-void WActor::LaunchActor(const FVector& Direction, float force,bool bTeleport )
+void WActor::LaunchActor(const FVector& Direction, float force, bool bTeleport)
 {
     if (CEMath::IsZero(force)) return;
     if (Direction.IsZero()) return;

@@ -129,7 +129,25 @@ public:
     CObject* AddSubObjectByClass(const std::string& className, const std::string& desiredDisplayName = "SubObject");
 
     template <typename ObjectType>
-    ObjectType* FindObjectByType(const std::string & Name) const
+    ObjectType* FindObjectByType(const std::string& Name) const
+    {
+        for (const auto& actor : OwnedObjects)
+        {
+            if (auto casted = dynamic_cast<ObjectType*>(actor.get()))
+            {
+                if (casted->GetName() == Name)
+                {
+                    return casted;
+                }
+            }
+            ObjectType* founded = actor->FindObjectByType<ObjectType>(Name);
+            if (founded) return founded;
+        }
+        return nullptr;
+    }
+
+    template <typename ObjectType>
+    ObjectType* FindObjectByType() const
     {
         for (const auto& actor : OwnedObjects)
         {
@@ -137,7 +155,7 @@ public:
             {
                 return casted;
             }
-            ObjectType* founded = actor->FindObjectByType<ObjectType>(Name);
+            ObjectType* founded = actor->FindObjectByType<ObjectType>();
             if (founded) return founded;
         }
         return nullptr;
@@ -176,6 +194,5 @@ protected:
 };
 
 }  // namespace RPE
-
 
 #include "Core/SystemObject.hpp"

@@ -359,6 +359,9 @@ TEST(ObjectTest, FindByUUID)
 
     delete obj;
 }
+// ============================================================================
+// FindByType Tests
+// ============================================================================
 
 TEST(ObjectTest, FindByType)
 {
@@ -366,6 +369,7 @@ TEST(ObjectTest, FindByType)
     TestGameObject* gameObj = root->AddSubObject<TestGameObject>("Game");
     TestActor* actor = root->AddSubObject<TestActor>("Actor");
 
+    // Поиск по типу (без имени)
     auto* foundGame = root->FindObjectByType<TestGameObject>();
     auto* foundActor = root->FindObjectByType<TestActor>();
     auto* foundComponent = root->FindObjectByType<TestComponent>();
@@ -377,18 +381,38 @@ TEST(ObjectTest, FindByType)
     delete root;
 }
 
-TEST(ObjectTest1, FindByType1)
+TEST(ObjectTest, FindByTypeWithName)
 {
     CObject* root = new CObject("Root");
-    TestGameObject* gameObj = root->AddSubObject<TestGameObject>("Game");
+    TestGameObject* gameObj1 = root->AddSubObject<TestGameObject>("Game1");
+    TestGameObject* gameObj2 = root->AddSubObject<TestGameObject>("Game2");
     TestActor* actor = root->AddSubObject<TestActor>("Actor");
 
-    // Ищем на уровне root (root сам не является TestGameObject)
-    TestGameObject* foundGame = root->FindObjectByType<TestGameObject>();
-    TestActor* foundActor = root->FindObjectByType<TestActor>();
+    // Поиск по типу и имени
+    auto* foundGame1 = root->FindObjectByType<TestGameObject>("Game1");
+    auto* foundGame2 = root->FindObjectByType<TestGameObject>("Game2");
+    auto* foundActor = root->FindObjectByType<TestActor>("Actor");
+    auto* notFound = root->FindObjectByType<TestGameObject>("NonExistent");
 
-    EXPECT_EQ(foundGame, gameObj);
+    EXPECT_EQ(foundGame1, gameObj1);
+    EXPECT_EQ(foundGame2, gameObj2);
     EXPECT_EQ(foundActor, actor);
+    EXPECT_EQ(notFound, nullptr);
+
+    delete root;
+}
+
+TEST(ObjectTest, FindByTypeHierarchy)
+{
+    CObject* root = new CObject("Root");
+    TestActor* actor = root->AddSubObject<TestActor>("Actor");
+
+    // TestActor наследуется от TestGameObject
+    auto* foundAsGame = root->FindObjectByType<TestGameObject>();
+    auto* foundAsActor = root->FindObjectByType<TestActor>();
+
+    EXPECT_EQ(foundAsGame, actor);
+    EXPECT_EQ(foundAsActor, actor);
 
     delete root;
 }

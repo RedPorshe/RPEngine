@@ -24,11 +24,11 @@ CObject::CObject(const std::string& inDisplayName, CObject* inOwner) : ObjectOwn
 CObject::~CObject()
 {
     RP_LOG(ObjectLog, Display, "{} object destroyed", GetName());
-       
+
     OwnedObjects.clear();
 
     if (ObjectOwner)
-    {      
+    {
         auto& ownerChildren = ObjectOwner->OwnedObjects;
         auto it = std::find_if(
             ownerChildren.begin(), ownerChildren.end(), [this](const std::unique_ptr<CObject>& ptr) { return ptr.get() == this; });
@@ -81,7 +81,7 @@ void CObject::deserialize(const nlohmann::json& jsonObject)
 
                 if (childJson.contains("DisplayName") && childJson["DisplayName"].is_string())
                     displayName = childJson["DisplayName"].get<std::string>();
-                             
+
                 CObject* existingObj = FindObjectByDisplayNameRecursive(displayName);
 
                 if (existingObj)

@@ -159,9 +159,8 @@ int Engine::init()
 {
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
 
-  
     m_neededPipelineNames.push_back("Triangle");
-   
+
     WindowSettings wset;
     wset.width = 1024;
     wset.height = 768;

@@ -17,9 +17,8 @@ void WInputComponent::tick(float deltaTime)
 {
     Super::tick(deltaTime);
 
-   
     processInput(deltaTime);
-  
+
     m_hasMouseMove = false;
     m_hasMouseScroll = false;
 }
@@ -100,7 +99,6 @@ void WInputComponent::bindMouseScroll(MouseScrollCallback callback)
 {
     m_mouseScrollCallback = callback;
 }
-
 
 void WInputComponent::processMouseMove(float deltaX, float deltaY)
 {

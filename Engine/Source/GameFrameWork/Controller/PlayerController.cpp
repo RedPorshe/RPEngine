@@ -8,8 +8,6 @@ using namespace RPE;
 
 DEFINE_LOG_CATEGORY_STATIC(PlayerControllerLog);
 
-
-
 PlayerController::PlayerController(const std::string& inDisplayName, CObject* inOwner)
     : Super(inDisplayName, inOwner), controllerName(inDisplayName), m_ControlledObject(nullptr)
 {
@@ -68,10 +66,7 @@ void PlayerController::setControlledObject(WPawn* object)
 
 void PlayerController::update(float deltaTime) {}
 
-void PlayerController::handleKeyPress(int key, int scancode, int action, int mods)
-{   
-  
-}
+void PlayerController::handleKeyPress(int key, int scancode, int action, int mods) {}
 
 void PlayerController::handleMouseMove(double x, double y)
 {
@@ -81,10 +76,7 @@ void PlayerController::handleMouseMove(double x, double y)
     }
 }
 
-void PlayerController::handleMouseButton(int button, int action, int mods, double x, double y)
-{
-   
-}
+void PlayerController::handleMouseButton(int button, int action, int mods, double x, double y) {}
 
 void PlayerController::handleMouseScroll(double xoffset, double yoffset)
 {

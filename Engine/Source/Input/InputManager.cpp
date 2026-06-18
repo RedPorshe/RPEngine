@@ -96,7 +96,7 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<KeyData>(event.data))
             {
                 const auto& keydata = std::get<KeyData>(event.data);
-                handleKeyEvent(keydata.key, keydata.scancode, keydata.action, keydata.mods);               
+                handleKeyEvent(keydata.key, keydata.scancode, keydata.action, keydata.mods);
             }
             break;
         }
@@ -105,7 +105,7 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<MouseMoveData>(event.data))
             {
                 const auto& data = std::get<MouseMoveData>(event.data);
-                handleMouseMoveEvent(data.x, data.y);               
+                handleMouseMoveEvent(data.x, data.y);
             }
             break;
         }
@@ -113,8 +113,8 @@ void InputManager::processInput(const InputEvent& event)
         {
             if (std::holds_alternative<MouseButtonData>(event.data))
             {
-                const auto& data = std::get<MouseButtonData>(event.data);               
-                handleMouseButtonEvent(data.button, data.action, data.mods, data.x, data.y);              
+                const auto& data = std::get<MouseButtonData>(event.data);
+                handleMouseButtonEvent(data.button, data.action, data.mods, data.x, data.y);
             }
             break;
         }
@@ -123,7 +123,7 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<ScrollData>(event.data))
             {
                 const auto& data = std::get<ScrollData>(event.data);
-                handleMouseScrollEvent(data.xoffset, data.yoffset);                
+                handleMouseScrollEvent(data.xoffset, data.yoffset);
             }
             break;
         }
@@ -273,7 +273,7 @@ void InputManager::handleKeyEvent(int key, int scancode, int action, int mods)
 {
     Key rpKey;
     bool isPressed = false;
-    
+
 #ifdef RPE_USE_NATIVE_WINDOW
 #ifdef _WIN32
     rpKey = Win32ToRPKey(key);
@@ -316,8 +316,6 @@ void InputManager::handleKeyEvent(int key, int scancode, int action, int mods)
             RP_LOG(InputManagerLog, Display, "Key Pressed: {} (Scancode: {})", displayName, scancode);
         }
 
-       
-      
         if (m_activeController)
         {
             m_activeController->onKeyPress(key, scancode, action, glfwMods);

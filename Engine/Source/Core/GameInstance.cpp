@@ -33,7 +33,7 @@ void RGameInstance::tick(float deltaTime)
 {
     if (world)
     {
-    world->Tick(deltaTime);
+        world->Tick(deltaTime);
     }
 }
 

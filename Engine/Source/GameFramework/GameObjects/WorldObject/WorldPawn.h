@@ -18,6 +18,7 @@ public:
     void EndPlay() override;
 
     void BeginPlay() override;
+
 protected:
     void setupInputBindings();
     void moveRight(float value);

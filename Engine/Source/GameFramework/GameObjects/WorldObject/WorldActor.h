@@ -26,7 +26,6 @@ public:
     bool isPendingToDestroy() const { return m_isPendingToDestroy; }
     void setPendingToDestroy(bool value) { m_isPendingToDestroy = value; }
 
-  
     const std::vector<WActorComponent*>& getComponents() const { return m_actorComponents; }
     std::vector<WActorComponent*>& getComponents() { return m_actorComponents; }
 
@@ -43,7 +42,6 @@ public:
     void removeComponent(const std::string& name);
     void clearComponents();
 
-  
     WTransformComponent* getRootComponent() const { return m_RootComponent; }
     void setRootComponent(WTransformComponent* component);
     bool hasRootComponent() const { return m_RootComponent != nullptr; }
@@ -61,7 +59,7 @@ public:
     const WActor* GetRootParent() const;
 
     // actorTransform
-    // 
+    //
     // location
     void setActorLocation(const FVector& loc);
     void setActorLocation(float x, float y, float z);
@@ -103,6 +101,7 @@ protected:
     void cleanUp();
     void addChildActor(WActor* child);
     float m_deltaTime = 0.f;
+
 private:
     WActor* m_ParentActor = nullptr;
     bool m_isPendingToDestroy = false;
@@ -110,7 +109,7 @@ private:
     std::vector<WActor*> m_ChildActors;
     WTransformComponent* m_RootComponent = nullptr;
     bool IsCircularAttachment(WActor* potentialParent) const;
-   
+
     friend class WLevel;
 };
 }  // namespace RPE
