@@ -83,15 +83,9 @@ void WPawn::moveForward(float value)
     MoveActor(Forward, offset);
 }
 
-void WPawn::look(float value)
-{
-    // RP_LOG(WPawnLog, Display, "Looking: {:.2f}", value);
-}
+void WPawn::look(float value) {}
 
-void WPawn::lookUp(float value)
-{
-    // RP_LOG(WPawnLog, Display, "Looking Up: {:.2f}", value);
-}
+void WPawn::lookUp(float value) {}
 
 void WPawn::jump()
 {
