@@ -21,22 +21,20 @@ public:
 
     bool hasChildComponents() const { return !m_childComponents.empty(); }
     WActor* getOwner() const { return m_owner; }
-    void attachTo();
+  
     void attachTo(WActorComponent* inOwnComponent);  // uses then attach to root component
 
-    // Управление дочерними компонентами
+   
     void addChildComponent(WActorComponent* component);
     void removeChildComponent(WActorComponent* component);
 
-    // Поиск компонентов (объединенные методы)
+
     WActorComponent* getChildComponent(const std::string& componentName) const;
     WActorComponent* getChildComponent(int index) const;
 
-    // Поиск по индексу (единственный метод с перегрузкой)
     int getChildComponentIndex(const std::string& componentName) const;
     int getChildComponentIndex(const WActorComponent* component) const;
 
-    // Утилиты
     size_t getChildComponentCount() const { return m_childComponents.size(); }
     const std::vector<WActorComponent*>& getChildComponents() const { return m_childComponents; }
     WActorComponent* getParent() const { return m_parent; }

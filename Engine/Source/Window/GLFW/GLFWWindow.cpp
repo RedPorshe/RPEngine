@@ -53,7 +53,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         {
             auto* win = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
             if (!win) return;
-            //  RP_LOG(LogGLFWWindow, Display, " key ={}, scancode ={}", key, scancode);
+           
             InputEvent event;
             event.type = EventType::KeyPress;
             event.data = KeyData(key, scancode, action, mods);
@@ -91,7 +91,7 @@ GLFWWindow::GLFWWindow(WindowId inID, const WindowSettings& sSettings) : m_id(in
         {
             auto* thisWindow = static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window));
             if (!thisWindow) return;
-            // RP_LOG(LogGLFWWindow, Display, "mouse xoffset:{} yoffset: {}", xoffset, yoffset);
+           
             InputEvent event;
             event.type = EventType::MouseScroll;
             event.data = ScrollData(xoffset, yoffset);

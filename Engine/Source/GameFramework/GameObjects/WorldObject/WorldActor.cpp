@@ -39,7 +39,7 @@ void WActor::BeginPlay()
 
 void WActor::Tick(float DeltaTime)
 {
-
+    m_deltaTime = DeltaTime;
     for (auto* component : m_actorComponents)
     {
         if (component) component->tick(DeltaTime);
@@ -478,6 +478,48 @@ FVector WActor::getActorRelativeScale()
         return m_RootComponent->getRelativeScale();
     }
     return FVector::One();
+}
+
+void WActor::MoveActor(const FVector& Direction, float offset, bool bTeleport)
+{
+    if (CEMath::IsZero(offset)) return;
+    if (Direction.IsZero()) return;
+    const auto& currentLocation = getActorLocation();
+    FVector NewLocation;
+
+    if (bTeleport)
+    {       
+        NewLocation = currentLocation + (Direction * offset);
+    }
+    else
+    {      
+        constexpr float MAX_DELTA_TIME = 0.05f;  // 50ms
+        float deltaTime = (std::min)(m_deltaTime, MAX_DELTA_TIME);
+        NewLocation = currentLocation + (Direction * offset * deltaTime);
+    }
+    setActorLocation(NewLocation);
+}
+
+void WActor::LaunchActor(const FVector& Direction, float force,bool bTeleport )
+{
+    if (CEMath::IsZero(force)) return;
+    if (Direction.IsZero()) return;
+
+    FVector dir = Direction.IsNormalized() ? Direction : Direction.Normalized();
+
+    float offset;
+    if (bTeleport)
+    {
+        offset = force;
+    }
+    else
+    {
+        constexpr float MAX_DELTA_TIME = 0.05f;
+        float deltaTime = (std::min)(m_deltaTime, MAX_DELTA_TIME);
+        offset = force * deltaTime;
+    }
+
+    setActorLocation(getActorLocation() + (dir * offset));
 }
 
 std::vector<WActor*>& WActor::getChildActors()

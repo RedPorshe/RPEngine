@@ -34,7 +34,6 @@ void WTransformComponent::onBeginPlay()
 
 void WTransformComponent::setLocation(const FVector& loc)
 {
-    // Устанавливаем мировую позицию
     if (!hasParentAsTransformComponent())
     {
         m_Location = loc;
@@ -58,8 +57,6 @@ void WTransformComponent::setLocation(const FVector& loc)
 
     FVector relativeLocation = loc - parentLocation;
 
-    // Обратное применение поворота и масштаба родителя
-    // Используем operator* для вращения вектора кватернионом
     relativeLocation = parentRotation.Inverse() * relativeLocation;
     relativeLocation = FVector(relativeLocation.x / parentScale.x, relativeLocation.y / parentScale.y, relativeLocation.z / parentScale.z);
 
@@ -70,7 +67,6 @@ void WTransformComponent::setLocation(const FVector& loc)
 
 void WTransformComponent::setRotation(const FQuat& rot)
 {
-    // Устанавливаем мировой поворот
     if (!hasParentAsTransformComponent())
     {
         m_Rotation = rot;
@@ -95,7 +91,6 @@ void WTransformComponent::setRotation(const FQuat& rot)
 
 void WTransformComponent::setScale(const FVector& scale)
 {
-    // Устанавливаем мировой масштаб
     if (!hasParentAsTransformComponent())
     {
         m_Scale = scale;
@@ -140,7 +135,6 @@ void WTransformComponent::setRelativeScale(const FVector& scale)
 
 FVector WTransformComponent::getLocation() const
 {
-    // Возвращаем мировую позицию
     if (!hasParentAsTransformComponent())
     {
         return m_Location + m_RelativeLocation;
@@ -157,7 +151,6 @@ FVector WTransformComponent::getLocation() const
     FVector parentScale = parentTransform->getScale();
 
     FVector relativePos = m_Location + m_RelativeLocation;
-    // Используем operator* для вращения вектора кватернионом
     FVector rotatedLocation = parentRotation * relativePos;
     FVector scaledLocation =
         FVector(rotatedLocation.x * parentScale.x, rotatedLocation.y * parentScale.y, rotatedLocation.z * parentScale.z);
@@ -167,7 +160,7 @@ FVector WTransformComponent::getLocation() const
 
 FQuat WTransformComponent::getRotation() const
 {
-    // Возвращаем мировой поворот
+ 
     if (!hasParentAsTransformComponent())
     {
         return m_Rotation * m_RelativeRotation;
@@ -184,7 +177,6 @@ FQuat WTransformComponent::getRotation() const
 
 FVector WTransformComponent::getScale() const
 {
-    // Возвращаем мировой масштаб
     if (!hasParentAsTransformComponent())
     {
         return FVector(m_Scale.x * m_RelativeScale.x, m_Scale.y * m_RelativeScale.y, m_Scale.z * m_RelativeScale.z);
@@ -218,6 +210,7 @@ const FMat4& WTransformComponent::getMatrix() const
 
 void WTransformComponent::updateTransform()
 {
+    RP_LOG(TransformLog, Display, "forced update transform matrix for {}", GetName());
     updateTransformMatrix();
 }
 
@@ -308,7 +301,8 @@ void WTransformComponent::deserializeProperties(const nlohmann::json& jsonObject
         m_RelativeScale = FVector(x, y, z);
     }
 
-    markDirty();
+    //markDirty();
+    updateTransform();
 
     RP_LOG(TransformLog, Display, "TransformComponent '{}' deserialized", GetName());
 }
@@ -343,7 +337,6 @@ void WTransformComponent::updateTransformMatrix()
 
 FMat4 WTransformComponent::buildTransformMatrix(const FVector& location, const FQuat& rotation, const FVector& scale) const
 {
-    // Строим матрицу из location, rotation, scale
     FMat4 translationMatrix = FMat4::Translation(location);
     FMat4 rotationMatrix = rotation.ToMatrix();
     FMat4 scaleMatrix = FMat4::Scaling(scale);

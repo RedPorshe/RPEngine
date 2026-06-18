@@ -4,6 +4,8 @@
 #include "Log/Log.h"
 #include "Core/ObjectFactory.h"
 
+#include "Core/Engine.h"
+
 using namespace RPE;
 
 DEFINE_LOG_CATEGORY_STATIC(WPawnLog);
@@ -26,12 +28,7 @@ WInputComponent* WPawn::getInputComponent()
 
 void WPawn::Tick(float DeltaTime)
 {
-    static int cccc = 0;
-    if (cccc < 1)
-    {
-        RP_LOG(WPawnLog, Display, "Tick for {}", GetName());
-        cccc++;
-    }
+    Super::Tick(DeltaTime);
 }
 
 void WPawn::EndPlay()
@@ -57,30 +54,52 @@ void WPawn::setupInputBindings()
                 lookUp(y);
             });
         m_inputComponent->bindAction(Key::Space, ActionType::Press, [this]() { jump(); });
+        m_inputComponent->bindAction(Key::Escape, ActionType::Press, [this]() { Quit(); });
     }
 }
 
 void WPawn::moveRight(float value)
 {
+    if (value == 0.0f) return;
+
     RP_LOG(WPawnLog, Display, "Moving Right: {:.2f}", value);
+    RP_LOG(WPawnLog, Display, "m_deltaTime = : {:.2f}", m_deltaTime);
+    RP_LOG(WPawnLog, Display, "start location: {:.10f},{:.10f},{:.10f}", getActorLocation().x, getActorLocation().y, getActorLocation().z);
+    FVector Forward = FVector::Right();
+    float forfawdSpeed = .300f;
+    float offset = (value * forfawdSpeed);
+    MoveActor(Forward, offset);
 }
 
 void WPawn::moveForward(float value)
 {
+    if (value == 0.0f) return;
     RP_LOG(WPawnLog, Display, "Moving Forward: {:.2f}", value);
+    RP_LOG(WPawnLog, Display, "start location: {:.10f},{:.10f},{:.10f}", getActorLocation().x, getActorLocation().y, getActorLocation().z);
+    std::cout << getActorLocation() << "\n";
+    FVector Forward = FVector::Forward();
+    float forfawdSpeed = .3f;
+    float offset = (value * forfawdSpeed);
+    MoveActor(Forward, offset);
 }
 
 void WPawn::look(float value)
 {
-    RP_LOG(WPawnLog, Display, "Looking: {:.2f}", value);
+    // RP_LOG(WPawnLog, Display, "Looking: {:.2f}", value);
 }
 
 void WPawn::lookUp(float value)
 {
-    RP_LOG(WPawnLog, Display, "Looking Up: {:.2f}", value);
+    // RP_LOG(WPawnLog, Display, "Looking Up: {:.2f}", value);
 }
 
 void WPawn::jump()
 {
     RP_LOG(WPawnLog, Display, "Jumping!");
+}
+
+void RPE::WPawn::Quit()
+{
+    RP_LOG(WPawnLog, Display, "Request Exit from Pawn!");
+    Engine::Get().requestExit();
 }

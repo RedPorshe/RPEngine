@@ -24,13 +24,11 @@ CObject::CObject(const std::string& inDisplayName, CObject* inOwner) : ObjectOwn
 CObject::~CObject()
 {
     RP_LOG(ObjectLog, Display, "{} object destroyed", GetName());
-
-    // Очищаем детей
+       
     OwnedObjects.clear();
 
     if (ObjectOwner)
-    {
-        // Ищем и удаляем себя из вектора владельца
+    {      
         auto& ownerChildren = ObjectOwner->OwnedObjects;
         auto it = std::find_if(
             ownerChildren.begin(), ownerChildren.end(), [this](const std::unique_ptr<CObject>& ptr) { return ptr.get() == this; });
@@ -72,7 +70,6 @@ void CObject::deserialize(const nlohmann::json& jsonObject)
 
     if (jsonObject.contains("UUID") && jsonObject["UUID"].is_string()) ObjectUUID = jsonObject["UUID"].get<std::string>();
 
-    // Десериализуем детей
     if (jsonObject.contains("Children") && jsonObject["Children"].is_array())
     {
         for (const auto& childJson : jsonObject["Children"])
@@ -84,8 +81,7 @@ void CObject::deserialize(const nlohmann::json& jsonObject)
 
                 if (childJson.contains("DisplayName") && childJson["DisplayName"].is_string())
                     displayName = childJson["DisplayName"].get<std::string>();
-
-                // ИСПРАВЛЕНО: ищем рекурсивно во всей иерархии
+                             
                 CObject* existingObj = FindObjectByDisplayNameRecursive(displayName);
 
                 if (existingObj)
@@ -104,7 +100,7 @@ void CObject::deserialize(const nlohmann::json& jsonObject)
     }
     deserializeProperties(jsonObject);
 }
-// Добавьте этот метод:
+
 CObject* CObject::FindOwnedRecursive(const std::string& displayName) const
 {
     for (const auto& obj : OwnedObjects)
@@ -152,7 +148,7 @@ CObject* RPE::CObject::LoadFromJSONFile(const std::string& filename)
     try
     {
         auto& engine = Engine::Get();
-        // Проверяем, не содержит ли уже путь папку Assets
+
         if (fullPath.find("Assets/") == std::string::npos && fullPath.find("Assets\\") == std::string::npos)
         {
             fullPath = engine.getAssetsPath() + filename;
@@ -203,7 +199,6 @@ bool RPE::CObject::SaveToJSONFile(const std::string& filename, bool pretty) cons
         RP_LOG(ObjectLog, Warning, "Engine not available, using raw path: {}", e.what());
     }
 
-    // Создаем директорию если нужно
     std::filesystem::path path(fullPath);
     std::filesystem::create_directories(path.parent_path());
 
@@ -374,7 +369,6 @@ CObject* CObject::AddSubObjectByClass(const std::string& className, const std::s
         return nullptr;
     }
 
-    // Find hierarchy root for global check
     CObject* root = this;
     while (root->GetOwner())
     {

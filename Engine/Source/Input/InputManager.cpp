@@ -96,14 +96,7 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<KeyData>(event.data))
             {
                 const auto& keydata = std::get<KeyData>(event.data);
-                if (m_activeController)
-                {
-                    m_activeController->onKeyPress(keydata.key, keydata.scancode, keydata.action, keydata.mods);
-                }
-                else
-                {
-                    handleKeyEvent(keydata.key, keydata.scancode, keydata.action, keydata.mods);
-                }
+                handleKeyEvent(keydata.key, keydata.scancode, keydata.action, keydata.mods);               
             }
             break;
         }
@@ -112,14 +105,7 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<MouseMoveData>(event.data))
             {
                 const auto& data = std::get<MouseMoveData>(event.data);
-                if (m_activeController)
-                {
-                    m_activeController->onMouseMove(data.x, data.y);
-                }
-                else
-                {
-                    handleMouseMoveEvent(data.x, data.y);
-                }
+                handleMouseMoveEvent(data.x, data.y);               
             }
             break;
         }
@@ -127,16 +113,8 @@ void InputManager::processInput(const InputEvent& event)
         {
             if (std::holds_alternative<MouseButtonData>(event.data))
             {
-                const auto& data = std::get<MouseButtonData>(event.data);
-                RP_LOG(InputManagerLog, Display, "Button: {}, Action: {}, Pos: {},{}", data.button, data.action, data.x, data.y);
-                if (m_activeController)
-                {
-                    m_activeController->onMouseButton(data.button, data.action, data.mods, data.x, data.y);
-                }
-                else
-                {
-                    handleMouseButtonEvent(data.button, data.action, data.mods, data.x, data.y);
-                }
+                const auto& data = std::get<MouseButtonData>(event.data);               
+                handleMouseButtonEvent(data.button, data.action, data.mods, data.x, data.y);              
             }
             break;
         }
@@ -145,14 +123,7 @@ void InputManager::processInput(const InputEvent& event)
             if (std::holds_alternative<ScrollData>(event.data))
             {
                 const auto& data = std::get<ScrollData>(event.data);
-                if (m_activeController)
-                {
-                    m_activeController->onMouseScroll(data.xoffset, data.yoffset);
-                }
-                else
-                {
-                    handleMouseScrollEvent(data.xoffset, data.yoffset);
-                }
+                handleMouseScrollEvent(data.xoffset, data.yoffset);                
             }
             break;
         }
@@ -301,7 +272,8 @@ std::string InputManager::getKeyName(Key key) const
 void InputManager::handleKeyEvent(int key, int scancode, int action, int mods)
 {
     Key rpKey;
-    bool isPressed;
+    bool isPressed = false;
+    
 #ifdef RPE_USE_NATIVE_WINDOW
 #ifdef _WIN32
     rpKey = Win32ToRPKey(key);
@@ -344,11 +316,8 @@ void InputManager::handleKeyEvent(int key, int scancode, int action, int mods)
             RP_LOG(InputManagerLog, Display, "Key Pressed: {} (Scancode: {})", displayName, scancode);
         }
 
-        if (rpKey == Key::Escape && m_exitCallback)
-        {
-            m_exitCallback();
-        }
-
+       
+      
         if (m_activeController)
         {
             m_activeController->onKeyPress(key, scancode, action, glfwMods);
@@ -411,7 +380,7 @@ void InputManager::handleMouseScrollEvent(double xoffset, double yoffset)
     }
 }
 
-void RPE::InputManager::setActiveController(std::shared_ptr<IController> controller)
+void InputManager::setActiveController(IController* controller)
 {
     if (controller)
     {
@@ -425,7 +394,15 @@ void RPE::InputManager::setActiveController(std::shared_ptr<IController> control
     }
 }
 
-std::shared_ptr<IController> InputManager::getPlayerController() const
+IController* InputManager::getPlayerController() const
 {
     return m_activeController;
+}
+
+bool RPE::InputManager::isKeyJustReleased(Key key) const
+{
+    bool current = isKeyPressed(key);
+    auto prevIt = m_previousKeys.find(key);
+    bool previous = (prevIt != m_previousKeys.end()) && prevIt->second;
+    return !current && previous;
 }

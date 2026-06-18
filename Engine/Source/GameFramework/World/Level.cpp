@@ -1,6 +1,10 @@
 #include "Level.h"
 #include "World.h"
 #include "../GameObjects/WorldObject/WorldActor.h"
+#include "../GameObjects/WorldObject/WorldPawn.h"
+#include "../Controller/PlayerController.h"
+#include "../../Input/InputManager.h"
+#include "Core/Engine.h"
 #include "Log/Log.h"
 
 DEFINE_LOG_CATEGORY_STATIC(levelLog);
@@ -12,7 +16,11 @@ WLevel::WLevel(const std::string& inName, CObject* inOwner) : Super(inName, inOw
 {
     bisLoaded = false;
     bHasBegunPlay = false;
-    SpawnActor<WActor>("TestActorInCtor");
+    pawn = SpawnActor<WPawn>("test pawn");
+    auto controller = SpawnActor<PlayerController>(pawn->GetName() + "_Controller");
+    auto inpmanager = Engine::Get().getInputManager();
+    inpmanager->setActiveController(controller);
+    controller->setControlledObject(pawn);
 }
 
 WLevel::~WLevel()

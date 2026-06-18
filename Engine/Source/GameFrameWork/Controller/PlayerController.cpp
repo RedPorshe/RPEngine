@@ -8,7 +8,7 @@ using namespace RPE;
 
 DEFINE_LOG_CATEGORY_STATIC(PlayerControllerLog);
 
-// ========== PlayerController ==========
+
 
 PlayerController::PlayerController(const std::string& inDisplayName, CObject* inOwner)
     : Super(inDisplayName, inOwner), controllerName(inDisplayName), m_ControlledObject(nullptr)
@@ -69,17 +69,12 @@ void PlayerController::setControlledObject(WPawn* object)
 void PlayerController::update(float deltaTime) {}
 
 void PlayerController::handleKeyPress(int key, int scancode, int action, int mods)
-{
-    // RP_LOG(PlayerControllerLog, Display, "Key Pressed: {} (Scancode: {})", key, scancode);
-    if (auto* obj = getControlledObject())
-    {
-        obj->getInputComponent()->processKey(static_cast<Key>(key), action);
-    }
+{   
+  
 }
 
 void PlayerController::handleMouseMove(double x, double y)
 {
-
     if (auto* obj = getControlledObject())
     {
         obj->getInputComponent()->processMouseMove(static_cast<float>(x), static_cast<float>(y));
@@ -88,11 +83,7 @@ void PlayerController::handleMouseMove(double x, double y)
 
 void PlayerController::handleMouseButton(int button, int action, int mods, double x, double y)
 {
-    if (auto obj = getControlledObject())
-    {
-        obj->getInputComponent()->processKey(static_cast<Key>(button), action);
-    }
-    // RP_LOG(PlayerControllerLog, Display, "Mouse Button {}: {} at ({:.0f}, {:.0f})", button, actionStr, x, y);
+   
 }
 
 void PlayerController::handleMouseScroll(double xoffset, double yoffset)
@@ -103,5 +94,3 @@ void PlayerController::handleMouseScroll(double xoffset, double yoffset)
         obj->getInputComponent()->processMouseScroll(static_cast<float>(yoffset));
     }
 }
-
-// ========== InputComponent ==========

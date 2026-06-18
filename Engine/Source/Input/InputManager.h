@@ -31,8 +31,9 @@ public:
     double getMouseDeltaX() const;
     double getMouseDeltaY() const;
     void resetMouseState();
-    void setActiveController(std::shared_ptr<IController> controller);
-    std::shared_ptr<IController> getPlayerController() const;
+    void setActiveController(IController* controller);
+    IController* getPlayerController() const;
+    bool isKeyJustReleased(Key key) const;
 
 protected:
     std::string getKeyName(Key key) const;
@@ -57,6 +58,6 @@ protected:
     ExitCallback m_exitCallback;
     std::unordered_map<Key, bool> m_currentKeys;
     std::unordered_map<Key, bool> m_previousKeys;
-    std::shared_ptr<IController> m_activeController = nullptr;
+    IController* m_activeController = nullptr;
 };
 }  // namespace RPE

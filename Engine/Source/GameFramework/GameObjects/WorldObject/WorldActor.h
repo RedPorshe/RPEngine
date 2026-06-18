@@ -26,7 +26,7 @@ public:
     bool isPendingToDestroy() const { return m_isPendingToDestroy; }
     void setPendingToDestroy(bool value) { m_isPendingToDestroy = value; }
 
-    // Компоненты
+  
     const std::vector<WActorComponent*>& getComponents() const { return m_actorComponents; }
     std::vector<WActorComponent*>& getComponents() { return m_actorComponents; }
 
@@ -43,7 +43,7 @@ public:
     void removeComponent(const std::string& name);
     void clearComponents();
 
-    // Root Component
+  
     WTransformComponent* getRootComponent() const { return m_RootComponent; }
     void setRootComponent(WTransformComponent* component);
     bool hasRootComponent() const { return m_RootComponent != nullptr; }
@@ -51,30 +51,39 @@ public:
     void AttachActorToActor(WActor* newParent);
     std::vector<WActor*>& getChildActors();
     const std::vector<WActor*>& getChildActors() const;
+
     void DetachFromParent();
     bool IsAttachedToActor(const WActor* potentialParent) const;
+
     bool IsRootActor() const { return m_ParentActor == nullptr; }
+
     WActor* GetRootParent();
     const WActor* GetRootParent() const;
+
     // actorTransform
+    // 
     // location
     void setActorLocation(const FVector& loc);
     void setActorLocation(float x, float y, float z);
     void setActorRelativeLocation(const FVector& loc);
     void setActorRelativeLocation(float x, float y, float z);
+
     FVector getActorLocation() const;
     FVector getActorLocation();
     FVector getActorRelativeLocation() const;
     FVector getActorRelativeLocation();
+
     // rotation
     void setActorRotation(const FQuat& rot);
     void setActorRotation(float x, float y, float z, float w = 1);
     void setActorRelativeRotation(const FQuat& rot);
     void setActorRelativeRotation(float x, float y, float z, float w = 1);
+
     FQuat getActorRotation() const;
     FQuat getActorRotation();
     FQuat getActorRelativeRotation() const;
     FQuat getActorRelativeRotation();
+
     // scale
     void setActorScale(const FVector& scale);
     void setActorScale(float x, float y, float z);
@@ -87,10 +96,13 @@ public:
     FVector getActorRelativeScale() const;
     FVector getActorRelativeScale();
 
+    void MoveActor(const FVector& Direction, float offset, bool bTeleport = false);
+    void LaunchActor(const FVector& Direction, float force, bool bTeleport = false);
+
 protected:
     void cleanUp();
     void addChildActor(WActor* child);
-
+    float m_deltaTime = 0.f;
 private:
     WActor* m_ParentActor = nullptr;
     bool m_isPendingToDestroy = false;
@@ -98,6 +110,8 @@ private:
     std::vector<WActor*> m_ChildActors;
     WTransformComponent* m_RootComponent = nullptr;
     bool IsCircularAttachment(WActor* potentialParent) const;
+   
+    friend class WLevel;
 };
 }  // namespace RPE
 #include "Log/Log.h"

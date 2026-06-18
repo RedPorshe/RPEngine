@@ -17,7 +17,6 @@ public:
     using Callback = std::function<void(Args...)>;
     using CallbackId = size_t;
 
-    // Подписка с возвратом ID
     CallbackId subscribe(Callback callback)
     {
         CallbackId id = m_nextId++;
@@ -25,10 +24,8 @@ public:
         return id;
     }
 
-    // Отписка по ID
     void unsubscribe(CallbackId id) { m_callbacks.erase(id); }
 
-    // Вызов всех подписчиков
     void invoke(Args... args)
     {
         for (auto& pair : m_callbacks)
@@ -40,10 +37,9 @@ public:
         }
     }
 
-    // Очистка всех подписчиков
     void clear() { m_callbacks.clear(); }
 
-    // Получение количества подписчиков
+   
     size_t getSubscriberCount() const { return m_callbacks.size(); }
 
 private:

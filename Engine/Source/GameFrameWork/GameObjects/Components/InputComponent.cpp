@@ -1,25 +1,84 @@
 #include "InputComponent.h"
 #include "Log/Log.h"
+#include "Core/Engine.h"
+#include "../../../Input/InputManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogInputComponent)
 
 using namespace RPE;
 
-WInputComponent::WInputComponent(const std::string& inDisplayName, CObject* inOwner)  //
-    : Super(inDisplayName, inOwner)
-{
-}
+REGISTER_CLASS_FACTORY(WInputComponent);
+
+WInputComponent::WInputComponent(const std::string& inDisplayName, CObject* inOwner) : Super(inDisplayName, inOwner) {}
 
 WInputComponent::~WInputComponent() {}
 
 void WInputComponent::tick(float deltaTime)
 {
-    (void)deltaTime;
+    Super::tick(deltaTime);
+
+   
+    processInput(deltaTime);
+  
+    m_hasMouseMove = false;
+    m_hasMouseScroll = false;
+}
+
+void WInputComponent::processInput(float deltaTime)
+{
+    auto inputMgr = Engine::Get().getInputManager();
+
+    for (const auto& binding : m_activeAxisBindings)
+    {
+        float value = getAxisValue(binding.positive, binding.negative);
+
+        if (std::abs(value) <= binding.deadZone)
+        {
+            value = 0.0f;
+        }
+
+        if (binding.callback)
+        {
+            binding.callback(value);
+        }
+    }
+
+    for (const auto& binding : m_activeActionBindings)
+    {
+        bool isPressed = inputMgr->isKeyPressed(binding.key);
+        bool justPressed = inputMgr->isKeyJustPressed(binding.key);
+        bool justReleased = inputMgr->isKeyJustReleased(binding.key);
+
+        bool shouldTrigger = false;
+        switch (binding.type)
+        {
+            case ActionType::Press: shouldTrigger = justPressed; break;
+            case ActionType::Release: shouldTrigger = justReleased; break;
+            case ActionType::Repeat: shouldTrigger = isPressed; break;
+            case ActionType::Any: shouldTrigger = justPressed || justReleased; break;
+        }
+
+        if (shouldTrigger && binding.callback)
+        {
+            binding.callback();
+        }
+    }
+
+    if (m_hasMouseMove && m_mouseMoveCallback)
+    {
+        m_mouseMoveCallback(m_mouseDeltaX, m_mouseDeltaY);
+    }
+
+    if (m_hasMouseScroll && m_mouseScrollCallback)
+    {
+        m_mouseScrollCallback(m_mouseScrollDelta);
+    }
 }
 
 void WInputComponent::onDestroy()
 {
     popContext();
+    clearContext();
 }
 
 void WInputComponent::bindAction(Key key, ActionType type, ActionCallback callback)
@@ -42,64 +101,27 @@ void WInputComponent::bindMouseScroll(MouseScrollCallback callback)
     m_mouseScrollCallback = callback;
 }
 
-void WInputComponent::processKey(Key key, int action)
-{
-    bool isPressed = (action == 1 || action == 2);  // Press или Repeat
-
-    // Обработка осей
-    for (const auto& binding : m_activeAxisBindings)
-    {
-        float value = 0.0f;
-        if (key == binding.positive && isPressed) value = 1.0f;
-        if (key == binding.negative && isPressed) value = -1.0f;
-
-        // Apply dead zone
-        if (std::abs(value) <= binding.deadZone)
-        {
-            value = 0.0f;
-        }
-
-        if (value != 0.0f && binding.callback)
-        {
-            binding.callback(value);
-        }
-    }
-
-    // Обработка действий
-    for (const auto& binding : m_activeActionBindings)
-    {
-        if (key == binding.key)
-        {
-            bool shouldTrigger = false;
-            switch (binding.type)
-            {
-                case ActionType::Press: shouldTrigger = (action == 1); break;
-                case ActionType::Release: shouldTrigger = (action == 0); break;
-                case ActionType::Repeat: shouldTrigger = (action == 2); break;
-                case ActionType::Any: shouldTrigger = true; break;
-            }
-            if (shouldTrigger && binding.callback)
-            {
-                binding.callback();
-            }
-        }
-    }
-}
 
 void WInputComponent::processMouseMove(float deltaX, float deltaY)
 {
-    if (m_mouseMoveCallback)
-    {
-        m_mouseMoveCallback(deltaX, deltaY);
-    }
+    m_mouseDeltaX = deltaX;
+    m_mouseDeltaY = deltaY;
+    m_hasMouseMove = true;
 }
 
 void WInputComponent::processMouseScroll(float delta)
 {
-    if (m_mouseScrollCallback)
-    {
-        m_mouseScrollCallback(delta);
-    }
+    m_mouseScrollDelta = delta;
+    m_hasMouseScroll = true;
+}
+
+float WInputComponent::getAxisValue(Key positive, Key negative) const
+{
+    auto inputMgr = Engine::Get().getInputManager();
+    float value = 0.0f;
+    if (inputMgr->isKeyPressed(positive)) value += 1.0f;
+    if (inputMgr->isKeyPressed(negative)) value -= 1.0f;
+    return value;
 }
 
 void WInputComponent::setContext(const std::string& context)
@@ -126,4 +148,9 @@ void WInputComponent::popContext()
     {
         m_contextStack.pop_back();
     }
+}
+
+void WInputComponent::clearContext()
+{
+    m_contextStack.clear();
 }

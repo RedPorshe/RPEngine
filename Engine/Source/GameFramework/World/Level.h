@@ -41,6 +41,7 @@ protected:
     virtual void onLevelUnload();
     void serializeProperties(nlohmann::json& jsonObject) const override;
     void deserializeProperties(const nlohmann::json& jsonObject) override;
+    class WPawn* pawn = nullptr;
 
 private:
     std::unordered_map<std::string, WActor*> m_actors;

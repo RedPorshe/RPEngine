@@ -129,7 +129,7 @@ public:
     CObject* AddSubObjectByClass(const std::string& className, const std::string& desiredDisplayName = "SubObject");
 
     template <typename ObjectType>
-    ObjectType* FindObjectByType() const
+    ObjectType* FindObjectByType(const std::string & Name) const
     {
         for (const auto& actor : OwnedObjects)
         {
@@ -137,7 +137,7 @@ public:
             {
                 return casted;
             }
-            ObjectType* founded = actor->FindObjectByType<ObjectType>();
+            ObjectType* founded = actor->FindObjectByType<ObjectType>(Name);
             if (founded) return founded;
         }
         return nullptr;
@@ -177,5 +177,5 @@ protected:
 
 }  // namespace RPE
 
-// Включаем реализацию шаблона
+
 #include "Core/SystemObject.hpp"

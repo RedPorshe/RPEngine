@@ -37,18 +37,6 @@ void WActorComponent::onDestroy() {}
 
 void WActorComponent::onBeginPlay() {}
 
-void WActorComponent::attachTo()
-{
-    if (m_owner)
-    {
-        RP_LOG(WorldActorComponentLog, Display, "[{}] attached to actor [{}]", GetName(), m_owner->GetName());
-    }
-    else
-    {
-        RP_LOG(WorldActorComponentLog, Warning, "[{}] cannot attach: no owner", GetName());
-    }
-}
-
 void WActorComponent::attachTo(WActorComponent* inOwnComponent)
 {
     if (inOwnComponent == nullptr) return;
@@ -78,7 +66,6 @@ void WActorComponent::addChildComponent(WActorComponent* component)
         return;
     }
 
-    // Проверка на дубликат
     if (getChildComponentIndex(component) != -1)
     {
         RP_LOG(WorldActorComponentLog, Warning, "Component '{}' already added", component->GetName());

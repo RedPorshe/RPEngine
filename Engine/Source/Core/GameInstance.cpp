@@ -31,13 +31,10 @@ void RGameInstance::Init()
 
 void RGameInstance::tick(float deltaTime)
 {
-    static int cccc2 = 0;
-    if (cccc2 < 1)
+    if (world)
     {
-        RP_LOG(GameInstanceLog, Display, "Tick for {}", GetName());
-        cccc2++;
-    }
     world->Tick(deltaTime);
+    }
 }
 
 void RGameInstance::onDestroy()

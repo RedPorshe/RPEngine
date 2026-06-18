@@ -2,6 +2,8 @@
 #include "Input/KeyCodes.h"
 #include <functional>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "WorldActorComponent.h"
 
@@ -10,10 +12,10 @@ namespace RPE
 
 enum class ActionType
 {
-    Press,    // Однократное действие
-    Release,  // Отпускание
-    Repeat,   // Повтор (зажатая клавиша)
-    Any       // Любое изменение
+    Press,
+    Release,
+    Repeat,
+    Any
 };
 
 class WInputComponent : public WActorComponent
@@ -25,6 +27,7 @@ public:
     virtual ~WInputComponent();
     void tick(float deltaTime) override;
     void onDestroy() override;
+
     using ActionCallback = std::function<void()>;
     using AxisCallback = std::function<void(float)>;
     using MouseMoveCallback = std::function<void(float, float)>;
@@ -33,15 +36,14 @@ public:
     // Привязка действий
     void bindAction(Key key, ActionType type, ActionCallback callback);
 
-    // Привязка осей (WASD, стрелки)
+    // Привязка осей (WASD, стрелки) - теперь обрабатываются в tick
     void bindAxis(Key positive, Key negative, AxisCallback callback, float deadZone = 0.1f);
 
     // Привязка мыши
     void bindMouseMove(MouseMoveCallback callback);
     void bindMouseScroll(MouseScrollCallback callback);
 
-    // Обработка ввода
-    void processKey(Key key, int action);
+
     void processMouseMove(float deltaX, float deltaY);
     void processMouseScroll(float delta);
 
@@ -49,8 +51,14 @@ public:
     void setContext(const std::string& context);
     void pushContext(const std::string& context);
     void popContext();
+    void clearContext();
+
+
+    float getAxisValue(Key positive, Key negative) const;
 
 private:
+    void processInput(float deltaTime);
+
     struct ActionBinding
     {
         Key key;
@@ -66,17 +74,24 @@ private:
         float deadZone = 0.1f;
     };
 
+  
+
+    // Привязки
     std::vector<ActionBinding> m_activeActionBindings;
     std::vector<AxisBinding> m_activeAxisBindings;
+
+    // Колбэки мыши
     MouseMoveCallback m_mouseMoveCallback;
     MouseScrollCallback m_mouseScrollCallback;
+
+    // Контексты
     std::vector<std::string> m_contextStack;
-    std::unordered_map<Key, bool> m_previousKeys;
-    // Удалено problematic: std::unordered_map<AxisCallback, float> m_axisValues;
+
+    // Состояние мыши
+    float m_mouseDeltaX = 0.0f;
+    float m_mouseDeltaY = 0.0f;
+    float m_mouseScrollDelta = 0.0f;
+    bool m_hasMouseMove = false;
+    bool m_hasMouseScroll = false;
 };
 }  // namespace RPE
-
-namespace RPE
-{
-REGISTER_CLASS_FACTORY(WInputComponent);
-}

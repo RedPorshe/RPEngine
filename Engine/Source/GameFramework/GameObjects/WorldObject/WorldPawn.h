@@ -17,8 +17,8 @@ public:
     void Tick(float DeltaTime) override;
     void EndPlay() override;
 
-protected:
     void BeginPlay() override;
+protected:
     void setupInputBindings();
     void moveRight(float value);
     void moveForward(float value);
@@ -30,6 +30,7 @@ protected:
     float m_positionX = 0.0f;
     float m_positionY = 0.0f;
     float m_rotation = 0.0f;
+    void Quit();
 };
 
 }  // namespace RPE
