@@ -1,6 +1,10 @@
 #include "WorldPawn.h"
 #include "Input/KeyCodes.h"
+#include "Core/GameInstance.h"
 #include "GameFrameWork/GameObjects/Components/InputComponent.h"
+#include "../../World/World.h"
+#include "../../World/Level.h"
+#include "../../Controller/PlayerController.h"
 #include "Log/Log.h"
 #include "Core/ObjectFactory.h"
 
@@ -10,15 +14,15 @@ using namespace RPE;
 
 DEFINE_LOG_CATEGORY_STATIC(WPawnLog);
 
-WPawn::WPawn(const std::string& inDisplayName, CObject* inOwner) : Super(inDisplayName, inOwner)
+WPawn::WPawn(const std::string& inDisplayName, CObject* inOwner)  //
+    : Super(inDisplayName, inOwner)
 {
-    m_inputComponent = this->addComponent<WInputComponent>("Input");
-    setupInputBindings();
+    SetMovableState(EMovableState::Dynamic);
 }
 
 WPawn::~WPawn()
 {
-    delete m_inputComponent;
+    m_inputComponent = nullptr;
 }
 
 WInputComponent* WPawn::getInputComponent()
@@ -28,6 +32,7 @@ WInputComponent* WPawn::getInputComponent()
 
 void WPawn::Tick(float DeltaTime)
 {
+    static int testCount = 0;
     Super::Tick(DeltaTime);
 }
 
@@ -41,59 +46,41 @@ void WPawn::BeginPlay()
     RP_LOG(WPawnLog, Display, "Begin play for {}", GetName());
 }
 
-void WPawn::setupInputBindings()
+void RPE::WPawn::onPossess(IController* controller)
 {
-    if (m_inputComponent)
+    if (!controller) return;
+    m_controller = controller;
+    const auto inputs = controller->getInputComponents();
+    auto it = inputs.find(GetName());
+    if (it != inputs.end())
     {
-        m_inputComponent->bindAxis(Key::W, Key::S, [this](float value) { moveForward(value); }, 0.1f);
-        m_inputComponent->bindAxis(Key::A, Key::D, [this](float value) { moveRight(value); }, 0.1f);
-        m_inputComponent->bindMouseMove(
-            [this](float x, float y)
-            {
-                look(x);
-                lookUp(y);
-            });
-        m_inputComponent->bindAction(Key::Space, ActionType::Press, [this]() { jump(); });
-        m_inputComponent->bindAction(Key::Escape, ActionType::Press, [this]() { Quit(); });
+        auto inputComp = it->second;
+        setupInputBindings(inputComp);
     }
 }
 
-void WPawn::moveRight(float value)
+PlayerController* WPawn::getPlayerController() const
 {
-    if (value == 0.0f) return;
-
-    RP_LOG(WPawnLog, Display, "Moving Right: {:.2f}", value);
-    RP_LOG(WPawnLog, Display, "m_deltaTime = : {:.2f}", m_deltaTime);
-    RP_LOG(WPawnLog, Display, "start location: {:.10f},{:.10f},{:.10f}", getActorLocation().x, getActorLocation().y, getActorLocation().z);
-    FVector Forward = FVector::Right();
-    float forfawdSpeed = .300f;
-    float offset = (value * forfawdSpeed);
-    MoveActor(Forward, offset);
+    return dynamic_cast<PlayerController*>(m_controller);
 }
 
-void WPawn::moveForward(float value)
+IController* RPE::WPawn::getController() const
 {
-    if (value == 0.0f) return;
-    RP_LOG(WPawnLog, Display, "Moving Forward: {:.2f}", value);
-    RP_LOG(WPawnLog, Display, "start location: {:.10f},{:.10f},{:.10f}", getActorLocation().x, getActorLocation().y, getActorLocation().z);
-    std::cout << getActorLocation() << "\n";
-    FVector Forward = FVector::Forward();
-    float forfawdSpeed = .3f;
-    float offset = (value * forfawdSpeed);
-    MoveActor(Forward, offset);
+    return m_controller ? m_controller : nullptr;  // stub in nullptr for AI controller;
 }
 
-void WPawn::look(float value) {}
-
-void WPawn::lookUp(float value) {}
-
-void WPawn::jump()
+void RPE::WPawn::unPosses()
 {
-    RP_LOG(WPawnLog, Display, "Jumping!");
+    if (m_controller)
+    {
+        m_controller = nullptr;
+        m_inputComponent = nullptr;  // clear binding doin in controller
+    }
 }
 
-void RPE::WPawn::Quit()
+void WPawn::setupInputBindings(WInputComponent* inputComponent)
 {
-    RP_LOG(WPawnLog, Display, "Request Exit from Pawn!");
-    Engine::Get().requestExit();
+    if (!inputComponent) return;
+    m_inputComponent = inputComponent;
+    m_inputComponent->clearContext();
 }

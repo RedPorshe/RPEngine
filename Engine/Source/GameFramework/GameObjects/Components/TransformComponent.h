@@ -3,8 +3,9 @@
 #include <vector>
 #include "Math/MathTypes.h"
 
-#include "Math/Vector3D.h"  // Для FVector
+#include "Math/Vector3D.h"
 #include "Math/Quaternion.h"
+#include "Physics/PhysicsUtils.h"
 
 namespace RPE
 {
@@ -42,9 +43,14 @@ public:
     FMat4& getMatrix();
     const FMat4& getMatrix() const;
     void updateTransform();
-
+    void attachTo(WActorComponent* inOwnComponent) override;
     bool hasParentTransform() const;
     WTransformComponent* getParentTransform() const;
+    void setAsCollisionComponent(bool set) { bisCollison = set; }
+    void SetMovableState(EMovableState state);
+    EMovableState& getMovableState() { return m_MovableState; }
+    const EMovableState& getMovableState() const { return m_MovableState; }
+    inline bool isCollisionComponent() const { return bisCollison; }
 
 protected:
     FVector m_Location = FVector::Zero();
@@ -56,7 +62,7 @@ protected:
     FMat4 m_transformMatrix = FMat4(1.0f);
 
     bool isDirty{false};
-
+    EMovableState m_MovableState{EMovableState::Static};
     void serializeProperties(nlohmann::json& jsonObject) const override;
     void deserializeProperties(const nlohmann::json& jsonObject) override;
 
@@ -65,7 +71,7 @@ protected:
     void markDirty();
     void markCleared();
     bool hasParentAsTransformComponent() const;
-
+    bool bisCollison{false};
     FMat4 buildTransformMatrix(const FVector& location, const FQuat& rotation, const FVector& scale) const;
 };
 

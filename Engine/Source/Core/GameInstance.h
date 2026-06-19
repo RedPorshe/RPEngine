@@ -3,6 +3,8 @@
 
 namespace RPE
 {
+class WWorld;
+
 class RGameInstance : public CObject
 {
     CHUDDO_DECLARE_CLASS(RGameInstance, CObject);
@@ -16,9 +18,10 @@ public:
     virtual void onDestroy();
     bool isInitialized() const;
     void StartGame();
+    WWorld* GetWorld();
 
 protected:
-    class WWorld* world = nullptr;
+    WWorld* world = nullptr;
     bool bIsinitialized{false};
 };
 

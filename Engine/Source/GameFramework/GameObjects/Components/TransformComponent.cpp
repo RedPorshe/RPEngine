@@ -37,6 +37,7 @@ void WTransformComponent::onBeginPlay()
 
 void WTransformComponent::setLocation(const FVector& loc)
 {
+    if (m_MovableState == EMovableState::Static) return;
     if (!hasParentAsTransformComponent())
     {
         m_Location = loc;
@@ -70,6 +71,7 @@ void WTransformComponent::setLocation(const FVector& loc)
 
 void WTransformComponent::setRotation(const FQuat& rot)
 {
+    if (m_MovableState == EMovableState::Static) return;
     if (!hasParentAsTransformComponent())
     {
         m_Rotation = rot;
@@ -94,6 +96,7 @@ void WTransformComponent::setRotation(const FQuat& rot)
 
 void WTransformComponent::setScale(const FVector& scale)
 {
+    if (m_MovableState == EMovableState::Static) return;
     if (!hasParentAsTransformComponent())
     {
         m_Scale = scale;
@@ -120,18 +123,21 @@ void WTransformComponent::setScale(const FVector& scale)
 
 void WTransformComponent::setRelativeLocation(const FVector& loc)
 {
+    if (m_MovableState == EMovableState::Static) return;
     m_RelativeLocation = loc;
     markDirty();
 }
 
 void WTransformComponent::setRelativeRotation(const FQuat& rot)
 {
+    if (m_MovableState == EMovableState::Static) return;
     m_RelativeRotation = rot;
     markDirty();
 }
 
 void WTransformComponent::setRelativeScale(const FVector& scale)
 {
+    if (m_MovableState == EMovableState::Static) return;
     m_RelativeScale = scale;
     markDirty();
 }
@@ -231,6 +237,11 @@ WTransformComponent* WTransformComponent::getParentTransform() const
     if (!parentActor) return nullptr;
 
     return parentActor->getRootComponent();
+}
+
+void RPE::WTransformComponent::SetMovableState(EMovableState state)
+{
+    m_MovableState = state;
 }
 
 void WTransformComponent::serializeProperties(nlohmann::json& jsonObject) const
@@ -366,4 +377,25 @@ bool WTransformComponent::hasParentAsTransformComponent() const
     if (!parentActor) return false;
 
     return parentActor->getRootComponent() != nullptr;
+}
+
+void WTransformComponent::attachTo(WActorComponent* inOwnComponent)
+{
+    if (inOwnComponent == nullptr) return;
+    if (this == inOwnComponent) return;
+    if (m_parent = inOwnComponent) return;
+
+    if (m_parent)
+    {
+        m_parent->removeChildComponent(this);
+        m_parent = nullptr;
+    }
+    if (m_owner && m_owner->TransferOwnership(this, inOwnComponent))
+    {
+        m_parent = inOwnComponent;
+    }
+    else
+    {
+        RP_LOG(TransformLog, Error, "[{}] failed to attach to component [{}]", GetName(), inOwnComponent->GetName());
+    }
 }

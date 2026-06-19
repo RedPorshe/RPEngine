@@ -33,20 +33,16 @@ public:
     using MouseMoveCallback = std::function<void(float, float)>;
     using MouseScrollCallback = std::function<void(float)>;
 
-    // Привязка действий
     void bindAction(Key key, ActionType type, ActionCallback callback);
 
-    // Привязка осей (WASD, стрелки) - теперь обрабатываются в tick
     void bindAxis(Key positive, Key negative, AxisCallback callback, float deadZone = 0.1f);
 
-    // Привязка мыши
     void bindMouseMove(MouseMoveCallback callback);
     void bindMouseScroll(MouseScrollCallback callback);
 
     void processMouseMove(float deltaX, float deltaY);
     void processMouseScroll(float delta);
 
-    // Контексты ввода
     void setContext(const std::string& context);
     void pushContext(const std::string& context);
     void popContext();
@@ -72,18 +68,14 @@ private:
         float deadZone = 0.1f;
     };
 
-    // Привязки
     std::vector<ActionBinding> m_activeActionBindings;
     std::vector<AxisBinding> m_activeAxisBindings;
 
-    // Колбэки мыши
     MouseMoveCallback m_mouseMoveCallback;
     MouseScrollCallback m_mouseScrollCallback;
 
-    // Контексты
     std::vector<std::string> m_contextStack;
 
-    // Состояние мыши
     float m_mouseDeltaX = 0.0f;
     float m_mouseDeltaY = 0.0f;
     float m_mouseScrollDelta = 0.0f;

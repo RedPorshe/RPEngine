@@ -4,7 +4,6 @@
 
 namespace CEMath
 {
-// Конструкторы
 Vector4D::Vector4D() : x(0.f), y(0.f), z(0.f), w(0.f) {}
 
 Vector4D::Vector4D(float scalar) : x(scalar), y(scalar), z(scalar), w(scalar) {}
@@ -22,7 +21,6 @@ Vector4D::Vector4D(const Vector3D& vec3, float w) : x(vec3.x), y(vec3.y), z(vec3
 
 Vector4D::Vector4D(const Vector4D& other) : x(other.x), y(other.y), z(other.z), w(other.w) {}
 
-// Операторы присваивания
 Vector4D& Vector4D::operator=(const Vector4D& other)
 {
     if (this != &other)
@@ -35,7 +33,6 @@ Vector4D& Vector4D::operator=(const Vector4D& other)
     return *this;
 }
 
-// Операторы сравнения
 bool Vector4D::operator==(const Vector4D& other) const
 {
     return IsEqual(x, other.x) && IsEqual(y, other.y) && IsEqual(z, other.z) && IsEqual(w, other.w);
@@ -46,7 +43,6 @@ bool Vector4D::operator!=(const Vector4D& other) const
     return !(*this == other);
 }
 
-// Арифметические операторы
 Vector4D Vector4D::operator+(const Vector4D& other) const
 {
     return Vector4D(x + other.x, y + other.y, z + other.z, w + other.w);
@@ -96,7 +92,6 @@ Vector4D Vector4D::operator/(float scalar) const
     return Vector4D(x * invScalar, y * invScalar, z * invScalar, w * invScalar);
 }
 
-// Составные операторы присваивания
 Vector4D& Vector4D::operator+=(const Vector4D& other)
 {
     x += other.x;
@@ -178,13 +173,11 @@ Vector4D& Vector4D::operator/=(float scalar)
     return *this;
 }
 
-// Унарные операторы
 Vector4D Vector4D::operator-() const
 {
     return Vector4D(-x, -y, -z, -w);
 }
 
-// Базовые математические функции
 float Vector4D::Length() const
 {
     return Sqrt(x * x + y * y + z * z + w * w);
@@ -245,7 +238,6 @@ bool Vector4D::IsNormalized() const
     return IsEqual(LengthSquared(), 1.0f);
 }
 
-// Геометрические операции
 Vector4D& Vector4D::Scale(const Vector4D& other)
 {
     x *= other.x;
@@ -262,7 +254,6 @@ Vector4D Vector4D::Scaled(const Vector4D& other) const
     return result;
 }
 
-// Линейная интерполяция
 Vector4D Vector4D::Lerp(const Vector4D& a, const Vector4D& b, float t)
 {
     float clampedT = CEMath::Clamp(t, 0.0f, 1.0f);
@@ -279,12 +270,10 @@ Vector4D Vector4D::Slerp(const Vector4D& a, const Vector4D& b, float t)
     if (relativeVec.LengthSquared() > EPSILON_SQUARED)
         relativeVec.Normalize();
     else
-        relativeVec = Vector4D(-a.y, a.x, -a.w, a.z);  // Перпендикуляр
-
+        relativeVec = Vector4D(-a.y, a.x, -a.w, a.z);
     return a * Cos(theta) + relativeVec * Sin(theta);
 }
 
-// Однородные координаты
 Vector3D Vector4D::ToCartesian() const
 {
     if (CEMath::IsZero(w)) return Vector3D(x, y, z);
@@ -298,7 +287,6 @@ Vector4D Vector4D::FromCartesian(const Vector3D& cartesian, float w)
     return Vector4D(cartesian.x * w, cartesian.y * w, cartesian.z * w, w);
 }
 
-// Утилиты
 bool Vector4D::IsZero() const
 {
     return LengthSquared() < EPSILON_SQUARED;
@@ -309,7 +297,6 @@ bool Vector4D::IsFinite() const
     return std::isfinite(x) && std::isfinite(y) && std::isfinite(z) && std::isfinite(w);
 }
 
-// Статические константы
 Vector4D Vector4D::Zero()
 {
     return Vector4D(0.0f, 0.0f, 0.0f, 0.0f);
@@ -335,7 +322,6 @@ Vector4D Vector4D::UnitW()
     return Vector4D(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-// Цветовые константы
 Vector4D Vector4D::Red()
 {
     return Vector4D(1.0f, 0.0f, 0.0f, 1.0f);
@@ -377,7 +363,6 @@ Vector4D Vector4D::Clear()
     return Vector4D(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-// Минимум/максимум
 Vector4D Vector4D::Min(const Vector4D& a, const Vector4D& b)
 {
     return Vector4D(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z), std::min(a.w, b.w));
@@ -388,7 +373,6 @@ Vector4D Vector4D::Max(const Vector4D& a, const Vector4D& b)
     return Vector4D(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z), std::max(a.w, b.w));
 }
 
-// Ограничение значений
 Vector4D& Vector4D::Clamp(const Vector4D& min, const Vector4D& max)
 {
     x = CEMath::Clamp(x, min.x, max.x);
@@ -443,7 +427,6 @@ Vector4D Vector4D::ClampMagnitude(const Vector4D& vector, float maxLength)
     return result;
 }
 
-// Абсолютные значения и знаки
 Vector4D& Vector4D::Abs()
 {
     x = CEMath::Abs(x);
@@ -476,7 +459,6 @@ Vector4D Vector4D::Sign() const
     return result;
 }
 
-// Преобразования
 Vector2D Vector4D::ToVector2D() const
 {
     return Vector2D(x, y);
@@ -492,7 +474,6 @@ Vector3D Vector4D::ToVector3DCartesian() const
     return ToCartesian();
 }
 
-// Цветовые операции
 Vector4D& Vector4D::Saturate()
 {
     return Clamp01();
@@ -506,7 +487,6 @@ Vector4D Vector4D::Saturated() const
 
 float Vector4D::GetBrightness() const
 {
-    // Яркость как среднее RGB компонент
     return (x + y + z) / 3.0f;
 }
 
@@ -515,7 +495,6 @@ Vector4D& Vector4D::Invert()
     x = 1.0f - x;
     y = 1.0f - y;
     z = 1.0f - z;
-    // Альфа обычно не инвертируется
     return *this;
 }
 
@@ -526,7 +505,6 @@ Vector4D Vector4D::Inverted() const
     return result;
 }
 
-// Компонентные операции
 float Vector4D::MinComponent() const
 {
     return std::min(std::min(x, y), std::min(z, w));
@@ -558,7 +536,6 @@ std::istream& operator>>(std::istream& is, Vector4D& vec)
     char open, comma1, comma2, comma3, close;
     is >> open >> vec.x >> comma1 >> vec.y >> comma2 >> vec.z >> comma3 >> vec.w >> close;
 
-    // Если формат не "(x, y, z, w)", попробуем прочитать просто четыре числа
     if (!is || (open != '(' && open != '[') || comma1 != ',' || comma2 != ',' || comma3 != ',' || (close != ')' && close != ']'))
     {
         is.clear();

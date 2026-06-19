@@ -1,13 +1,15 @@
 #pragma once
 #include "Core/SystemObject.h"
+#include "Math/MathTypes.h"
+#include "Physics/PhysicsUtils.h"
 
 #include <vector>
-#include "Math/MathTypes.h"
 
 namespace RPE
 {
 class WActorComponent;
 class WTransformComponent;
+class WWorld;
 
 class WActor : public CObject
 {
@@ -121,10 +123,16 @@ public:
     void addActorRelativeRotation(const FQuat& delta);
     void addActorRelativeRotation(float pitch, float yaw, float roll);
 
+    void SetMovableState(EMovableState state);
+    EMovableState& getMovableState() { return m_actorMovableState; }
+    const EMovableState& getMovableState() const { return m_actorMovableState; }
+    WWorld* GetWorld();
+
 protected:
     void cleanUp();
     void addChildActor(WActor* child);
     float m_deltaTime = 0.f;
+    // TODO:: Add bool bisUsePhusics{true}; // and other functions
 
 private:
     WActor* m_ParentActor = nullptr;
@@ -133,7 +141,7 @@ private:
     std::vector<WActor*> m_ChildActors;
     WTransformComponent* m_RootComponent = nullptr;
     bool IsCircularAttachment(WActor* potentialParent) const;
-
+    EMovableState m_actorMovableState{EMovableState::Static};
     friend class WLevel;
 };
 }  // namespace RPE

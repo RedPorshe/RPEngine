@@ -77,6 +77,10 @@ set(ENGINE_SOURCES_BASE
     # events
     Source/Event/Event.h 
     Source/Event/InputEvent.h
+    #Physics & collisions
+    Source/Physics/PhysicsManager.h 
+    Source/Physics/PhysicsManager.cpp 
+    Source/Physics/PhysicsUtils.h  
     # input manager
     Source/Input/InputManager.h
     Source/Input/InputManager.cpp 

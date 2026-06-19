@@ -265,8 +265,6 @@ inline Vector3D NormalizeAnglesDegrees(const Vector3D& angles)
         degrees = std::fmod(degrees, 360.0f);
         if (degrees < 0.0f) degrees += 360.0f;
 
-        // Snap to exact values if very close (within epsilon)
-        // Using larger epsilon (0.1°) to catch floating-point rounding errors
         const float EPSILON = 0.1f;
         if (std::fabs(degrees - 90.0f) < EPSILON) degrees = 90.0f;
         if (std::fabs(degrees - 180.0f) < EPSILON) degrees = 180.0f;

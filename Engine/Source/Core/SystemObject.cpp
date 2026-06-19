@@ -1,5 +1,6 @@
 #include "Core/SystemObject.h"
 #include "Core/ObjectFactory.h"
+#include "GameInstance.h"
 #include "Core/Engine.h"
 #include <functional>
 #include <sstream>
@@ -602,4 +603,18 @@ bool CObject::Rename(const std::string& newDisplayName)
     std::string oldDisplayName = DisplayName;
     DisplayName = newDisplayName;
     return true;
+}
+
+RGameInstance* CObject::getGameInstance()
+{
+    CObject* current = this;
+    while (current)
+    {
+        if (auto* gi = dynamic_cast<RGameInstance*>(current))
+        {
+            return gi;
+        }
+        current = current->GetOwner();
+    }
+    return nullptr;
 }

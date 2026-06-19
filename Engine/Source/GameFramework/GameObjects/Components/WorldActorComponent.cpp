@@ -37,27 +37,6 @@ void WActorComponent::onDestroy() {}
 
 void WActorComponent::onBeginPlay() {}
 
-void WActorComponent::attachTo(WActorComponent* inOwnComponent)
-{
-    if (inOwnComponent == nullptr) return;
-    if (this == inOwnComponent) return;
-    if (m_parent = inOwnComponent) return;
-
-    if (m_parent)
-    {
-        m_parent->removeChildComponent(this);
-        m_parent = nullptr;
-    }
-    if (m_owner && m_owner->TransferOwnership(this, inOwnComponent))
-    {
-        m_parent = inOwnComponent;
-    }
-    else
-    {
-        RP_LOG(WorldActorComponentLog, Error, "[{}] failed to attach to component [{}]", GetName(), inOwnComponent->GetName());
-    }
-}
-
 void WActorComponent::addChildComponent(WActorComponent* component)
 {
     if (!component)

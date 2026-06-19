@@ -244,7 +244,7 @@ Vector2D Vector2D::UnitY()
 {
     return Vector2D(0.0f, 1.0f);
 }
-// Расстояние между векторами
+
 float Vector2D::Distance(const Vector2D& other) const
 {
     float dx = x - other.x;
@@ -259,13 +259,11 @@ float Vector2D::DistanceSquared(const Vector2D& other) const
     return dx * dx + dy * dy;
 }
 
-// Проверка нормализован ли вектор
 bool Vector2D::IsNormalized() const
 {
     return IsEqual(LengthSquared(), 1.0f);
 }
 
-// Вращение
 Vector2D& Vector2D::Rotate(float radians)
 {
     float cosAngle = Cos(radians);
@@ -283,7 +281,6 @@ Vector2D Vector2D::Rotated(float radians) const
     return result.Rotate(radians);
 }
 
-// Угол вектора
 float Vector2D::Angle() const
 {
     return Atan2(y, x);
@@ -310,14 +307,12 @@ Vector2D& Vector2D::RotateTowards(const Vector2D& target, float maxRadiansDelta)
     return *this;
 }
 
-// Отражение (физика)
 Vector2D Vector2D::Reflect(const Vector2D& normal) const
 {
     float dot = Dot(normal);
     return *this - normal * (2.0f * dot);
 }
 
-// Проекция
 Vector2D Vector2D::Project(const Vector2D& normal) const
 {
     float dot = Dot(normal);
@@ -326,7 +321,6 @@ Vector2D Vector2D::Project(const Vector2D& normal) const
     return normal * (dot / lenSq);
 }
 
-// Линейная интерполяция
 Vector2D Vector2D::Lerp(const Vector2D& a, const Vector2D& b, float t)
 {
     float clampedT = CEMath::Clamp(t, 0.0f, 1.0f);
@@ -354,7 +348,6 @@ Vector2D Vector2D::Slerp(const Vector2D& a, const Vector2D& b, float t)
     return a * Cos(theta) + relativeVec * Sin(theta);
 }
 
-// Ограничение
 Vector2D& Vector2D::Clamp(const Vector2D& min, const Vector2D& max)
 {
     x = CEMath::Clamp(x, min.x, max.x);
@@ -388,7 +381,6 @@ Vector2D Vector2D::ClampMagnitude(const Vector2D& vector, float maxLength)
     return result.ClampMagnitude(maxLength);
 }
 
-// Минимум/максимум
 Vector2D Vector2D::Min(const Vector2D& a, const Vector2D& b)
 {
     return Vector2D(std::min(a.x, b.x), std::min(a.y, b.y));
@@ -412,7 +404,6 @@ Vector2D Vector2D::Abs() const
     return result.Abs();
 }
 
-// Масштабирование
 Vector2D& Vector2D::Scale(const Vector2D& other)
 {
     x *= other.x;
@@ -441,13 +432,11 @@ Vector2D Vector2D::Scaled(float scalar) const
     return result;
 }
 
-// Проверка на корректность
 bool Vector2D::IsFinite() const
 {
     return std::isfinite(x) && std::isfinite(y);
 }
 
-// Направленные векторы
 Vector2D Vector2D::Left()
 {
     return Vector2D(-1.0f, 0.0f);
@@ -481,7 +470,6 @@ Vector2D Vector2D::DownRight()
     return Vector2D(0.707106781f, -0.707106781f).Normalized();
 }
 
-// Вспомогательные функции
 float Vector2D::MinComponent() const
 {
     return std::min(x, y);
@@ -499,7 +487,6 @@ float Vector2D::Average() const
     return (x + y) * 0.5f;
 }
 
-// Перпендикулярные векторы
 Vector2D Vector2D::PerpendicularClockwise() const
 {
     return Vector2D(y, -x);
@@ -509,7 +496,6 @@ Vector2D Vector2D::PerpendicularCounterClockwise() const
     return Vector2D(-y, x);
 }
 
-// Расстояние до линии
 float Vector2D::DistanceToLine(const Vector2D& lineStart, const Vector2D& lineEnd) const
 {
     Vector2D line = lineEnd - lineStart;
@@ -529,7 +515,6 @@ float Vector2D::DistanceToSegment(const Vector2D& segmentStart, const Vector2D& 
     return DistanceToLine(segmentStart, segmentEnd);
 }
 
-// Преобразования
 Vector2D& Vector2D::Floor()
 {
     x = CEMath::Floor(x);
@@ -593,7 +578,6 @@ std::istream& operator>>(std::istream& is, Vector2D& vec)
     char open, comma, close;
     is >> open >> vec.x >> comma >> vec.y >> close;
 
-    // Если формат не "(x, y)", попробуем прочитать просто два числа
     if (!is || (open != '(' && open != '[') || comma != ',' || (close != ')' && close != ']'))
     {
         is.clear();

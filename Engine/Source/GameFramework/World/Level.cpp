@@ -20,7 +20,7 @@ WLevel::WLevel(const std::string& inName, CObject* inOwner) : Super(inName, inOw
     pawn = SpawnActor<WPawn>("Player");
     if (controller)
     {
-        controller->setControlledObject(pawn);
+        controller->possess(pawn);
     }
 }
 

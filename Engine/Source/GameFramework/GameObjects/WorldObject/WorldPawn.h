@@ -3,6 +3,7 @@
 #include "WorldActor.h"
 namespace RPE
 {
+class IController;
 
 class WPawn : public WActor  // aka APawn
 {
@@ -18,20 +19,19 @@ public:
     void EndPlay() override;
 
     void BeginPlay() override;
+    virtual void onPossess(IController* controller);
+    class PlayerController* getPlayerController() const;
+    IController* getController() const;
+    void unPosses();
 
 protected:
-    void setupInputBindings();
-    void moveRight(float value);
-    void moveForward(float value);
-    void look(float value);
-    void lookUp(float value);
-    void jump();
+    void setupInputBindings(class WInputComponent* inputComponent);
 
+    IController* m_controller = nullptr;
     class WInputComponent* m_inputComponent = nullptr;
     float m_positionX = 0.0f;
     float m_positionY = 0.0f;
     float m_rotation = 0.0f;
-    void Quit();
 };
 
 }  // namespace RPE

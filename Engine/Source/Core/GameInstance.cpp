@@ -55,3 +55,8 @@ void RGameInstance::StartGame()
         world->BeginPlay();
     }
 }
+
+WWorld* RGameInstance::GetWorld()
+{
+    return world ? world : nullptr;
+}

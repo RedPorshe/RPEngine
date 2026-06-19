@@ -1,4 +1,5 @@
 #include "WorldActor.h"
+#include "Core/GameInstance.h"
 #include "../Components/WorldActorComponent.h"
 #include "../Components/TransformComponent.h"
 #include "Math/MathTypes.h"
@@ -13,7 +14,8 @@ DEFINE_LOG_CATEGORY_STATIC(WActorLog);
 WActor::WActor(const std::string& inDisplayName, CObject* inOwner) : CObject(inDisplayName, inOwner)
 {
     RP_LOG(WActorLog, Display, "[{}] created", GetName());
-    m_RootComponent = addComponent<WTransformComponent>("Default_Root");
+    m_RootComponent = addComponent<WTransformComponent>("Default_Scene_Component");
+    SetMovableState(EMovableState::Movable);
 }
 
 WActor::~WActor()
@@ -286,6 +288,7 @@ const WActor* WActor::GetRootParent() const
 
 void WActor::setActorLocation(const FVector& loc)
 {
+    if (m_actorMovableState == EMovableState::Static) return;
     if (m_RootComponent)
     {
         m_RootComponent->setLocation(loc);
@@ -299,6 +302,7 @@ void WActor::setActorLocation(float x, float y, float z)
 
 void WActor::setActorRelativeLocation(const FVector& loc)
 {
+    if (m_actorMovableState == EMovableState::Static) return;
     if (m_RootComponent)
     {
         m_RootComponent->setRelativeLocation(loc);
@@ -348,6 +352,7 @@ FVector WActor::getActorRelativeLocation()
 
 void WActor::setActorRotation(const FQuat& rot)
 {
+    if (m_actorMovableState == EMovableState::Static) return;
     if (m_RootComponent)
     {
         m_RootComponent->setRotation(rot);
@@ -374,6 +379,7 @@ void WActor::setActorRotation(const FVector& eulerDegrees)
 
 void WActor::setActorRelativeRotation(const FQuat& rot)
 {
+    if (m_actorMovableState == EMovableState::Static) return;
     if (m_RootComponent)
     {
         m_RootComponent->setRelativeRotation(rot);
@@ -436,6 +442,7 @@ FQuat WActor::getActorRelativeRotation()
 
 void WActor::setActorScale(const FVector& scale)
 {
+    if (m_actorMovableState == EMovableState::Static) return;
     if (m_RootComponent)
     {
         m_RootComponent->setScale(scale);
@@ -454,6 +461,7 @@ void WActor::setActorScale(float scale)
 
 void WActor::setActorRelativeScale(const FVector& scale)
 {
+    if (m_actorMovableState == EMovableState::Static) return;
     if (m_RootComponent)
     {
         m_RootComponent->setRelativeScale(scale);
@@ -647,6 +655,20 @@ void WActor::addActorRelativeRotation(const FQuat& delta)
 void WActor::addActorRelativeRotation(float pitch, float yaw, float roll)
 {
     addActorRelativeRotation(FQuat(pitch, yaw, roll));
+}
+
+void WActor::SetMovableState(EMovableState state)
+{
+    m_actorMovableState = state;
+    if (m_RootComponent)
+    {
+        m_RootComponent->SetMovableState(m_actorMovableState);
+    }
+}
+
+WWorld* WActor::GetWorld()
+{
+    return getGameInstance() ? getGameInstance()->GetWorld() : nullptr;
 }
 
 std::vector<WActor*>& WActor::getChildActors()

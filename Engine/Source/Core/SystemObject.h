@@ -163,7 +163,7 @@ public:
 
     bool RenameOwnedObject(const std::string& oldDisplayName, const std::string& newDisplayName);
     bool Rename(const std::string& newDisplayName);
-
+    class RGameInstance* getGameInstance();
     template <typename T>
     T* FindOwnedAs(const std::string& displayName) const
     {

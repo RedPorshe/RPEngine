@@ -3,10 +3,6 @@
 #include <string>
 #include <variant>
 
-#include "Log/Log.h"
-
-DEFINE_LOG_CATEGORY_STATIC(LogInputEvent);
-
 namespace RPE
 {
 enum class EventType

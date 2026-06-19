@@ -151,4 +151,10 @@ void WInputComponent::popContext()
 void WInputComponent::clearContext()
 {
     m_contextStack.clear();
+
+    m_activeActionBindings.clear();
+    m_activeAxisBindings.clear();
+
+    m_mouseMoveCallback = nullptr;
+    m_mouseScrollCallback = nullptr;
 }
