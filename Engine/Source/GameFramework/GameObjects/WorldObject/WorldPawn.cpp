@@ -69,7 +69,7 @@ IController* RPE::WPawn::getController() const
     return m_controller ? m_controller : nullptr;  // stub in nullptr for AI controller;
 }
 
-void RPE::WPawn::unPosses()
+void RPE::WPawn::unPossess()
 {
     if (m_controller)
     {
@@ -84,3 +84,5 @@ void WPawn::setupInputBindings(WInputComponent* inputComponent)
     m_inputComponent = inputComponent;
     m_inputComponent->clearContext();
 }
+
+void RPE::WPawn::addMovementInput(const FVector& WorldDirection, float ScaleValue, bool bForce) {}

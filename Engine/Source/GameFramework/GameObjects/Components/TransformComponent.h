@@ -62,7 +62,7 @@ protected:
     FMat4 m_transformMatrix = FMat4(1.0f);
 
     bool isDirty{false};
-    EMovableState m_MovableState{EMovableState::Static};
+    EMovableState m_MovableState{EMovableState::Dynamic};
     void serializeProperties(nlohmann::json& jsonObject) const override;
     void deserializeProperties(const nlohmann::json& jsonObject) override;
 

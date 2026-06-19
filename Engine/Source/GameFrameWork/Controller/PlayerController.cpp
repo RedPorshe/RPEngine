@@ -9,7 +9,7 @@ using namespace RPE;
 DEFINE_LOG_CATEGORY_STATIC(PlayerControllerLog);
 
 PlayerController::PlayerController(const std::string& inDisplayName, CObject* inOwner)
-    : Super(inDisplayName, inOwner), controllerName(inDisplayName)
+    : Super(inDisplayName, inOwner, false), controllerName(inDisplayName)
 {
 }
 
@@ -21,7 +21,6 @@ PlayerController::~PlayerController()
 void PlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    removeComponent("Default_Root");
 }
 
 void RPE::PlayerController::Tick(float deltaTime)
@@ -82,16 +81,35 @@ void PlayerController::possess(WPawn* pawn)
     if (m_ControlledObject == pawn) return;
     if (m_ControlledObject)
     {
-        m_ControlledObject->unPosses();
+        m_ControlledObject->unPossess();
+        m_ControlledObject = nullptr;
+        m_currentControlledInputComponent = nullptr;
     }
-    auto imputcomponent = AddSubObject<WInputComponent>(pawn->GetName() + "_Input");
-    if (imputcomponent)
+    WInputComponent* inputcomponent = nullptr;
+    if (m_inputComponents.contains(pawn->GetName()))
     {
-        m_inputComponents[pawn->GetName()] = imputcomponent;
+        inputcomponent = m_inputComponents[pawn->GetName()];
+    }
+    else
+    {
+        inputcomponent = AddSubObject<WInputComponent>(pawn->GetName() + "_Input");
+        if (inputcomponent)
+        {
+            m_inputComponents[pawn->GetName()] = inputcomponent;
+        }
+        else
+        {
+            RP_LOG(PlayerControllerLog, Error, "[{}] Failed to create InputComponent for '{}'", GetName(), pawn->GetName());
+            return;
+        }
+    }
+
+    if (inputcomponent)
+    {
         setControlledObject(pawn);
         pawn->onPossess(this);
-        m_currentControlledInputComponent = imputcomponent;
-        RP_LOG(PlayerControllerLog, Display, "[{}] controller posses to {}", GetName(), pawn->GetName());
+        m_currentControlledInputComponent = inputcomponent;
+        RP_LOG(PlayerControllerLog, Display, "[{}] possesses '{}'", GetName(), pawn->GetName());
     }
 }
 
@@ -100,17 +118,17 @@ void PlayerController::setControlledObject(WPawn* object)
     m_ControlledObject = object;
 }
 
-void RPE::PlayerController::unPossess(WPawn* pawn)
+void PlayerController::unPossess(WPawn* pawn)
 {
     if (!pawn) return;
-    pawn->unPosses();
+    pawn->unPossess();
 }
 
-void RPE::PlayerController::unPossess()
+void PlayerController::unPossess()
 {
     if (m_ControlledObject)
     {
-        m_ControlledObject->unPosses();
+        m_ControlledObject->unPossess();
         m_ControlledObject = nullptr;
     }
 }

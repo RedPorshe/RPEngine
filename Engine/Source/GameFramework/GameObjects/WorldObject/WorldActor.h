@@ -16,7 +16,7 @@ class WActor : public CObject
     CHUDDO_DECLARE_CLASS(WActor, CObject);
 
 public:
-    WActor(const std::string& inDisplayName = "WorldActor", CObject* inOwner = nullptr);
+    WActor(const std::string& inDisplayName = "WorldActor", CObject* inOwner = nullptr, bool bCreateDefaultRoot = true);
     virtual ~WActor();
 
     // Life circle
@@ -45,7 +45,9 @@ public:
     void clearComponents();
 
     WTransformComponent* getRootComponent() const { return m_RootComponent; }
+
     void setRootComponent(WTransformComponent* component);
+
     bool hasRootComponent() const { return m_RootComponent != nullptr; }
     WActor* GetAttachParentActor() const;
     void AttachActorToActor(WActor* newParent);
@@ -132,7 +134,7 @@ protected:
     void cleanUp();
     void addChildActor(WActor* child);
     float m_deltaTime = 0.f;
-    // TODO:: Add bool bisUsePhusics{true}; // and other functions
+    // TODO:: Add bool bisUsePhysics{true}; // and other functions
 
 private:
     WActor* m_ParentActor = nullptr;

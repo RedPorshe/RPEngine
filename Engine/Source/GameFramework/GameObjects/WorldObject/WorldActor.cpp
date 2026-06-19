@@ -11,10 +11,13 @@ REGISTER_CLASS_FACTORY(WActor);
 
 DEFINE_LOG_CATEGORY_STATIC(WActorLog);
 
-WActor::WActor(const std::string& inDisplayName, CObject* inOwner) : CObject(inDisplayName, inOwner)
+WActor::WActor(const std::string& inDisplayName, CObject* inOwner, bool bCreateDefaultRoot) : CObject(inDisplayName, inOwner)
 {
     RP_LOG(WActorLog, Display, "[{}] created", GetName());
-    m_RootComponent = addComponent<WTransformComponent>("Default_Scene_Component");
+    if (bCreateDefaultRoot)
+    {
+        m_RootComponent = addComponent<WTransformComponent>("Default_Scene_Component");
+    }
     SetMovableState(EMovableState::Movable);
 }
 

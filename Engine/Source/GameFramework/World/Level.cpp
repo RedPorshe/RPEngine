@@ -1,7 +1,7 @@
 #include "Level.h"
 #include "World.h"
 #include "../GameObjects/WorldObject/WorldActor.h"
-#include "../GameObjects/WorldObject/WorldPawn.h"
+#include "../GameObjects/WorldObject/Character.h"
 #include "../Controller/PlayerController.h"
 #include "../../Input/InputManager.h"
 #include "Core/Engine.h"
@@ -17,7 +17,7 @@ WLevel::WLevel(const std::string& inName, CObject* inOwner) : Super(inName, inOw
     bisLoaded = false;
     bHasBegunPlay = false;
     auto* controller = dynamic_cast<PlayerController*>(SpawnActor("PlayerController", "Player_Controller"));
-    pawn = SpawnActor<WPawn>("Player");
+    pawn = SpawnActor<WCharacter>("Player");
     if (controller)
     {
         controller->possess(pawn);

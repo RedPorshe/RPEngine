@@ -12,6 +12,7 @@ REGISTER_CLASS_FACTORY(WTransformComponent);
 WTransformComponent::WTransformComponent(const std::string& inDisplayName, CObject* inOwner)  //
     : Super(inDisplayName, inOwner)
 {
+    SetMovableState(EMovableState::Dynamic);
 }
 
 WTransformComponent::~WTransformComponent() {}
@@ -242,6 +243,15 @@ WTransformComponent* WTransformComponent::getParentTransform() const
 void RPE::WTransformComponent::SetMovableState(EMovableState state)
 {
     m_MovableState = state;
+    std::string Statestr{""};
+    switch (state)
+    {
+        case EMovableState::Static: Statestr = "Static"; break;
+        case EMovableState::Movable: Statestr = "Movable"; break;
+        case EMovableState::Dynamic: Statestr = "Dynamic"; break;
+        default: break;
+    }
+    RP_LOG(TransformLog, Display, "Movable state changed to {}", Statestr);
 }
 
 void WTransformComponent::serializeProperties(nlohmann::json& jsonObject) const
@@ -257,6 +267,16 @@ void WTransformComponent::serializeProperties(nlohmann::json& jsonObject) const
 
     jsonObject["Scale"] = {{"x", m_Scale.x}, {"y", m_Scale.y}, {"z", m_Scale.z}};
     jsonObject["RelativeScale"] = {{"x", m_RelativeScale.x}, {"y", m_RelativeScale.y}, {"z", m_RelativeScale.z}};
+
+    std::string stateStr;
+    switch (m_MovableState)
+    {
+        case EMovableState::Static: stateStr = "Static"; break;
+        case EMovableState::Movable: stateStr = "Movable"; break;
+        case EMovableState::Dynamic: stateStr = "Dynamic"; break;
+        default: stateStr = "Static"; break;
+    }
+    jsonObject["MovableState"] = stateStr;
 
     RP_LOG(TransformLog, Display, "TransformComponent '{}' serialized", GetName());
 }
@@ -315,7 +335,17 @@ void WTransformComponent::deserializeProperties(const nlohmann::json& jsonObject
         m_RelativeScale = FVector(x, y, z);
     }
 
-    // markDirty();
+    if (jsonObject.contains("MovableState") && jsonObject["MovableState"].is_string())
+    {
+        std::string stateStr = jsonObject["MovableState"].get<std::string>();
+        if (stateStr == "Static")
+            m_MovableState = EMovableState::Static;
+        else if (stateStr == "Movable")
+            m_MovableState = EMovableState::Movable;
+        else if (stateStr == "Dynamic")
+            m_MovableState = EMovableState::Dynamic;
+    }
+
     updateTransform();
 
     RP_LOG(TransformLog, Display, "TransformComponent '{}' deserialized", GetName());
@@ -383,7 +413,7 @@ void WTransformComponent::attachTo(WActorComponent* inOwnComponent)
 {
     if (inOwnComponent == nullptr) return;
     if (this == inOwnComponent) return;
-    if (m_parent = inOwnComponent) return;
+    if (m_parent == inOwnComponent) return;
 
     if (m_parent)
     {
@@ -397,5 +427,7 @@ void WTransformComponent::attachTo(WActorComponent* inOwnComponent)
     else
     {
         RP_LOG(TransformLog, Error, "[{}] failed to attach to component [{}]", GetName(), inOwnComponent->GetName());
+        return;
     }
+    RP_LOG(TransformLog, Display, "[{}] attached to component [{}]", GetName(), inOwnComponent->GetName());
 }

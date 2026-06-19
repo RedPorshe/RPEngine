@@ -22,16 +22,13 @@ public:
     virtual void onPossess(IController* controller);
     class PlayerController* getPlayerController() const;
     IController* getController() const;
-    void unPosses();
+    void unPossess();
 
 protected:
-    void setupInputBindings(class WInputComponent* inputComponent);
-
+    virtual void setupInputBindings(class WInputComponent* inputComponent);
+    void addMovementInput(const FVector& WorldDirection, float ScaleValue, bool bForce = false);
     IController* m_controller = nullptr;
     class WInputComponent* m_inputComponent = nullptr;
-    float m_positionX = 0.0f;
-    float m_positionY = 0.0f;
-    float m_rotation = 0.0f;
 };
 
 }  // namespace RPE

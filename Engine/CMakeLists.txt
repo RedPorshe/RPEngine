@@ -100,6 +100,8 @@ set(ENGINE_SOURCES_BASE
     Source/GameFrameWork/GameObjects/WorldObject/WorldActor.cpp 
     Source/GameFrameWork/GameObjects/WorldObject/WorldPawn.h 
     Source/GameFrameWork/GameObjects/WorldObject/WorldPawn.cpp
+    Source/GameFrameWork/GameObjects/WorldObject/Character.h 
+    Source/GameFrameWork/GameObjects/WorldObject/Character.cpp
     # components
     Source/GameFrameWork/GameObjects/Components/WorldActorComponent.h 
     Source/GameFrameWork/GameObjects/Components/WorldActorComponent.cpp
