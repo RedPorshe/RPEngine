@@ -33,8 +33,8 @@
 #include "Core/SystemObject.h"
 #include "Core/ObjectFactory.h"
 
-#include "../GameFramework/GameObjects/WorldObject/WorldActor.h"
-#include "../GameFramework/GameObjects/WorldObject/WorldPawn.h"
+#include "../GameFrameWork/GameObjects/WorldObject/WorldActor.h"
+#include "../GameFrameWork/GameObjects/WorldObject/WorldPawn.h"
 
 using namespace RPE;
 Engine* Engine::s_instance = nullptr;
