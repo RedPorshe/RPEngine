@@ -522,8 +522,7 @@ void WActor::MoveActor(const FVector& Direction, float offset, bool bTeleport)
     if (CEMath::IsZero(offset)) return;
     if (Direction.IsZero()) return;
     const auto& currentLocation = getActorLocation();
-    RP_LOG(WActorLog, Display, "moving actor {}  from {:.10f},{:.10f},{:.10f}", GetName(), currentLocation.x, currentLocation.y,
-        currentLocation.z);
+
     FVector NewLocation;
 
     if (bTeleport)
@@ -536,7 +535,7 @@ void WActor::MoveActor(const FVector& Direction, float offset, bool bTeleport)
         float deltaTime = (std::min)(m_deltaTime, MAX_DELTA_TIME);
         NewLocation = currentLocation + (Direction * offset * deltaTime);
     }
-    RP_LOG(WActorLog, Display, "moving actor {}  to {:.10f},{:.10f},{:.10f}", GetName(), NewLocation.x, NewLocation.y, NewLocation.z);
+
     setActorLocation(NewLocation);
 }
 

@@ -18,6 +18,8 @@ WActorComponent::WActorComponent(const std::string& inDisplayName, CObject* inOw
     {
         RP_LOG(WorldActorComponentLog, Warning, "[{}] owner is not a WActor", GetName());
     }
+    SetPrimaryTickEnable();
+    Created();
 }
 
 WActorComponent::~WActorComponent()
@@ -27,13 +29,26 @@ WActorComponent::~WActorComponent()
 
 void WActorComponent::tick(float deltaTime)
 {
-    for (auto* component : m_childComponents)
+    if (bisUseTick)
     {
-        if (component) component->tick(deltaTime);
+        for (auto* component : m_childComponents)
+        {
+            if (component) component->tick(deltaTime);
+        }
     }
 }
 
-void WActorComponent::onDestroy() {}
+void WActorComponent::onDestroy()
+{
+    RP_LOG(WorldActorComponentLog, Display, " Called on destroy (Base class) for [{}]", GetName());
+    for (auto& child : m_childComponents)
+    {
+        if (child)
+        {
+            child->onDestroy();
+        }
+    }
+}
 
 void WActorComponent::onBeginPlay() {}
 
@@ -103,6 +118,17 @@ int WActorComponent::getChildComponentIndex(const WActorComponent* component) co
     return -1;
 }
 
+void WActorComponent::SetPrimaryTickEnable(bool enable)
+{
+    bisUseTick = enable;
+}
+
+void WActorComponent::OnCreate()
+{
+    bIsInitialized = true;
+    RP_LOG(WorldActorComponentLog, Display, "Actor component base func OnCreate called for {}", GetName());
+}
+
 void WActorComponent::serializeProperties(nlohmann::json& jsonObject) const
 {
     Super::serializeProperties(jsonObject);
@@ -111,6 +137,16 @@ void WActorComponent::serializeProperties(nlohmann::json& jsonObject) const
 void WActorComponent::deserializeProperties(const nlohmann::json& jsonObject)
 {
     Super::deserializeProperties(jsonObject);
+}
+
+void WActorComponent::SetIsEnabled(bool enable)
+{
+    bIsEnabled = enable;
+}
+
+void WActorComponent::Created()
+{
+    this->OnCreate();
 }
 
 }  // namespace RPE

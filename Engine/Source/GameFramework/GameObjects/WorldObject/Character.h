@@ -5,6 +5,8 @@
 namespace RPE
 {
 class WTransformComponent;
+class CapsuleComponent;
+class CollisionComponent;
 
 class WCharacter : public WPawn
 {
@@ -23,12 +25,13 @@ protected:
     void setupInputBindings(class WInputComponent* inputComponent) override;
 
 private:
-    WTransformComponent* m_Capsule = nullptr;
-
+    CapsuleComponent* m_Capsule = nullptr;  // stub
+    void MoveForward(float val);
     void Jump();
     void StartJump();
     void EndJump();
     bool bisJumping{false};
+    CollisionComponent* otherCollision = nullptr;
 };
 
 }  // namespace RPE

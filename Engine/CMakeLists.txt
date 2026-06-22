@@ -109,6 +109,18 @@ set(ENGINE_SOURCES_BASE
     Source/GameFrameWork/GameObjects/Components/InputComponent.cpp
     Source/GameFrameWork/GameObjects/Components/TransformComponent.h 
     Source/GameFrameWork/GameObjects/Components/TransformComponent.cpp
+    # collision components
+    Source/GameFrameWork/Collision/CollisionComponent.h 
+    Source/GameFrameWork/Collision/CollisionComponent.cpp 
+    Source/GameFrameWork/Collision/Capsule.h 
+    Source/GameFrameWork/Collision/Capsule.cpp 
+    Source/GameFrameWork/Collision/Cube.h 
+    Source/GameFrameWork/Collision/Cube.cpp 
+    Source/GameFrameWork/Collision/Sphere.h 
+    Source/GameFrameWork/Collision/Sphere.cpp 
+    Source/GameFrameWork/Collision/Plane.h 
+    Source/GameFrameWork/Collision/Plane.cpp 
+    
     # shaders
     Assets/shaders/main.vert
     Assets/shaders/main.frag
@@ -254,6 +266,7 @@ Tests/MatrixTests.cpp
 Tests/GLMconverterTests.cpp
 Tests/ObjectsTests.cpp
 Tests/MathconstantsTests.cpp
+Tests/CollisionsTests.cpp
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 

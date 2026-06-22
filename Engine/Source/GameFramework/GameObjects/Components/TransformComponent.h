@@ -36,9 +36,11 @@ public:
     FQuat getRotation() const;
     FVector getScale() const;
 
-    FVector getRelativeLocation() const { return m_RelativeLocation; }
-    FQuat getRelativeRotation() const { return m_RelativeRotation; }
-    FVector getRelativeScale() const { return m_RelativeScale; }
+    FVector getRelativeLocation() const;
+
+    FQuat getRelativeRotation() const;
+
+    FVector getRelativeScale() const;
 
     FMat4& getMatrix();
     const FMat4& getMatrix() const;
@@ -51,6 +53,7 @@ public:
     EMovableState& getMovableState() { return m_MovableState; }
     const EMovableState& getMovableState() const { return m_MovableState; }
     inline bool isCollisionComponent() const { return bisCollison; }
+    void OnCreate() override;
 
 protected:
     FVector m_Location = FVector::Zero();

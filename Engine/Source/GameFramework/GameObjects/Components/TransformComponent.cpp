@@ -204,6 +204,21 @@ FVector WTransformComponent::getScale() const
         parentScale.z * m_Scale.z * m_RelativeScale.z);
 }
 
+FVector WTransformComponent::getRelativeLocation() const
+{
+    return m_RelativeLocation;
+}
+
+FQuat WTransformComponent::getRelativeRotation() const
+{
+    return m_RelativeRotation;
+}
+
+FVector RPE::WTransformComponent::getRelativeScale() const
+{
+    return m_RelativeScale;
+}
+
 FMat4& WTransformComponent::getMatrix()
 {
     if (isTransformDirty())
@@ -233,7 +248,7 @@ WTransformComponent* WTransformComponent::getParentTransform() const
 {
     WActor* owner = getOwner();
     if (!owner) return nullptr;
-
+    if (m_parent) return dynamic_cast<WTransformComponent*>(m_parent);
     WActor* parentActor = owner->GetAttachParentActor();
     if (!parentActor) return nullptr;
 
@@ -252,6 +267,11 @@ void RPE::WTransformComponent::SetMovableState(EMovableState state)
         default: break;
     }
     RP_LOG(TransformLog, Display, "Movable state changed to {}", Statestr);
+}
+
+void RPE::WTransformComponent::OnCreate()
+{
+    Super::OnCreate();
 }
 
 void WTransformComponent::serializeProperties(nlohmann::json& jsonObject) const
@@ -400,13 +420,20 @@ void WTransformComponent::markCleared()
 
 bool WTransformComponent::hasParentAsTransformComponent() const
 {
+    if (m_parent)
+    {
+        if (WActorComponent* papa = dynamic_cast<WTransformComponent*>(m_parent))
+        {
+            return true;
+        }
+    }
     WActor* owner = getOwner();
     if (!owner) return false;
 
     WActor* parentActor = owner->GetAttachParentActor();
     if (!parentActor) return false;
 
-    return parentActor->getRootComponent() != nullptr;
+    return dynamic_cast<WTransformComponent*>(parentActor->getRootComponent()) != nullptr;
 }
 
 void WTransformComponent::attachTo(WActorComponent* inOwnComponent)

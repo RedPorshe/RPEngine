@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Window/IWindowManager.h"
 #include "Window/IWindow.h"
+#include "../Physics/PhysicsManager.h"
 #include <fstream>
 
 #include "Render/RHI/Renderer.h"
@@ -53,9 +54,13 @@ Engine::~Engine()
     {
         RP_LOG(EngineLog, Error, "Failed to save GameInstance to json");
     }
-    s_instance = nullptr;
-    m_initialized = false;
     Gameinstance.reset();
+    if (m_PhysicsManager)
+    {
+        m_PhysicsManager->shutdown();
+    }
+    m_initialized = false;
+    s_instance = nullptr;
 }
 
 void Engine::run()
@@ -160,7 +165,8 @@ int Engine::init()
     RP_LOG(EngineLog, Display, "Initializing {}, version {}", ENGINE_NAME, version());
 
     m_neededPipelineNames.push_back("Triangle");
-
+    m_PhysicsManager = std::make_unique<PhysicsManager>();
+    m_PhysicsManager->init();
     WindowSettings wset;
     wset.width = 1024;
     wset.height = 768;
@@ -225,6 +231,11 @@ int Engine::init()
     return 0;
 }
 
+PhysicsManager* RPE::Engine::getPhysicsManager()
+{
+    return m_PhysicsManager.get();
+}
+
 bool Engine::LoadGameInstance()
 {
     std::string SettingsPath = m_executablePath + "GameInstance.json";
@@ -240,7 +251,6 @@ bool Engine::LoadGameInstance()
             file >> jsonData;
             file.close();
 
-            // Проверяем наличие ClassName (один раз, не два)
             if (!jsonData.contains("ClassName") || !jsonData["ClassName"].is_string())
             {
                 RP_LOG(EngineLog, Error, "Invalid GameInstance.json: missing ClassName");
@@ -249,14 +259,12 @@ bool Engine::LoadGameInstance()
 
             std::string className = jsonData["ClassName"].get<std::string>();
 
-            // ПРОВЕРЯЕМ, зарегистрирован ли класс
             if (!OBJECT_FACTORY.IsClassRegistered(className))
             {
                 RP_LOG(EngineLog, Error, "Class '{}' not registered, creating default GameInstance", className);
                 return CreateDefaultGameInstance();
             }
 
-            // Опционально: проверяем, что класс наследуется от RGameInstance
             if (!OBJECT_FACTORY.IsDerivedFrom(className, "RGameInstance"))
             {
                 RP_LOG(EngineLog, Error, "Class '{}' is not derived from RGameInstance, creating default", className);
@@ -269,7 +277,6 @@ bool Engine::LoadGameInstance()
                 displayName = jsonData["DisplayName"].get<std::string>();
             }
 
-            // Создаем объект через фабрику
             CObject* obj = OBJECT_FACTORY.Create(className, nullptr, displayName);
             if (!obj)
             {
@@ -277,10 +284,9 @@ bool Engine::LoadGameInstance()
                 return CreateDefaultGameInstance();
             }
 
-            // Десериализуем
             obj->deserialize(jsonData);
             Gameinstance.reset();
-            // Приводим к нужному типу
+
             Gameinstance = std::unique_ptr<RGameInstance>(static_cast<RGameInstance*>(obj));
 
             RP_LOG(EngineLog, Display, "GameInstance loaded successfully: {}", displayName);
@@ -358,6 +364,7 @@ void Engine::updateGameLogic(float deltaTime)
     if (!Gameinstance) return;
 
     Gameinstance->tick(deltaTime);
+    m_PhysicsManager->update(deltaTime);
 }
 
 void Engine::setupWindowEvents(WindowId windowId)

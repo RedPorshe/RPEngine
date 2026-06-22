@@ -89,7 +89,7 @@ public:
     virtual void deserialize(const nlohmann::json& jsonObject);
     virtual void serializeProperties(nlohmann::json& jsonObject) const;
     virtual void deserializeProperties(const nlohmann::json& jsonObject);
-
+    virtual void onDestroy();
     static CObject* CreateFromJSON(nlohmann::json jason);
     static CObject* LoadFromJSONFile(const std::string& filename);
     bool SaveToJSONFile(const std::string& filename, bool pretty = true) const;

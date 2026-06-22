@@ -35,6 +35,7 @@ public:
     std::string getExecutablePath() const { return m_executablePath; }
     std::string getAssetsPath() const { return m_executablePath + "Assets/"; }
     int init();
+    class PhysicsManager* getPhysicsManager();
 
 private:
     std::vector<std::string> m_neededPipelineNames;
@@ -44,6 +45,7 @@ private:
     const std::unique_ptr<class IWindowManager> m_WindowManager;
     const std::shared_ptr<class InputManager> m_inputManager;
     const std::unique_ptr<class RHI> m_renderer;
+    std::unique_ptr<class PhysicsManager> m_PhysicsManager;
     bool m_initialized{false};
     class IWindow* m_MainWindow = nullptr;
     struct WindowId mainWindowId;

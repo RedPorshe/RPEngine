@@ -16,7 +16,7 @@ public:
     virtual ~WActorComponent();
 
     virtual void tick(float deltaTime);
-    virtual void onDestroy();
+    void onDestroy() override;
     virtual void onBeginPlay();
 
     bool hasChildComponents() const { return !m_childComponents.empty(); }
@@ -36,13 +36,20 @@ public:
     size_t getChildComponentCount() const { return m_childComponents.size(); }
     const std::vector<WActorComponent*>& getChildComponents() const { return m_childComponents; }
     WActorComponent* getParent() const { return m_parent; }
+    void SetPrimaryTickEnable(bool enable = true);
 
 protected:
+    virtual void OnCreate();
     WActor* m_owner = nullptr;
     WActorComponent* m_parent = nullptr;
+    bool bIsInitialized{false};
+    bool bisUseTick{false};
     std::vector<WActorComponent*> m_childComponents;
     void serializeProperties(nlohmann::json& jsonObject) const override;
     void deserializeProperties(const nlohmann::json& jsonObject) override;
+    void SetIsEnabled(bool enable = true);
+    bool bIsEnabled{false};
+    void Created();
 };
 
 }  // namespace RPE

@@ -175,6 +175,7 @@ inline Comp* WActor::addComponent(const std::string& inName, Args&&... args)
     }
 
     RP_LOG(WActorLogH, Display, "[{}] added component [{}]", GetName(), component->GetName());
+    component->OnCreate();
     return component;
 }
 

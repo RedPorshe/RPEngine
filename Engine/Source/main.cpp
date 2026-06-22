@@ -118,22 +118,22 @@ int main(int argc, char* argv[])
         RP_LOG(MainLog, Error, "Failed to create Renderer...");
         return EXIT_FAILURE;
     }
+    std::unique_ptr<RPE::Engine> engine = std::make_unique<RPE::Engine>(std::move(WindowManager), std::move(Renderer));
 
-    RPE::Engine engine{std::move(WindowManager), std::move(Renderer)};
-    auto errorlevel = engine.preInit(argc, argv);
+    auto errorlevel = engine->preInit(argc, argv);
     if (errorlevel == 0)
     {
-        errorlevel = engine.init();
+        errorlevel = engine->init();
         if (errorlevel == 0)
         {
-            if (!engine.isInitialized())
+            if (!engine->isInitialized())
             {
                 RP_LOG(MainLog, Error, "Failed to initialize the engine.");
                 return EXIT_FAILURE;
             }
             else
             {
-                engine.run();
+                engine->run();
             }
         }
         else

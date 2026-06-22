@@ -25,7 +25,7 @@ CObject::CObject(const std::string& inDisplayName, CObject* inOwner) : ObjectOwn
 CObject::~CObject()
 {
     RP_LOG(ObjectLog, Display, "{} object destroyed", GetName());
-
+    onDestroy();
     OwnedObjects.clear();
 
     if (ObjectOwner)
@@ -117,6 +117,14 @@ CObject* CObject::FindOwnedRecursive(const std::string& displayName) const
 void CObject::serializeProperties(nlohmann::json& jsonObject) const {}
 
 void CObject::deserializeProperties(const nlohmann::json& jsonObject) {}
+
+void RPE::CObject::onDestroy()
+{
+    for (const auto& child : OwnedObjects)
+    {
+        child->onDestroy();
+    }
+}
 
 CObject* CObject::CreateFromJSON(nlohmann::json jsonObject)
 {

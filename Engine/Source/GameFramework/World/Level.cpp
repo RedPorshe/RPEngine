@@ -18,6 +18,9 @@ WLevel::WLevel(const std::string& inName, CObject* inOwner) : Super(inName, inOw
     bHasBegunPlay = false;
     auto* controller = dynamic_cast<PlayerController*>(SpawnActor("PlayerController", "Player_Controller"));
     pawn = SpawnActor<WCharacter>("Player");
+    auto pawn2 = SpawnActor<WCharacter>("Enemy");
+    pawn2->setActorLocation(0.f, 0.f, 15.f);
+    pawn->setActorLocation(0.f, 0.f, -15.f);
     if (controller)
     {
         controller->possess(pawn);
