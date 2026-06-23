@@ -7,9 +7,11 @@
 #include <stdexcept>
 #include <atomic>
 
+#include "GameInstance.h"
+
 namespace RPE
 {
-class RGameInstance;
+
 
 class Engine final : public NonCopyable
 {
