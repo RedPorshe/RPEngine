@@ -1,7 +1,7 @@
 #include "GameInstance.h"
-#include "../GameFramework/GameObjects/WorldObject/WorldActor.h"
-#include "../GameFramework/GameObjects/WorldObject/WorldPawn.h"
-#include "../GameFramework/World/World.h"
+#include "../GameFrameWork/GameObjects/WorldObject/WorldActor.h"
+#include "../GameFrameWork/GameObjects/WorldObject/WorldPawn.h"
+#include "../GameFrameWork/World/World.h"
 #include "Log/Log.h"
 
 DEFINE_LOG_CATEGORY_STATIC(GameInstanceLog);
