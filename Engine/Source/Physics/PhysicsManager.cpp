@@ -1,5 +1,5 @@
 #include "PhysicsManager.h"
-#include "../GameFramework/Collision/CollisionComponent.h"
+#include "GameFrameWork/Collision/CollisionComponent.h"
 #include "Log/Log.h"
 
 DEFINE_LOG_CATEGORY_STATIC(PhysManagerLog);

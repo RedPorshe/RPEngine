@@ -1,6 +1,6 @@
 #pragma once
 #include "PhysicsUtils.h"
-#include "../Math/MathTypes.h"
+#include "Math/MathTypes.h"
 #include <unordered_map>
 
 namespace RPE
