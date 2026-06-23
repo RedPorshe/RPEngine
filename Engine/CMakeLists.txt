@@ -269,6 +269,7 @@ Tests/MathconstantsTests.cpp
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 
+set(spdlog_DIR "${CMAKE_BINARY_DIR}/generators")
 
 # add libs
 find_package(spdlog REQUIRED)
@@ -286,7 +287,7 @@ target_link_libraries(${PROJECT_NAME}lib PUBLIC
     nlohmann_json::nlohmann_json
 )
 
-target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest )
+ target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest )
 
 #FOLders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
