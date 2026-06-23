@@ -202,7 +202,6 @@ bool VkRenderer::startFrame()
 
     uint32_t currentFrame = syncMgr->getCurrentFrame();
 
-  
     VkFence currentFence = syncMgr->getInFlightFence(currentFrame);
     VkResult result = vkWaitForFences(device, 1, &currentFence, VK_TRUE, UINT64_MAX);
 
@@ -212,9 +211,7 @@ bool VkRenderer::startFrame()
         return false;
     }
 
-  
     vkResetFences(device, 1, &currentFence);
-
 
     result = vkAcquireNextImageKHR(
         device, swapchain, UINT64_MAX, syncMgr->getImageAvailableSemaphore(currentFrame), VK_NULL_HANDLE, &m_currentImageIndex);
@@ -230,7 +227,6 @@ bool VkRenderer::startFrame()
         return false;
     }
 
-
     updateUniformBuffer(currentFrame);
 
     // Записываем command buffer
@@ -239,7 +235,6 @@ bool VkRenderer::startFrame()
         RP_LOG(VkRenderLog, Error, "Failed to record command buffer");
         return false;
     }
-
 
     VkSemaphore waitSemaphores[] = {syncMgr->getImageAvailableSemaphore(currentFrame)};
     VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
@@ -257,7 +252,6 @@ bool VkRenderer::startFrame()
     submitInfo.pCommandBuffers = &commandBuffer;
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
-
 
     VkQueue graphicsQueue;
     vkGetDeviceQueue(device, deviceMgr->getGraphicsQueueIndex(), 0, &graphicsQueue);

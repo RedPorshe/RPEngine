@@ -2,6 +2,7 @@
 #include "PhysicsUtils.h"
 #include "Math/MathTypes.h"
 #include <unordered_map>
+#include <vector>
 
 namespace RPE
 {

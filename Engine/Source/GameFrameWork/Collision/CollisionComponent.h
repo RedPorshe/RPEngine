@@ -1,6 +1,7 @@
 #pragma once
 #include "GameFrameWork/GameObjects/Components/TransformComponent.h"
 #include "Physics/PhysicsUtils.h"
+#include <algorithm>
 
 namespace RPE
 {

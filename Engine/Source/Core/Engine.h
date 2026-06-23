@@ -12,7 +12,6 @@
 namespace RPE
 {
 
-
 class Engine final : public NonCopyable
 {
 public:
