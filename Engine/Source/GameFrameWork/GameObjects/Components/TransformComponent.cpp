@@ -3,6 +3,7 @@
 #include "Math/MathTypes.h"
 #include "Math/Vector3D.h"
 #include "Log/Log.h"
+#include "Physics/PhysicsUtils.h"
 
 using namespace RPE;
 DEFINE_LOG_CATEGORY_STATIC(TransformLog);
