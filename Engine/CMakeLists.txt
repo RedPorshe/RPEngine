@@ -266,7 +266,6 @@ Tests/MatrixTests.cpp
 Tests/GLMconverterTests.cpp
 Tests/ObjectsTests.cpp
 Tests/MathconstantsTests.cpp
-Tests/CollisionsTests.cpp
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
 

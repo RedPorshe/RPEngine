@@ -10,6 +10,8 @@ set(PROFILE_PATH_Linux_Debug "${CMAKE_CURRENT_SOURCE_DIR}/Automation/ConanProfil
 set(CURRENT_PROFILE "PROFILE_PATH_${CMAKE_HOST_SYSTEM_NAME}_${CMAKE_BUILD_TYPE}")
 message(STATUS "Set conan profile: ${CURRENT_PROFILE}")
 
+
+
 if(DEFINED ${CURRENT_PROFILE})
     set(CONAN_PROFILE "${${CURRENT_PROFILE}}")
     message(STATUS "Using conan profile: ${CONAN_PROFILE}")
