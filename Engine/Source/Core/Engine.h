@@ -9,6 +9,7 @@
 
 namespace RPE
 {
+class RGameInstance;
 
 class Engine final : public NonCopyable
 {
@@ -57,7 +58,7 @@ private:
     std::string m_executablePath;
     int m_currentWidth = 200;
     int m_currentHeigth = 200;
-    std::unique_ptr<class RGameInstance> Gameinstance = nullptr;
+    std::unique_ptr<RGameInstance> Gameinstance = nullptr;
 };
 
 }  // namespace RPE

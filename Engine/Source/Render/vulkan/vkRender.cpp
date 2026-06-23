@@ -12,6 +12,7 @@
 #include "Managers/BufferManager.h"
 #include "Log/Log.h"
 #include <chrono>
+#include <cstring>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
