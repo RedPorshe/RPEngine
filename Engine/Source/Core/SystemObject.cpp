@@ -122,7 +122,7 @@ void RPE::CObject::onDestroy()
 {
     for (const auto& child : OwnedObjects)
     {
-        child->onDestroy();
+        if (child) child->onDestroy();
     }
 }
 

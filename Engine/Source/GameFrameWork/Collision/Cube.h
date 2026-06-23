@@ -10,7 +10,7 @@ class CubeComponent : public CollisionComponent
     CHUDDO_DECLARE_CLASS(CubeComponent, CollisionComponent);
 
 public:
-    CubeComponent(const std::string& inName, CObject* inOwner);
+    CubeComponent(const std::string& inName, CObject* inOwner, bool inTests = false);
     ~CubeComponent() = default;
     void tick(float deltaTime) override;
     void onDestroy() override;

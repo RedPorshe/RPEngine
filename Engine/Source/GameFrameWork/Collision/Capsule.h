@@ -10,7 +10,7 @@ class CapsuleComponent : public CollisionComponent
     CHUDDO_DECLARE_CLASS(CapsuleComponent, CollisionComponent);
 
 public:
-    CapsuleComponent(const std::string& inName, CObject* inOwner);
+    CapsuleComponent(const std::string& inName, CObject* inOwner, bool inTests = false);
     ~CapsuleComponent() = default;
     void tick(float deltaTime) override;
     void onDestroy() override;

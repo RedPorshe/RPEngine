@@ -10,7 +10,7 @@ class PlaneComponent : public CollisionComponent
     CHUDDO_DECLARE_CLASS(PlaneComponent, CollisionComponent);
 
 public:
-    PlaneComponent(const std::string& inName, CObject* inOwner);
+    PlaneComponent(const std::string& inName, CObject* inOwner, bool inTests = false);
     ~PlaneComponent() = default;
     void tick(float deltaTime) override;
     void onDestroy() override;

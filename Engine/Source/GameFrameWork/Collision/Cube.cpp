@@ -1,8 +1,8 @@
 #include "Cube.h"
 using namespace RPE;
 
-CubeComponent::CubeComponent(const std::string& inName, CObject* inOwner)  //
-    : Super(inName, inOwner)
+CubeComponent::CubeComponent(const std::string& inName, CObject* inOwner, bool inTests)  //
+    : Super(inName, inOwner, inTests)
 {
     setShape(ECollisionShape::Cube);
 }

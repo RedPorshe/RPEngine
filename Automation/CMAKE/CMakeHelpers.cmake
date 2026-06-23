@@ -40,7 +40,7 @@ macro(setup_conan HOST_PROFILE BUILD_PROFILE)
         message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
         file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/refs/heads/develop2/conan_provider.cmake" "${CMAKE_CONAN_PATH}")
     endif()
-
+ 
     set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES ${CMAKE_CONAN_PATH})
     set(CONAN_HOST_PROFILE "${HOST_PROFILE}")
     set(CONAN_BUILD_PROFILE "${BUILD_PROFILE}")

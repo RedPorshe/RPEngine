@@ -9,8 +9,8 @@ DEFINE_LOG_CATEGORY_STATIC(CollisionLog);
 
 using namespace RPE;
 
-CollisionComponent::CollisionComponent(const std::string& inName, CObject* inOwner)  //
-    : Super(inName, inOwner)
+CollisionComponent::CollisionComponent(const std::string& inName, CObject* inOwner, bool inTests)  //
+    : Super(inName, inOwner), bisIntest(inTests)
 {
     overlapedCollisions.clear();
     SetMovableState(EMovableState::Dynamic);
@@ -24,6 +24,7 @@ void CollisionComponent::tick(float deltaTime)
 void CollisionComponent::onDestroy()
 {
     Super::onDestroy();
+    if (bisIntest) return;
     auto& engine = Engine::Get();
     if (&engine)
     {
@@ -45,6 +46,7 @@ void CollisionComponent::onBeginPlay()
 void CollisionComponent::OnCreate()
 {
     Super::OnCreate();
+    if (bisIntest) return;
     RP_LOG(CollisionLog, Display, "[{}] OnCreate called", GetName());
     auto& engine = Engine::Get();
     if (&engine)

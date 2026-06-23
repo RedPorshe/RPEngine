@@ -8,3 +8,6 @@ compiler.runtime_type=Release
 compiler.version=195
 os=Windows
 
+[conf]
+tools.cmake.cmaketoolchain:generator=Visual Studio 18 2026
+tools.microsoft.msbuild:vs_version=18

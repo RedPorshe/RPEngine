@@ -22,6 +22,21 @@ endif()
 include(${CMAKE_SOURCE_DIR}/Automation/CMAKE/CMakeHelpers.cmake)
 setup_conan(${CONAN_PROFILE} ${CONAN_PROFILE})
 
+set(CONAN_GENERATORS "${CMAKE_BINARY_DIR}/build/generators")
+if(EXISTS "${CONAN_GENERATORS}")
+    list(APPEND CMAKE_PREFIX_PATH "${CONAN_GENERATORS}")
+    list(APPEND CMAKE_MODULE_PATH "${CONAN_GENERATORS}")
+    message(STATUS "Conan generators found at: ${CONAN_GENERATORS}")
+else()
+    # Альтернативный путь
+    set(CONAN_GENERATORS "${CMAKE_BINARY_DIR}/generators")
+    if(EXISTS "${CONAN_GENERATORS}")
+        list(APPEND CMAKE_PREFIX_PATH "${CONAN_GENERATORS}")
+        list(APPEND CMAKE_MODULE_PATH "${CONAN_GENERATORS}")
+        message(STATUS "Conan generators found at: ${CONAN_GENERATORS}")
+    endif()
+endif()
+
 # common options
 project(KUZBASS VERSION 1.0.0 LANGUAGES CXX)
 

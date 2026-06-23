@@ -4,12 +4,14 @@
 
 namespace RPE
 {
+class PhysicsManager;
+
 class CollisionComponent : public WTransformComponent
 {
     CHUDDO_DECLARE_CLASS(CollisionComponent, WTransformComponent);
 
 public:
-    CollisionComponent(const std::string& inName, CObject* inOwner);
+    CollisionComponent(const std::string& inName, CObject* inOwner, bool inTests = false);
     ~CollisionComponent() = default;
     void tick(float deltaTime) override;
     void onDestroy() override;
@@ -34,6 +36,7 @@ public:
     void setPlane(const FVector& normal, const FVector& point, const FVector2D& size = FVector2D(10.0f, 10.0f));
     bool isInfinitePlane() const { return m_bIsInfinitePlane; }
     void setInfinitePlane(bool infinite) { m_bIsInfinitePlane = infinite; }
+    void SetInTests(bool val) { bisIntest = val; }
 
 protected:
     friend class PhysicsManager;
@@ -49,7 +52,10 @@ protected:
     bool m_bIsInfinitePlane = false;
     ECollisionShape m_shape{ECollisionShape::NO_COLLISION};
 
+public:
     void setShape(ECollisionShape shape);
+
+    bool bisIntest{false};
 };
 
 REGISTER_CLASS_FACTORY(CollisionComponent);

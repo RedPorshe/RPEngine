@@ -10,7 +10,7 @@ class SphereComponent : public CollisionComponent
     CHUDDO_DECLARE_CLASS(SphereComponent, CollisionComponent);
 
 public:
-    SphereComponent(const std::string& inName, CObject* inOwner);
+    SphereComponent(const std::string& inName, CObject* inOwner, bool inTests = false);
     ~SphereComponent() = default;
     void tick(float deltaTime) override;
     void onDestroy() override;

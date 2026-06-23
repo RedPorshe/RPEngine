@@ -325,15 +325,11 @@ bool PhysicsManager::CheckPlaneRectanglesOverlap(CollisionComponent* planeA, Col
 
     if (crossLengthSquared < 0.0001f)
     {
-        // Плоскости параллельны - они уже были обработаны в CheckPlaneVsPlane
-        // но на всякий случай возвращаем false
         return false;
     }
 
-    // Безопасная нормализация
     FVector lineDirection = crossProduct / std::sqrt(crossLengthSquared);
 
-    // Находим точку на линии пересечения
     float d1 = centerA.Dot(normalA);
     float d2 = centerB.Dot(normalB);
     float denom = crossLengthSquared;
@@ -350,7 +346,7 @@ bool PhysicsManager::CheckPlaneRectanglesOverlap(CollisionComponent* planeA, Col
 
     if (!hasIntersectionB) return false;
 
-    return tMinA < tMaxB && tMinB < tMaxA;
+    return tMinA <= tMaxB && tMinB <= tMaxA;
 }
 
 bool RPE::PhysicsManager::GetLineRectangleIntersection(const FVector& linePoint, const FVector& lineDirection, const FVector& rectCenter,
@@ -370,7 +366,7 @@ bool RPE::PhysicsManager::GetLineRectangleIntersection(const FVector& linePoint,
     if (std::abs(dx) < 0.0001f && std::abs(dy) < 0.0001f)
     {
         // Линия параллельна - проверяем, находится ли она внутри
-        if (std::abs(x0) < halfWidth && std::abs(y0) < halfHeight)
+        if (std::abs(x0) <= halfWidth && std::abs(y0) <= halfHeight)
         {
             outTMin = -INFINITY;
             outTMax = INFINITY;
@@ -383,7 +379,7 @@ bool RPE::PhysicsManager::GetLineRectangleIntersection(const FVector& linePoint,
     float tMinX = -INFINITY, tMaxX = INFINITY;
     float tMinY = -INFINITY, tMaxY = INFINITY;
 
-    if (std::abs(dx) > 0.0001f)
+    if (std::abs(dx) >= 0.0001f)
     {
         tMinX = (-halfWidth - x0) / dx;
         tMaxX = (halfWidth - x0) / dx;
@@ -405,11 +401,10 @@ bool RPE::PhysicsManager::GetLineRectangleIntersection(const FVector& linePoint,
         return false;
     }
 
-    // Пересекаем интервалы
     outTMin = std::max(tMinX, tMinY);
     outTMax = std::min(tMaxX, tMaxY);
 
-    return outTMin < outTMax;
+    return outTMin <= outTMax;
 }
 
 bool PhysicsManager::CheckSphereSphere(CollisionComponent* compA, CollisionComponent* compB)
@@ -424,7 +419,7 @@ bool PhysicsManager::CheckSphereSphere(CollisionComponent* compA, CollisionCompo
     float distanceSquared = locA.DistanceSquared(locB);
     float radiusSum = radiusA + radiusB;
 
-    return distanceSquared < (radiusSum * radiusSum);
+    return distanceSquared <= (radiusSum * radiusSum);
 }
 
 bool PhysicsManager::CheckSphereVsCube(CollisionComponent* compA, CollisionComponent* compB)
@@ -462,7 +457,7 @@ bool PhysicsManager::CheckSphereVsCube(CollisionComponent* compA, CollisionCompo
     closestPoint.z = CEMath::Clamp(spherePos.z, cubePos.z - halfSize.z, cubePos.z + halfSize.z);
 
     float distanceSquared = closestPoint.DistanceSquared(spherePos);
-    return distanceSquared < (radius * radius);
+    return distanceSquared <= (radius * radius);
 }
 
 bool PhysicsManager::CheckSphereVsCapsule(CollisionComponent* compA, CollisionComponent* compB)
@@ -507,7 +502,7 @@ bool PhysicsManager::CheckSphereVsCapsule(CollisionComponent* compA, CollisionCo
     float distanceSquared = closestPoint.DistanceSquared(spherePos);
     float radiusSum = sphereRadius + capsuleRadius;
 
-    return distanceSquared < (radiusSum * radiusSum);
+    return distanceSquared <= (radiusSum * radiusSum);
 }
 
 bool PhysicsManager::CheckSphereVsPlane(CollisionComponent* compA, CollisionComponent* compB)
@@ -561,7 +556,7 @@ bool PhysicsManager::CheckSphereVsPlane(CollisionComponent* compA, CollisionComp
     float halfWidth = planeSize.x * 0.5f;
     float halfHeight = planeSize.y * 0.5f;
 
-    return (std::abs(x) < halfWidth + radius) && (std::abs(y) < halfHeight + radius);
+    return (std::abs(x) <= halfWidth + radius) && (std::abs(y) <= halfHeight + radius);
 }
 
 bool PhysicsManager::CheckCubeVsCube(CollisionComponent* compA, CollisionComponent* compB)
@@ -573,8 +568,8 @@ bool PhysicsManager::CheckCubeVsCube(CollisionComponent* compA, CollisionCompone
     FVector halfSizeA = compA->getCubeHalfSize();
     FVector halfSizeB = compB->getCubeHalfSize();
 
-    return (std::abs(posA.x - posB.x) < (halfSizeA.x + halfSizeB.x)) && (std::abs(posA.y - posB.y) < (halfSizeA.y + halfSizeB.y)) &&
-           (std::abs(posA.z - posB.z) < (halfSizeA.z + halfSizeB.z));
+    return (std::abs(posA.x - posB.x) <= (halfSizeA.x + halfSizeB.x)) && (std::abs(posA.y - posB.y) <= (halfSizeA.y + halfSizeB.y)) &&
+           (std::abs(posA.z - posB.z) <= (halfSizeA.z + halfSizeB.z));
 }
 
 bool PhysicsManager::CheckCubeVsCapsule(CollisionComponent* compA, CollisionComponent* compB)
@@ -618,8 +613,9 @@ bool PhysicsManager::CheckCubeVsCapsule(CollisionComponent* compA, CollisionComp
         float t = (float)i / numPoints;
         FVector point = bottom + capsuleAxis * (t * segmentLength);
 
-        bool insideCube = (std::abs(point.x - cubePos.x) < halfSize.x) && (std::abs(point.y - cubePos.y) < halfSize.y) &&
-                          (std::abs(point.z - cubePos.z) < halfSize.z);
+        bool insideCube = (std::abs(point.x - cubePos.x) <= halfSize.x)      //
+                          && (std::abs(point.y - cubePos.y) <= halfSize.y)   //
+                          && (std::abs(point.z - cubePos.z) <= halfSize.z);  //
 
         if (insideCube) return true;
 
@@ -629,7 +625,7 @@ bool PhysicsManager::CheckCubeVsCapsule(CollisionComponent* compA, CollisionComp
         closestPoint.z = CEMath::Clamp(point.z, cubePos.z - halfSize.z, cubePos.z + halfSize.z);
 
         float distanceSquared = closestPoint.DistanceSquared(point);
-        if (distanceSquared < (capsuleRadius * capsuleRadius)) return true;
+        if (distanceSquared <= (capsuleRadius * capsuleRadius)) return true;
     }
 
     FVector corners[8] = {cubePos + FVector(-halfSize.x, -halfSize.y, -halfSize.z), cubePos + FVector(halfSize.x, -halfSize.y, -halfSize.z),
@@ -646,7 +642,7 @@ bool PhysicsManager::CheckCubeVsCapsule(CollisionComponent* compA, CollisionComp
         FVector closestPoint = bottom + capsuleAxis * t;
 
         float distanceSquared = closestPoint.DistanceSquared(corner);
-        if (distanceSquared < (capsuleRadius * capsuleRadius)) return true;
+        if (distanceSquared <= (capsuleRadius * capsuleRadius)) return true;
     }
 
     return false;
@@ -682,7 +678,8 @@ bool PhysicsManager::CheckCubeVsPlane(CollisionComponent* compA, CollisionCompon
     FVector planePoint = plane->getPlanePoint();
     FVector planeSize = plane->getPlaneSize();
 
-    float halfExtent = halfSize.x * std::abs(planeNormal.x) + halfSize.y * std::abs(planeNormal.y) + halfSize.z * std::abs(planeNormal.z);
+    float halfExtent = halfSize.x * std::abs(planeNormal.x)  //
+                       + halfSize.y * std::abs(planeNormal.y) + halfSize.z * std::abs(planeNormal.z);
 
     float distance = (cubePos - planePoint).Dot(planeNormal);
 
@@ -702,13 +699,20 @@ bool PhysicsManager::CheckCubeVsPlane(CollisionComponent* compA, CollisionCompon
     float x = localPos.Dot(right);
     float y = localPos.Dot(localUp);
 
-    float halfSizeOnPlaneX = halfSize.x * std::abs(right.x) + halfSize.y * std::abs(right.y) + halfSize.z * std::abs(right.z);
-    float halfSizeOnPlaneY = halfSize.x * std::abs(localUp.x) + halfSize.y * std::abs(localUp.y) + halfSize.z * std::abs(localUp.z);
+    float halfSizeOnPlaneX = halfSize.x * std::abs(right.x) +
+                             halfSize.y  //
+                                 * std::abs(right.y) +
+                             halfSize.z * std::abs(right.z);
+    float halfSizeOnPlaneY = halfSize.x * std::abs(localUp.x) +
+                             halfSize.y  //
+                                 * std::abs(localUp.y) +
+                             halfSize.z * std::abs(localUp.z);
 
     float halfWidth = planeSize.x * 0.5f;
     float halfHeight = planeSize.y * 0.5f;
 
-    return (std::abs(x) < halfWidth + halfSizeOnPlaneX) && (std::abs(y) < halfHeight + halfSizeOnPlaneY);
+    return (std::abs(x) <= halfWidth + halfSizeOnPlaneX) &&  //
+           (std::abs(y) <= halfHeight + halfSizeOnPlaneY);
 }
 
 bool PhysicsManager::CheckCapsuleVsCapsule(CollisionComponent* compA, CollisionComponent* compB)
@@ -733,7 +737,7 @@ bool PhysicsManager::CheckCapsuleVsCapsule(CollisionComponent* compA, CollisionC
     float distSq = ClosestPointBetweenSegments(bottomA, topA, bottomB, topB, closestA, closestB);
 
     float radiusSum = radiusA + radiusB;
-    return distSq < (radiusSum * radiusSum);
+    return distSq <= (radiusSum * radiusSum);
 }
 
 bool PhysicsManager::CheckCapsuleVsPlane(CollisionComponent* compA, CollisionComponent* compB)
@@ -798,7 +802,7 @@ bool PhysicsManager::CheckCapsuleVsPlane(CollisionComponent* compA, CollisionCom
     float planeHalfWidth = planeSize.x * 0.5f;
     float planeHalfHeight = planeSize.y * 0.5f;
 
-    return (std::abs(x) < planeHalfWidth + radius) && (std::abs(y) < planeHalfHeight + radius);
+    return (std::abs(x) <= planeHalfWidth + radius) && (std::abs(y) <= planeHalfHeight + radius);
 }
 
 bool PhysicsManager::CheckPlaneVsPlane(CollisionComponent* compA, CollisionComponent* compB)
@@ -813,12 +817,12 @@ bool PhysicsManager::CheckPlaneVsPlane(CollisionComponent* compA, CollisionCompo
     FVector pointB = compB->getPlanePoint();
 
     float dot = normalA.Dot(normalB);
-    if (CEMath::Abs(std::abs(dot) - 1.0f) < 0.0001f)
+    if (CEMath::Abs(std::abs(dot) - 1.0f) <= 0.0001f)
     {
 
         float dist = (pointA - pointB).Dot(normalA);
 
-        if (std::abs(dist) < 0.0001f)
+        if (std::abs(dist) <= 0.0001f)
         {
             if (compA->isInfinitePlane() && compB->isInfinitePlane()) return true;
 

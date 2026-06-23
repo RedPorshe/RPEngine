@@ -1,8 +1,8 @@
 #include "Sphere.h"
 using namespace RPE;
 
-SphereComponent::SphereComponent(const std::string& inName, CObject* inOwner)  //
-    : Super(inName, inOwner)
+SphereComponent::SphereComponent(const std::string& inName, CObject* inOwner, bool InTests)  //
+    : Super(inName, inOwner, InTests)
 {
     setShape(ECollisionShape::Sphere);
 }

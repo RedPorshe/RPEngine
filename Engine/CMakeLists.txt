@@ -266,8 +266,11 @@ Tests/MatrixTests.cpp
 Tests/GLMconverterTests.cpp
 Tests/ObjectsTests.cpp
 Tests/MathconstantsTests.cpp
+Tests/CollisionsTests.cpp 
 )
 add_executable(${PROJECT_NAME}Tests ${TEST_SOURCES})
+
+target_compile_definitions(${PROJECT_NAME}Tests PRIVATE IN_TESTS)
 
 set(spdlog_DIR "${CMAKE_BINARY_DIR}/generators")
 
@@ -286,6 +289,7 @@ target_link_libraries(${PROJECT_NAME}lib PUBLIC
     glm::glm
     nlohmann_json::nlohmann_json
 )
+
 
  target_link_libraries(${PROJECT_NAME}Tests ${PROJECT_NAME}lib gtest::gtest )
 

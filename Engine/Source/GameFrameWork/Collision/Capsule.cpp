@@ -2,8 +2,8 @@
 
 using namespace RPE;
 
-CapsuleComponent::CapsuleComponent(const std::string& inName, CObject* inOwner)  //
-    : Super(inName, inOwner)
+CapsuleComponent::CapsuleComponent(const std::string& inName, CObject* inOwner, bool inTests)  //
+    : Super(inName, inOwner, inTests)
 {
     setShape(ECollisionShape::Capsule);
 }

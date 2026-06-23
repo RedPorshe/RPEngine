@@ -2,8 +2,8 @@
 
 using namespace RPE;
 
-PlaneComponent::PlaneComponent(const std::string& inName, CObject* inOwner)  //
-    : Super(inName, inOwner)
+PlaneComponent::PlaneComponent(const std::string& inName, CObject* inOwner, bool InTests)  //
+    : Super(inName, inOwner, InTests)
 {
     setShape(ECollisionShape::Plane);
 }
