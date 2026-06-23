@@ -1,8 +1,8 @@
 #include "ShadersManager.h"
 #include "Log/Log.h"
 #include "DeviceManager.h"
-#include "../vkContext.h"
-#include "../vkRender.h"
+#include "Render/vulkan/vkContext.h"
+#include "Render/vulkan/vkRender.h"
 #include "Core/Engine.h"
 #include <fstream>
 #include <filesystem>

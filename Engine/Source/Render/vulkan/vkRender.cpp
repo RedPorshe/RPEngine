@@ -202,7 +202,7 @@ bool VkRenderer::startFrame()
 
     uint32_t currentFrame = syncMgr->getCurrentFrame();
 
-    // Ждём fence для текущего фрейма
+  
     VkFence currentFence = syncMgr->getInFlightFence(currentFrame);
     VkResult result = vkWaitForFences(device, 1, &currentFence, VK_TRUE, UINT64_MAX);
 
@@ -212,10 +212,10 @@ bool VkRenderer::startFrame()
         return false;
     }
 
-    // Сбрасываем fence
+  
     vkResetFences(device, 1, &currentFence);
 
-    // Получаем следующее изображение
+
     result = vkAcquireNextImageKHR(
         device, swapchain, UINT64_MAX, syncMgr->getImageAvailableSemaphore(currentFrame), VK_NULL_HANDLE, &m_currentImageIndex);
 
@@ -230,7 +230,7 @@ bool VkRenderer::startFrame()
         return false;
     }
 
-    // Обновляем uniform buffer
+
     updateUniformBuffer(currentFrame);
 
     // Записываем command buffer
@@ -240,7 +240,7 @@ bool VkRenderer::startFrame()
         return false;
     }
 
-    // Подготавливаем submit
+
     VkSemaphore waitSemaphores[] = {syncMgr->getImageAvailableSemaphore(currentFrame)};
     VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     VkSemaphore signalSemaphores[] = {syncMgr->getRenderFinishedSemaphore(currentFrame)};
@@ -258,7 +258,7 @@ bool VkRenderer::startFrame()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    // Отправляем в очередь
+
     VkQueue graphicsQueue;
     vkGetDeviceQueue(device, deviceMgr->getGraphicsQueueIndex(), 0, &graphicsQueue);
 
