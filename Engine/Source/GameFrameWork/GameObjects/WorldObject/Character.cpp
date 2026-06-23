@@ -1,9 +1,8 @@
 #include "Character.h"
-#include "../Components/InputComponent.h"
-#include "../../Collision/Capsule.h"
-#include "../../Collision/Cube.h"
-#include "../../Collision/Plane.h"
-#include "../../Collision/Sphere.h"
+#include "GameFrameWork/GameObjects/Components/InputComponent.h"
+#include "GameFrameWork/Collision/Capsule.h"
+#include "GameFrameWork/GameObjects/Components/MeshComponent.h"
+#include "Render/RHI/StaticMesh.h"
 #include "Core/Engine.h"
 #include "Log/Log.h"
 
@@ -18,10 +17,11 @@ WCharacter::WCharacter(const std::string& inDisplayName, CObject* inOwner)  //
     m_Capsule->setHalfHeight(9.8f);
     m_Capsule->setRadius(0.38f);
     setRootComponent(m_Capsule);
-    otherCollision = addComponent<SphereComponent>("Sphere_" + GetName());
-    otherCollision->setRadius(0.5f);
-    otherCollision->attachTo(m_Capsule);
-    otherCollision->setRelativeLocation(FVector::Zero());
+    auto mesh = addComponent<MeshComponent>("meshcomp");
+    auto model = new StaticMesh();
+    model->SetIsLoaded(true);
+    mesh->setMesh(model);
+    mesh->setVisible(true);
     bisJumping = false;
 }
 

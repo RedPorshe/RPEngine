@@ -10,6 +10,8 @@
 #include "Managers/RenderpassManager.h"
 #include "Managers/FrameBufferManager.h"
 #include "Managers/BufferManager.h"
+#include "GameFrameWork/World/World.h"
+#include "Render/FrameInfo.h"
 #include "Log/Log.h"
 #include <chrono>
 #include <cstring>
@@ -81,7 +83,16 @@ bool VkRenderer::init(IWindow* windowHandle)
 
 void VkRenderer::update()
 {
-    m_FrameInfo.Valid = false;
+    m_FrameInfo.clear();
+    const auto GameInstance = m_EnginePtr->getGameInstance();
+    if (GameInstance)
+    {
+        auto world = GameInstance->GetWorld();
+        if (world)
+        {
+            world->CollectRenderInfo(m_FrameInfo);
+        }
+    }
 }
 
 void VkRenderer::setEnginePtr(Engine* ptr)

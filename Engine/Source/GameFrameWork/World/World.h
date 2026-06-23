@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/SystemObject.h"
+#include "Render/FrameInfo.h"
 #include <unordered_map>
 #include <string>
 
@@ -42,7 +43,8 @@ protected:
     void unloadLevels();
     void clearLevels();
     bool isGameStarted{false};
-
+    void CollectRenderInfo(struct FrameInfo& info);
     friend class RGameInstance;
+    friend class VkRenderer;
 };
 }  // namespace RPE

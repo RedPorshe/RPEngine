@@ -214,6 +214,7 @@ bool PhysicsManager::CheckOverlaping(const std::string& compA, const std::string
         }
         default: return false;
     }
+    return false;
 }
 
 bool PhysicsManager::allReadyOverlapped(const std::string& compA, const std::string& compB)

@@ -2,6 +2,10 @@
 #include "Level.h"
 #include "Log/Log.h"
 
+#include "GameFrameWork/GameObjects/WorldObject/WorldActor.h"
+#include "GameFrameWork/GameObjects/Components/MeshComponent.h"
+#include "Render/FrameInfo.h"
+
 DEFINE_LOG_CATEGORY_STATIC(WorldLog);
 using namespace RPE;
 REGISTER_CLASS_FACTORY(WWorld);
@@ -274,4 +278,36 @@ void WWorld::clearLevels()
     }
     m_levels.clear();
     isGameStarted = false;
+}
+
+void WWorld::CollectRenderInfo(FrameInfo& info)
+{
+    if (CurrentLevel)
+    {
+        const auto& levelActors = CurrentLevel->GetAllActors();
+        for (const auto& [name, actor] : levelActors)
+        {
+            if (!actor) continue;
+
+            const auto actorComponents = actor->getComponents();
+            for (auto component : actorComponents)
+            {
+                if (!component) continue;
+                if (auto meshcomp = dynamic_cast<MeshComponent*>(component))
+                {
+                    if (!meshcomp) continue;
+                    if (!meshcomp->isVisible()) continue;
+
+                    auto mesh = meshcomp->getMesh();
+                    if (!mesh || !mesh->isLoaded()) continue;
+
+                    FStaticMeshObject objData;
+                    objData.Clear();
+                    // TODO ADD REALIZATION
+                    objData.Model.IdentityMatrix();
+                    if (objData.IsValid()) info.AddMesh(objData);
+                }
+            }
+        }
+    }
 }

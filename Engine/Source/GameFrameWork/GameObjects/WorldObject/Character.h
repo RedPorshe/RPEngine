@@ -31,7 +31,6 @@ private:
     void StartJump();
     void EndJump();
     bool bisJumping{false};
-    CollisionComponent* otherCollision = nullptr;
 };
 
 }  // namespace RPE

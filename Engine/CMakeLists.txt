@@ -43,6 +43,16 @@ set(ENGINE_SOURCES_BASE
     Source/Render/RHI/Renderer.h 
     Source/Render/RHI/Renderer.cpp 
     Source/Render/FrameInfo.h
+    Source/Render/FrameInfo.cpp 
+    # render Meshes
+    Source/Render/RHI/Mesh.h 
+    Source/Render/RHI/Mesh.cpp 
+    Source/Render/RHI/Material.h 
+    Source/Render/RHI/Material.cpp 
+    Source/Render/RHI/StaticMesh.h 
+    Source/Render/RHI/StaticMesh.cpp 
+    Source/Render/RHI/SkeletalMesh.h 
+    Source/Render/RHI/SkeletalMesh.cpp 
     # vulkan 
     Source/Render/vulkan/vkRender.h 
     Source/Render/vulkan/vkRender.cpp 
@@ -109,6 +119,12 @@ set(ENGINE_SOURCES_BASE
     Source/GameFrameWork/GameObjects/Components/InputComponent.cpp
     Source/GameFrameWork/GameObjects/Components/TransformComponent.h 
     Source/GameFrameWork/GameObjects/Components/TransformComponent.cpp
+    Source/GameFrameWork/GameObjects/Components/MeshComponent.h 
+    Source/GameFrameWork/GameObjects/Components/MeshComponent.cpp
+    Source/GameFrameWork/GameObjects/Components/StaticMeshComponent.h 
+    Source/GameFrameWork/GameObjects/Components/StaticMeshComponent.cpp
+    Source/GameFrameWork/GameObjects/Components/SkeletalMeshComponent.h 
+    Source/GameFrameWork/GameObjects/Components/SkeletalMeshComponent.cpp
     # collision components
     Source/GameFrameWork/Collision/CollisionComponent.h 
     Source/GameFrameWork/Collision/CollisionComponent.cpp 
@@ -120,7 +136,7 @@ set(ENGINE_SOURCES_BASE
     Source/GameFrameWork/Collision/Sphere.cpp 
     Source/GameFrameWork/Collision/Plane.h 
     Source/GameFrameWork/Collision/Plane.cpp 
-    
+    # Mesh components 
     # shaders
     Assets/shaders/main.vert
     Assets/shaders/main.frag

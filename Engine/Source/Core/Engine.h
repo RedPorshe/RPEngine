@@ -38,6 +38,7 @@ public:
     std::string getAssetsPath() const { return m_executablePath + "Assets/"; }
     int init();
     class PhysicsManager* getPhysicsManager();
+    RGameInstance* getGameInstance() const { return Gameinstance.get(); }
 
 private:
     std::vector<std::string> m_neededPipelineNames;

@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdint> 
+#include <cstdint>
 namespace RPE
 {
 enum class EMovableState : uint8_t

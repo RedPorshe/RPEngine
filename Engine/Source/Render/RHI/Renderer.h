@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Utility.h"
 #include "Window/IWindow.h"
-#include "../FrameInfo.h"
+#include "Render/FrameInfo.h"
 
 #include <string>
 
@@ -11,6 +11,7 @@ namespace RPE
 class RHI : public NonCopyable
 {
 public:
+    RHI() = default;
     virtual ~RHI() = default;
     virtual bool preInit(WindowSettings, const std::string& EngineName) = 0;
     virtual bool init(IWindow* windowHandle) = 0;
@@ -28,6 +29,6 @@ public:
 protected:
     int m_height = 800;
     int m_width = 600;
-    FrameInfo m_FrameInfo{};
+    FrameInfo m_FrameInfo;
 };
 }  // namespace RPE

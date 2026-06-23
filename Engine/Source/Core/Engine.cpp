@@ -33,8 +33,9 @@
 #include "Core/SystemObject.h"
 #include "Core/ObjectFactory.h"
 
-#include "../GameFrameWork/GameObjects/WorldObject/WorldActor.h"
-#include "../GameFrameWork/GameObjects/WorldObject/WorldPawn.h"
+#include "GameFrameWork/GameObjects/WorldObject/WorldActor.h"
+#include "GameFrameWork/GameObjects/WorldObject/WorldPawn.h"
+#include "GameFrameWork/GameObjects/Components/MeshComponent.h"
 
 using namespace RPE;
 Engine* Engine::s_instance = nullptr;
@@ -59,6 +60,7 @@ Engine::~Engine()
     {
         m_PhysicsManager->shutdown();
     }
+    MeshComponent::cleanupDefaultMaterial();
     m_initialized = false;
     s_instance = nullptr;
 }
