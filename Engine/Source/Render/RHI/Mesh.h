@@ -2,7 +2,7 @@
 #include "Math/MathTypes.h"
 #include <vector>
 #include <string>
-
+#include <cstdint>
 namespace RPE
 {
 
